@@ -36,6 +36,8 @@ import type {
   CoreApiRollupResourcePayload,
 } from './rollup';
 import { CORE_API_ROLLUP_RESOURCES } from './rollup';
+import type { CoreApiTemporalResourceName, CoreApiTemporalResourcePayload } from './temporal';
+import { CORE_API_TEMPORAL_RESOURCES } from './temporal';
 import type {
   CoreApiTokenPaginationFilters,
   CoreApiTokenPaginationSorting,
@@ -55,6 +57,7 @@ export const CORE_API_RESOURCES = {
   ...CORE_API_CONTRACT_RESOURCES,
   ...CORE_API_MISC_RESOURCES,
   ...CORE_API_ROLLUP_RESOURCES,
+  ...CORE_API_TEMPORAL_RESOURCES,
   ...CORE_API_TOKEN_RESOURCES,
   ...CORE_API_TX_RESOURCES,
   ...CORE_API_V1_RESOURCES,
@@ -70,6 +73,7 @@ R extends CoreApiBlockResourceName ? CoreApiBlockResourcePayload<R> :
 R extends CoreApiContractResourceName ? CoreApiContractResourcePayload<R> :
 R extends CoreApiMiscResourceName ? CoreApiMiscResourcePayload<R> :
 R extends CoreApiRollupResourceName ? CoreApiRollupResourcePayload<R> :
+R extends CoreApiTemporalResourceName ? CoreApiTemporalResourcePayload<R> :
 R extends CoreApiTokenResourceName ? CoreApiTokenResourcePayload<R> :
 R extends CoreApiTxResourceName ? CoreApiTxResourcePayload<R> :
 R extends CoreApiV1ResourceName ? CoreApiV1ResourcePayload<R> :
