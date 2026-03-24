@@ -19,6 +19,7 @@ import LatestZkEvmL2Batches from 'ui/home/latestBatches/LatestZkEvmL2Batches';
 import LatestBlocks from 'ui/home/LatestBlocks';
 import Stats from 'ui/home/Stats';
 import TemporalConsensusCard from 'ui/temporal/TemporalConsensusCard';
+import TemporalQualityChart from 'ui/temporal/TemporalQualityChart';
 import TemporalQueueCard from 'ui/temporal/TemporalQueueCard';
 import TemporalWatermarkCard from 'ui/temporal/TemporalWatermarkCard';
 import Transactions from 'ui/home/Transactions';
@@ -96,6 +97,9 @@ const Home = () => {
               isLoading={ temporalLoading }
             />
           </Grid>
+          <Box mt={ 4 }>
+            <TemporalQualityChart/>
+          </Box>
         </Box>
         { !isMobile && config.UI.homepage.highlights && <Highlights mt={ 3 }/> }
         { isMobile && <AdBanner mt={ 6 } mx="auto" justifyContent="center" format="mobile"/> }
