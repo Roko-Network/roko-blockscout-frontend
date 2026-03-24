@@ -63,6 +63,7 @@ const TEMPLATE_MAP: Record<Route['pathname'], string> = {
   '/epochs': DEFAULT_TEMPLATE,
   '/epochs/[number]': DEFAULT_TEMPLATE,
   '/gas-tracker': 'Explore real-time %network_title% gas fees with Blockscout\'s advanced gas fee tracker. Get accurate %network_gwei% estimates and track transaction costs live.',
+  '/temporal': 'Monitor %network_title% temporal ordering: nanosecond timestamps, time mesh quality, and transaction inclusion enforcement.',
   '/mud-worlds': DEFAULT_TEMPLATE,
   '/token-transfers': DEFAULT_TEMPLATE,
   '/advanced-filter': DEFAULT_TEMPLATE,

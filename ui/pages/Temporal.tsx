@@ -1,7 +1,12 @@
 import { Grid, Text } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
-import useApiQuery from 'lib/api/useApiQuery';
+import {
+  fetchTemporalConsensusTime,
+  fetchTemporalQueueStats,
+  fetchTemporalWatermark,
+} from 'lib/api/services/general/temporalRpc';
 import { TEMPORAL_CONSENSUS_TIME, TEMPORAL_QUEUE_STATS, TEMPORAL_WATERMARK } from 'stubs/temporal';
 import { SECOND } from 'toolkit/utils/consts';
 import PageTitle from 'ui/shared/Page/PageTitle';
@@ -12,28 +17,25 @@ import TemporalWatermarkCard from 'ui/temporal/TemporalWatermarkCard';
 const BLOCK_TIME_MS = 6 * SECOND;
 
 const Temporal = () => {
-  const watermarkQuery = useApiQuery('general:temporal_watermark', {
-    queryOptions: {
-      placeholderData: TEMPORAL_WATERMARK,
-      refetchInterval: BLOCK_TIME_MS,
-      refetchOnMount: true,
-    },
+  const watermarkQuery = useQuery({
+    queryKey: [ 'temporal_watermark' ],
+    queryFn: fetchTemporalWatermark,
+    placeholderData: TEMPORAL_WATERMARK,
+    refetchInterval: BLOCK_TIME_MS,
   });
 
-  const consensusTimeQuery = useApiQuery('general:temporal_consensus_time', {
-    queryOptions: {
-      placeholderData: TEMPORAL_CONSENSUS_TIME,
-      refetchInterval: BLOCK_TIME_MS,
-      refetchOnMount: true,
-    },
+  const consensusTimeQuery = useQuery({
+    queryKey: [ 'temporal_consensus_time' ],
+    queryFn: fetchTemporalConsensusTime,
+    placeholderData: TEMPORAL_CONSENSUS_TIME,
+    refetchInterval: BLOCK_TIME_MS,
   });
 
-  const queueStatsQuery = useApiQuery('general:temporal_queue_stats', {
-    queryOptions: {
-      placeholderData: TEMPORAL_QUEUE_STATS,
-      refetchInterval: BLOCK_TIME_MS,
-      refetchOnMount: true,
-    },
+  const queueStatsQuery = useQuery({
+    queryKey: [ 'temporal_queue_stats' ],
+    queryFn: fetchTemporalQueueStats,
+    placeholderData: TEMPORAL_QUEUE_STATS,
+    refetchInterval: BLOCK_TIME_MS,
   });
 
   const isLoading =
