@@ -41,10 +41,10 @@ interface QueueStatsRpcResult {
 }
 
 interface ConsensusTimeRpcResult {
-  consensus_time_ns: number;
-  time_quality: number;
-  convergence_state: string;
-  peer_count: number;
+  consensusTimeNs: string;
+  timeQuality: number;
+  convergenceState: string;
+  peerCount: number;
 }
 
 function nsToDatetime(ns: number): string {
@@ -67,13 +67,14 @@ export async function fetchTemporalWatermark(): Promise<TemporalWatermark> {
 
 export async function fetchTemporalConsensusTime(): Promise<TemporalConsensusTime> {
   const result = await rpcCall<ConsensusTimeRpcResult>('temporal_getConsensusTime');
-  const qualityPct = Math.round((result.time_quality / 10000) * 100);
+  const timeNs = parseInt(result.consensusTimeNs, 10) || 0;
+  const qualityPct = Math.round((result.timeQuality / 10000) * 100);
   return {
-    consensus_time_ns: String(result.consensus_time_ns),
-    consensus_time_datetime: nsToDatetime(result.consensus_time_ns),
+    consensus_time_ns: result.consensusTimeNs,
+    consensus_time_datetime: nsToDatetime(timeNs),
     quality_percent: qualityPct,
-    is_converged: result.convergence_state === 'Converged',
-    validator_count: result.peer_count + 1,
+    is_converged: result.convergenceState === 'Converged',
+    validator_count: result.peerCount + 1,
   };
 }
 
