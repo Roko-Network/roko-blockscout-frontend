@@ -7,7 +7,6 @@ import {
   fetchTemporalQueueStats,
   fetchTemporalWatermark,
 } from 'lib/api/services/general/temporalRpc';
-import { TEMPORAL_CONSENSUS_TIME, TEMPORAL_QUEUE_STATS, TEMPORAL_WATERMARK } from 'stubs/temporal';
 import { SECOND } from 'toolkit/utils/consts';
 import PageTitle from 'ui/shared/Page/PageTitle';
 import TemporalConsensusCard from 'ui/temporal/TemporalConsensusCard';
@@ -20,28 +19,25 @@ const Temporal = () => {
   const watermarkQuery = useQuery({
     queryKey: [ 'temporal_watermark' ],
     queryFn: fetchTemporalWatermark,
-    placeholderData: TEMPORAL_WATERMARK,
     refetchInterval: BLOCK_TIME_MS,
   });
 
   const consensusTimeQuery = useQuery({
     queryKey: [ 'temporal_consensus_time' ],
     queryFn: fetchTemporalConsensusTime,
-    placeholderData: TEMPORAL_CONSENSUS_TIME,
     refetchInterval: BLOCK_TIME_MS,
   });
 
   const queueStatsQuery = useQuery({
     queryKey: [ 'temporal_queue_stats' ],
     queryFn: fetchTemporalQueueStats,
-    placeholderData: TEMPORAL_QUEUE_STATS,
     refetchInterval: BLOCK_TIME_MS,
   });
 
   const isLoading =
-    watermarkQuery.isPlaceholderData ||
-    consensusTimeQuery.isPlaceholderData ||
-    queueStatsQuery.isPlaceholderData;
+    watermarkQuery.isLoading ||
+    consensusTimeQuery.isLoading ||
+    queueStatsQuery.isLoading;
 
   return (
     <>
@@ -49,7 +45,7 @@ const Temporal = () => {
         title="Temporal Dashboard"
         secondRow={ (
           <Text fontSize="sm" color="text.secondary">
-            Nanosecond-precision temporal ordering — auto-refreshes every 6 seconds
+            Nanosecond-precision temporal ordering — The Temporal Layer for Web3
           </Text>
         ) }
       />
