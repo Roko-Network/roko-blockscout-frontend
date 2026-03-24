@@ -34,6 +34,8 @@ import type {
   GeneralApiRollupResourcePayload,
 } from './rollup';
 import { GENERAL_API_ROLLUP_RESOURCES } from './rollup';
+import type { GeneralApiTemporalResourceName, GeneralApiTemporalResourcePayload } from './temporal';
+import { GENERAL_API_TEMPORAL_RESOURCES } from './temporal';
 import type {
   GeneralApiTokenPaginationFilters,
   GeneralApiTokenPaginationSorting,
@@ -53,6 +55,7 @@ export const GENERAL_API_RESOURCES = {
   ...GENERAL_API_CONTRACT_RESOURCES,
   ...GENERAL_API_MISC_RESOURCES,
   ...GENERAL_API_ROLLUP_RESOURCES,
+  ...GENERAL_API_TEMPORAL_RESOURCES,
   ...GENERAL_API_TOKEN_RESOURCES,
   ...GENERAL_API_TX_RESOURCES,
   ...GENERAL_API_V1_RESOURCES,
@@ -68,6 +71,7 @@ R extends GeneralApiBlockResourceName ? GeneralApiBlockResourcePayload<R> :
 R extends GeneralApiContractResourceName ? GeneralApiContractResourcePayload<R> :
 R extends GeneralApiMiscResourceName ? GeneralApiMiscResourcePayload<R> :
 R extends GeneralApiRollupResourceName ? GeneralApiRollupResourcePayload<R> :
+R extends GeneralApiTemporalResourceName ? GeneralApiTemporalResourcePayload<R> :
 R extends GeneralApiTokenResourceName ? GeneralApiTokenResourcePayload<R> :
 R extends GeneralApiTxResourceName ? GeneralApiTxResourcePayload<R> :
 R extends GeneralApiV1ResourceName ? GeneralApiV1ResourcePayload<R> :
