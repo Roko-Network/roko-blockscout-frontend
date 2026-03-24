@@ -8,6 +8,7 @@ import { HomeRpcDataContextProvider } from 'src/slices/home/contexts/rpc-data-co
 
 import AdBanner from 'src/features/ads/banner/components/AdBanner';
 import LatestArbitrumL2Batches from 'src/features/rollup/arbitrum/pages/home/LatestArbitrumL2Batches';
+import TemporalStatsHome from 'src/features/temporal/components/home/TemporalStatsHome';
 
 import config from 'src/config';
 import useIsMobile from 'src/shared/hooks/useIsMobile';
@@ -44,6 +45,9 @@ const Home = () => {
             <Stats/>
             <ChainIndicators/>
           </Flex>
+          <Box mt={ 2 }>
+            <TemporalStatsHome/>
+          </Box>
           { !isMobile && config.slices.home.highlights && <Highlights mt={ 3 }/> }
           { isMobile && <AdBanner mt={ 6 } mx="auto" justifyContent="center" format="mobile"/> }
           <Flex mt={ 8 } direction={{ base: 'column', lg: 'row' }} columnGap={ 12 } rowGap={ 6 }>
