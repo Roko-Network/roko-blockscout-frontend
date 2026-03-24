@@ -15,6 +15,7 @@ import {
   fetchTemporalWatermark,
 } from 'src/features/temporal/api/temporal-rpc';
 import TemporalConsensusCard from 'src/features/temporal/components/TemporalConsensusCard';
+import TemporalQualityChart from 'src/features/temporal/components/TemporalQualityChart';
 import TemporalQueueCard from 'src/features/temporal/components/TemporalQueueCard';
 import TemporalWatermarkCard from 'src/features/temporal/components/TemporalWatermarkCard';
 
@@ -100,6 +101,9 @@ const Home = () => {
                 isLoading={ temporalLoading }
               />
             </Grid>
+            <Box mt={ 4 }>
+              <TemporalQualityChart/>
+            </Box>
           </Box>
           { !isMobile && config.slices.home.highlights && <Highlights mt={ 3 }/> }
           { isMobile && <AdBanner mt={ 6 } mx="auto" justifyContent="center" format="mobile"/> }
