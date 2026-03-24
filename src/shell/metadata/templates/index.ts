@@ -299,6 +299,17 @@ export const TEMPLATE_MAP: Record<Route['pathname'], RouteTemplateRecord> = {
       },
     },
   },
+  '/temporal': {
+    metadata: {
+      title: {
+        'default': '%chain_name% temporal ordering dashboard',
+      },
+      description: {
+        'default': 'Monitor %chain_name% temporal ordering: nanosecond timestamps, time mesh quality, and transaction inclusion enforcement.',
+      },
+    },
+    og: OG_ROOT_PAGE,
+  },
   '/uptime': {
     metadata: {
       title: {

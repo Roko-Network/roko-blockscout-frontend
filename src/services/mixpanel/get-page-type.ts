@@ -60,6 +60,7 @@ export const PAGE_TYPE_DICT: Record<Route['pathname'], string> = {
   '/epochs': 'Epochs',
   '/epochs/[number]': 'Epoch details',
   '/gas-tracker': 'Gas tracker',
+  '/temporal': 'Temporal dashboard',
   '/token-transfers': 'Token transfers',
   '/advanced-filter': 'Advanced filter',
   '/pools': 'DEX pools',
