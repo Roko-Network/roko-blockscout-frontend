@@ -39,6 +39,7 @@ import TxDetailsWithdrawalStatusOptimistic from 'src/features/rollup/optimism/pa
 import TxInfoScrollFees from 'src/features/rollup/scroll/pages/tx/TxInfoScrollFees';
 import ZkSyncL2TxnBatchHashesInfo from 'src/features/rollup/zk-sync/pages/batch-details/ZkSyncL2TxnBatchHashesInfo';
 import { formatZkSyncL2TxnBatchStatus } from 'src/features/rollup/zk-sync/utils/format-txn-batch-status';
+import TxTemporalTimestamp from 'src/features/temporal/components/TxTemporalTimestamp';
 import TxDetailsActions from 'src/features/tx-actions/pages/tx/TxDetailsActions';
 
 import config from 'src/config';
@@ -304,6 +305,8 @@ const TxDetails = ({ data, isLoading, socketStatus, noTxActions }: Props) => {
           </DetailedInfo.ItemValue>
         </>
       ) }
+
+      <TxTemporalTimestamp txHash={ data.hash }/>
 
       { data.execution_node && (
         <>

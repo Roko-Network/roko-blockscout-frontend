@@ -299,6 +299,12 @@ export default function useNavItems(): ReturnType {
           icon: 'navigation/ictt_users',
           isActive: pathname.startsWith('/ictt-users'),
         },
+        {
+          text: 'Temporal',
+          nextRoute: { pathname: '/temporal' as const },
+          icon: 'navigation/hourglass',
+          isActive: pathname.startsWith('/temporal'),
+        },
       ].filter(Boolean);
 
       if (items.length === 0) {
