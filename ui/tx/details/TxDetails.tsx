@@ -70,6 +70,7 @@ import TxDetailsTxFee from './TxDetailsTxFee';
 import TxDetailsWithdrawalStatusArbitrum from './TxDetailsWithdrawalStatusArbitrum';
 import TxHash from './TxHash';
 import TxInfoScrollFees from './TxInfoScrollFees';
+import TxTemporalTimestamp from './TxTemporalTimestamp';
 
 interface Props {
   data: Transaction | undefined;
@@ -376,6 +377,8 @@ const TxDetails = ({ data, isLoading, socketStatus, noTxActions }: Props) => {
           </DetailedInfo.ItemValue>
         </>
       ) }
+
+      <TxTemporalTimestamp txHash={ data.hash }/>
 
       { data.execution_node && (
         <>

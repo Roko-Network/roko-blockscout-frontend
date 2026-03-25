@@ -1,4 +1,10 @@
-import type { TemporalConsensusTime, TemporalQueueStats, TemporalWatermark } from 'types/api/temporal';
+import type {
+  TemporalBlockMetadata,
+  TemporalConsensusTime,
+  TemporalQueueStats,
+  TemporalTxTimestamp,
+  TemporalWatermark,
+} from 'types/api/temporal';
 
 export const TEMPORAL_WATERMARK: TemporalWatermark = {
   watermark_ns: '1711234567890123456',
@@ -22,4 +28,15 @@ export const TEMPORAL_QUEUE_STATS: TemporalQueueStats = {
   fee_priority_enabled: true,
   inclusion_deadline_secs: 15,
   inclusion_enforce: true,
+};
+
+export const TEMPORAL_TX_TIMESTAMP: TemporalTxTimestamp = {
+  timestamp_ns: '1711234567890123456',
+  timestamp_datetime: '2024-03-23T21:29:27.890Z',
+};
+
+export const TEMPORAL_BLOCK_METADATA: TemporalBlockMetadata = {
+  block_nano_timestamp: '1711234567890123456',
+  block_number: 1234567,
+  timestamp_datetime: '2024-03-23T21:29:27.890Z',
 };

@@ -45,6 +45,7 @@ import ZkSyncL2TxnBatchHashesInfo from 'ui/txnBatches/zkSyncL2/ZkSyncL2TxnBatchH
 import BlockDetailsBaseFeeCelo from './details/BlockDetailsBaseFeeCelo';
 import BlockDetailsBlobInfo from './details/BlockDetailsBlobInfo';
 import BlockDetailsZilliqaQuorumCertificate from './details/BlockDetailsZilliqaQuorumCertificate';
+import BlockTemporalTimestamp from './details/BlockTemporalTimestamp';
 import type { BlockQuery } from './useBlockQuery';
 
 const zkSyncVerificationSteps = ZKSYNC_L2_TX_BATCH_STATUSES.map(formatZkSyncL2TxnBatchStatus);
@@ -251,6 +252,8 @@ const BlockDetails = ({ query }: Props) => {
       <DetailedInfo.ItemValue>
         <DetailedInfoTimestamp timestamp={ data.timestamp } isLoading={ isPlaceholderData }/>
       </DetailedInfo.ItemValue>
+
+      <BlockTemporalTimestamp blockNumber={ data.height }/>
 
       <DetailedInfo.ItemLabel
         hint="The number of transactions in the block"

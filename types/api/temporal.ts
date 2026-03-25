@@ -36,3 +36,19 @@ export type TemporalQueueStats = {
   // Whether inclusion enforcement is active
   inclusion_enforce: boolean;
 };
+
+export type TemporalTxTimestamp = {
+  // Nanosecond canonical timestamp for the transaction (string to avoid precision loss)
+  timestamp_ns: string;
+  // ISO 8601 datetime derived from the nanosecond timestamp
+  timestamp_datetime: string;
+};
+
+export type TemporalBlockMetadata = {
+  // Nanosecond block-level temporal timestamp (string to avoid precision loss)
+  block_nano_timestamp: string;
+  // Block number
+  block_number: number;
+  // ISO 8601 datetime derived from the nanosecond timestamp
+  timestamp_datetime: string;
+};

@@ -296,6 +296,12 @@ export default function useNavItems(): ReturnType {
           icon: 'navigation/gas_tracker',
           isActive: pathname.startsWith('/gas-tracker'),
         },
+        {
+          text: 'Temporal',
+          nextRoute: { pathname: '/temporal' as const },
+          icon: 'navigation/hourglass',
+          isActive: pathname.startsWith('/temporal'),
+        },
       ].filter(Boolean);
 
       if (items.length === 0) {

@@ -1,7 +1,9 @@
 // Fetch temporal data from the Blockscout backend API.
 // The backend proxies calls to the Roko node's JSON-RPC endpoint.
 
-import type { TemporalWatermark, TemporalConsensusTime, TemporalQueueStats } from 'types/api/temporal';
+import type { TemporalWatermark, TemporalConsensusTime, TemporalQueueStats, TemporalTxTimestamp, TemporalBlockMetadata } from 'types/api/temporal';
+
+import { nanoToDatetime } from 'lib/temporal/formatNanoTimestamp';
 
 async function apiFetch<T>(path: string): Promise<T> {
   const response = await fetch(`/api/v2/temporal${path}`);
@@ -75,5 +77,33 @@ export async function fetchTemporalQueueStats(): Promise<TemporalQueueStats> {
     fee_priority_enabled: result.enabled,
     inclusion_deadline_secs: 15,
     inclusion_enforce: true,
+  };
+}
+
+// Backend returns: { timestamp_ns: string }
+interface TxTimestampResponse {
+  timestamp_ns: string;
+}
+
+export async function fetchTemporalTxTimestamp(txHash: string): Promise<TemporalTxTimestamp> {
+  const result = await apiFetch<TxTimestampResponse>(`/transactions/${txHash}/timestamp`);
+  return {
+    timestamp_ns: result.timestamp_ns,
+    timestamp_datetime: nanoToDatetime(result.timestamp_ns),
+  };
+}
+
+// Backend returns: { block_nano_timestamp: string, block_number: number }
+interface BlockMetadataResponse {
+  block_nano_timestamp: string;
+  block_number: number;
+}
+
+export async function fetchTemporalBlockMetadata(blockNumber: number): Promise<TemporalBlockMetadata> {
+  const result = await apiFetch<BlockMetadataResponse>(`/blocks/${blockNumber}/metadata`);
+  return {
+    block_nano_timestamp: result.block_nano_timestamp,
+    block_number: result.block_number,
+    timestamp_datetime: nanoToDatetime(result.block_nano_timestamp),
   };
 }

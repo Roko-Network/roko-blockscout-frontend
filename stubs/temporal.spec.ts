@@ -1,6 +1,12 @@
 import { describe, expect, test } from 'vitest';
 
-import { TEMPORAL_CONSENSUS_TIME, TEMPORAL_QUEUE_STATS, TEMPORAL_WATERMARK } from './temporal';
+import {
+  TEMPORAL_CONSENSUS_TIME,
+  TEMPORAL_QUEUE_STATS,
+  TEMPORAL_WATERMARK,
+  TEMPORAL_TX_TIMESTAMP,
+  TEMPORAL_BLOCK_METADATA,
+} from './temporal';
 
 describe('TEMPORAL_WATERMARK stub', () => {
   test('has a watermark_ns string field', () => {
@@ -70,5 +76,34 @@ describe('TEMPORAL_QUEUE_STATS stub', () => {
     expect(typeof TEMPORAL_QUEUE_STATS.inclusion_deadline_secs).toBe('number');
     expect(TEMPORAL_QUEUE_STATS.inclusion_deadline_secs).toBeGreaterThan(0);
     expect(typeof TEMPORAL_QUEUE_STATS.inclusion_enforce).toBe('boolean');
+  });
+});
+
+describe('TEMPORAL_TX_TIMESTAMP stub', () => {
+  test('has a timestamp_ns string field', () => {
+    expect(typeof TEMPORAL_TX_TIMESTAMP.timestamp_ns).toBe('string');
+    expect(TEMPORAL_TX_TIMESTAMP.timestamp_ns.length).toBeGreaterThan(0);
+  });
+
+  test('has a timestamp_datetime ISO string', () => {
+    expect(typeof TEMPORAL_TX_TIMESTAMP.timestamp_datetime).toBe('string');
+    expect(isNaN(new Date(TEMPORAL_TX_TIMESTAMP.timestamp_datetime).getTime())).toBe(false);
+  });
+});
+
+describe('TEMPORAL_BLOCK_METADATA stub', () => {
+  test('has a block_nano_timestamp string field', () => {
+    expect(typeof TEMPORAL_BLOCK_METADATA.block_nano_timestamp).toBe('string');
+    expect(TEMPORAL_BLOCK_METADATA.block_nano_timestamp.length).toBeGreaterThan(0);
+  });
+
+  test('has a numeric block_number', () => {
+    expect(typeof TEMPORAL_BLOCK_METADATA.block_number).toBe('number');
+    expect(TEMPORAL_BLOCK_METADATA.block_number).toBeGreaterThan(0);
+  });
+
+  test('has a timestamp_datetime ISO string', () => {
+    expect(typeof TEMPORAL_BLOCK_METADATA.timestamp_datetime).toBe('string');
+    expect(isNaN(new Date(TEMPORAL_BLOCK_METADATA.timestamp_datetime).getTime())).toBe(false);
   });
 });
