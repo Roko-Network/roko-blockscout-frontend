@@ -28,6 +28,8 @@ const TemporalConsensusCard = ({ data, isLoading }: Props) => {
   return (
     <Box
       borderWidth="1px"
+      borderTopWidth="3px"
+      borderTopColor="#0078D4"
       borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
       borderRadius="xl"
       p={ 6 }

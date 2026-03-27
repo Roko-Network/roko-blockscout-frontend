@@ -93,16 +93,17 @@ const TemporalQualityChart: React.FC = () => {
   return (
     <Box
       borderWidth="1px"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.200' }}
+      borderColor="whiteAlpha.200"
       borderRadius="lg"
       p={ 4 }
+      bg="#1A202C"
     >
       <Flex justifyContent="space-between" alignItems="center" mb={ 3 }>
-        <Heading as="h3" fontSize="md" fontFamily="heading">
+        <Heading as="h3" fontSize="md" fontFamily="heading" color="white">
           Time Quality History
         </Heading>
         <Flex gap={ 3 } alignItems="center">
-          <chakra.span fontSize="xs" color="text.secondary">
+          <chakra.span fontSize="xs" color="whiteAlpha.600">
             { timeRangeLabel() }
           </chakra.span>
           <chakra.span fontSize="sm" fontWeight={ 600 } color="#0078D4">
@@ -114,7 +115,7 @@ const TemporalQualityChart: React.FC = () => {
       <Skeleton loading={ isLoading } h="120px" borderRadius="md">
         { displaySamples.length < 2 ? (
           <Flex h="120px" alignItems="center" justifyContent="center">
-            <Text fontSize="sm" color="text.secondary">
+            <Text fontSize="sm" color="whiteAlpha.600">
               Collecting samples... ({ samples.length } so far)
             </Text>
           </Flex>
@@ -127,11 +128,11 @@ const TemporalQualityChart: React.FC = () => {
               preserveAspectRatio="none"
             >
               { /* Grid lines at 25%, 50%, 75% */ }
-              <line x1="0" y1={ CHART_HEIGHT * 0.25 } x2={ CHART_WIDTH } y2={ CHART_HEIGHT * 0.25 } stroke="#e2e8f0" strokeWidth="0.5"/>
-              <line x1="0" y1={ CHART_HEIGHT * 0.5 } x2={ CHART_WIDTH } y2={ CHART_HEIGHT * 0.5 } stroke="#e2e8f0" strokeWidth="0.5"/>
-              <line x1="0" y1={ CHART_HEIGHT * 0.75 } x2={ CHART_WIDTH } y2={ CHART_HEIGHT * 0.75 } stroke="#e2e8f0" strokeWidth="0.5"/>
+              <line x1="0" y1={ CHART_HEIGHT * 0.25 } x2={ CHART_WIDTH } y2={ CHART_HEIGHT * 0.25 } stroke="rgba(255,255,255,0.1)" strokeWidth="0.5"/>
+              <line x1="0" y1={ CHART_HEIGHT * 0.5 } x2={ CHART_WIDTH } y2={ CHART_HEIGHT * 0.5 } stroke="rgba(255,255,255,0.1)" strokeWidth="0.5"/>
+              <line x1="0" y1={ CHART_HEIGHT * 0.75 } x2={ CHART_WIDTH } y2={ CHART_HEIGHT * 0.75 } stroke="rgba(255,255,255,0.1)" strokeWidth="0.5"/>
               { /* Area fill */ }
-              <path d={ buildAreaPath() } fill="rgba(0,120,212,0.15)"/>
+              <path d={ buildAreaPath() } fill="rgba(0,120,212,0.25)"/>
               { /* Line */ }
               <path d={ buildPath() } fill="none" stroke="#0078D4" strokeWidth="3" vectorEffect="non-scaling-stroke"/>
               { /* Dots at each sample point */ }
@@ -145,9 +146,9 @@ const TemporalQualityChart: React.FC = () => {
               }) }
             </svg>
             { /* Y-axis labels */ }
-            <chakra.span position="absolute" top="0" right="4px" fontSize="10px" color="text.secondary">100%</chakra.span>
-            <chakra.span position="absolute" top="50%" right="4px" fontSize="10px" color="text.secondary" transform="translateY(-50%)">50%</chakra.span>
-            <chakra.span position="absolute" bottom="0" right="4px" fontSize="10px" color="text.secondary">0%</chakra.span>
+            <chakra.span position="absolute" top="0" right="4px" fontSize="10px" color="whiteAlpha.500">100%</chakra.span>
+            <chakra.span position="absolute" top="50%" right="4px" fontSize="10px" color="whiteAlpha.500" transform="translateY(-50%)">50%</chakra.span>
+            <chakra.span position="absolute" bottom="0" right="4px" fontSize="10px" color="whiteAlpha.500">0%</chakra.span>
           </Box>
         ) }
       </Skeleton>
