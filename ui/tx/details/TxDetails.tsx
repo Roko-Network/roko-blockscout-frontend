@@ -378,7 +378,7 @@ const TxDetails = ({ data, isLoading, socketStatus, noTxActions }: Props) => {
         </>
       ) }
 
-      <TxTemporalTimestamp txHash={ data.hash }/>
+      <TxTemporalTimestamp txHash={ data.hash } blockNumber={ data.block_number ?? undefined }/>
 
       { data.execution_node && (
         <>
