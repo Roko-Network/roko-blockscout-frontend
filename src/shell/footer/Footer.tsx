@@ -20,7 +20,6 @@ import NetworkAddToWallet from 'src/features/web3-wallet/components/NetworkAddTo
 
 import config from 'src/config';
 import CopyToClipboard from 'src/shared/texts/CopyToClipboard';
-import SpriteIcon from 'src/sprite/SpriteIcon';
 
 import { Link } from 'src/toolkit/chakra/link';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
@@ -46,48 +45,30 @@ const Footer = () => {
   });
   const apiVersionUrl = getApiVersionUrl(backendVersionData?.backend_version ?? undefined);
 
-  const BLOCKSCOUT_LINKS = [
+  const ROKO_LINKS = [
     {
       icon: 'social/git' as const,
       iconSize: '20px',
-      text: 'Contribute',
-      url: 'https://github.com/blockscout/blockscout',
-    },
-    {
-      icon: 'brands/pro_api' as const,
-      iconSize: '20px',
-      text: 'PRO API',
-      url: 'https://dev.blockscout.com',
-    },
-    {
-      icon: 'brands/autoscout' as const,
-      iconSize: '20px',
-      text: 'Autoscout',
-      url: 'https://autoscout.blockscout.com',
-    },
-    {
-      icon: 'docs' as const,
-      iconSize: '20px',
-      text: 'Docs',
-      url: 'https://docs.blockscout.com',
+      text: 'GitHub',
+      url: 'https://github.com/Roko-Network',
     },
     {
       icon: 'social/twitter' as const,
       iconSize: '24px',
       text: 'X',
-      url: 'https://x.com/blockscout',
+      url: 'https://x.com/roko_network',
     },
     {
       icon: 'social/discord' as const,
       iconSize: '24px',
       text: 'Discord',
-      url: 'https://discord.gg/blockscout',
+      url: 'https://discord.gg/roko',
     },
     {
-      icon: 'brands/blockscout' as const,
+      icon: 'docs' as const,
       iconSize: '20px',
-      text: 'All chains',
-      url: 'https://chains.blockscout.com',
+      text: 'Docs',
+      url: 'https://roko.network',
     },
   ].filter(Boolean);
 
@@ -136,22 +117,15 @@ const Footer = () => {
   }, []);
 
   const renderProjectInfo = React.useCallback((gridArea?: GridProps['gridArea']) => {
-    const logoColor = { base: 'blue.600', _dark: 'white' };
-
     return (
       <Box gridArea={ gridArea }>
         <Flex columnGap={ 2 } textStyle="xs" alignItems="center">
-          <span>Made with</span>
-          <Link href="https://www.blockscout.com" external noIcon display="inline-flex" color={ logoColor } _hover={{ color: logoColor }}>
-            <SpriteIcon
-              name="networks/logo-placeholder"
-              width="80px"
-              height={ 4 }
-            />
+          <Link href="https://roko.network" external noIcon display="inline-flex" fontWeight={ 600 } fontFamily="heading">
+            Roko Network
           </Link>
         </Flex>
         <Text mt={ 3 } fontSize="xs">
-          Blockscout is a tool for inspecting and analyzing EVM based blockchains. Blockchain explorer for Ethereum Networks.
+          The Temporal Layer for Web3 — Nanosecond-precision transaction ordering with PTP² time mesh.
         </Text>
         <VStack mt={ 6 } alignItems="start" textStyle="xs" gap={ 1 }>
           <Flex flexDir={ onionDomain ? 'row' : 'column' } _empty={{ display: 'none' }} columnGap={ 6 } rowGap={ 1 }>
@@ -173,7 +147,10 @@ const Footer = () => {
             </HStack>
           ) }
           <Text>
-            Copyright { copy } Blockscout Limited 2023-{ (new Date()).getFullYear() }
+            Copyright { copy } Roko Network 2024-{ (new Date()).getFullYear() }
+          </Text>
+          <Text mt={ 1 } fontSize="xs" color="text.secondary">
+            Explorer powered by <Link href="https://www.blockscout.com" external noIcon>Blockscout</Link>
           </Text>
         </VStack>
       </Box>
@@ -242,7 +219,7 @@ const Footer = () => {
           >
             {
               ([
-                { title: 'Blockscout', links: BLOCKSCOUT_LINKS },
+                { title: 'Roko Network', links: ROKO_LINKS },
                 ...(linksData || []),
               ])
                 .slice(0, colNum)
