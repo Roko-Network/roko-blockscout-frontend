@@ -310,6 +310,28 @@ export const TEMPLATE_MAP: Record<Route['pathname'], RouteTemplateRecord> = {
     },
     og: OG_ROOT_PAGE,
   },
+  '/temporal/mesh': {
+    metadata: {
+      title: {
+        'default': '%chain_name% temporal mesh dashboard',
+      },
+      description: {
+        'default': 'Monitor the live %chain_name% validator time mesh, including convergence, quality, pairwise clock offsets, and validator time health.',
+      },
+    },
+    og: OG_ROOT_PAGE,
+  },
+  '/temporal/validators/[index]': {
+    metadata: {
+      title: {
+        'default': '%chain_name% validator %index% time health',
+      },
+      description: {
+        'default': 'View clock offset, root distance, reputation, and time-health tier for %chain_name% validator %index%.',
+      },
+    },
+    og: OG_ROOT_PAGE,
+  },
   '/uptime': {
     metadata: {
       title: {

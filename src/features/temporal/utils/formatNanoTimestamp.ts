@@ -10,7 +10,6 @@
  * Precision is millisecond-level (the ns string is divided by 1_000_000).
  */
 export function nanoToDatetime(nsStr: string): string {
-  // Use BigInt arithmetic to avoid floating-point loss.
   const ns = BigInt(nsStr);
   const ms = ns / BigInt(1_000_000);
   return new Date(Number(ms)).toISOString();
