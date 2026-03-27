@@ -131,9 +131,18 @@ const TemporalQualityChart: React.FC = () => {
               <line x1="0" y1={ CHART_HEIGHT * 0.5 } x2={ CHART_WIDTH } y2={ CHART_HEIGHT * 0.5 } stroke="#e2e8f0" strokeWidth="0.5"/>
               <line x1="0" y1={ CHART_HEIGHT * 0.75 } x2={ CHART_WIDTH } y2={ CHART_HEIGHT * 0.75 } stroke="#e2e8f0" strokeWidth="0.5"/>
               { /* Area fill */ }
-              <path d={ buildAreaPath() } fill="rgba(0,120,212,0.1)"/>
+              <path d={ buildAreaPath() } fill="rgba(0,120,212,0.15)"/>
               { /* Line */ }
-              <path d={ buildPath() } fill="none" stroke="#0078D4" strokeWidth="2" vectorEffect="non-scaling-stroke"/>
+              <path d={ buildPath() } fill="none" stroke="#0078D4" strokeWidth="3" vectorEffect="non-scaling-stroke"/>
+              { /* Dots at each sample point */ }
+              { displaySamples.map((s, i) => {
+                const minT = displaySamples[0]?.timestamp ?? 0;
+                const maxT = displaySamples[displaySamples.length - 1]?.timestamp ?? 1;
+                const tRange = maxT - minT || 1;
+                const cx = ((s.timestamp - minT) / tRange) * CHART_WIDTH;
+                const cy = CHART_HEIGHT - (s.quality / 10000) * CHART_HEIGHT;
+                return <circle key={ i } cx={ cx } cy={ cy } r="3" fill="#0078D4" opacity="0.7"/>;
+              }) }
             </svg>
             { /* Y-axis labels */ }
             <chakra.span position="absolute" top="0" right="4px" fontSize="10px" color="text.secondary">100%</chakra.span>
