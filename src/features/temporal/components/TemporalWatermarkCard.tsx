@@ -14,7 +14,9 @@ const TemporalWatermarkCard = ({ data, isLoading }: Props) => {
   return (
     <Box
       borderWidth="1px"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
+      borderTopWidth="3px"
+      borderTopColor="link.primary"
+      borderColor="border.divider"
       borderRadius="xl"
       p={ 6 }
     >

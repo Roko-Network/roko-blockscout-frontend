@@ -19,7 +19,7 @@ interface StatRowProps {
 const StatRow = ({ label, value, isLoading }: StatRowProps) => (
   <Flex justifyContent="space-between" alignItems="baseline" py={ 2 }
     borderBottomWidth="1px"
-    borderColor={{ _light: 'gray.100', _dark: 'whiteAlpha.100' }}
+    borderColor="border.divider"
     _last={{ borderBottomWidth: 0 }}
   >
     <chakra.span fontSize="sm" color="text.secondary">{ label }</chakra.span>
@@ -33,7 +33,9 @@ const TemporalQueueCard = ({ data, isLoading }: Props) => {
   return (
     <Box
       borderWidth="1px"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
+      borderTopWidth="3px"
+      borderTopColor="link.primary"
+      borderColor="border.divider"
       borderRadius="xl"
       p={ 6 }
     >
