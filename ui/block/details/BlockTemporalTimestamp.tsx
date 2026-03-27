@@ -24,9 +24,9 @@ const BlockTemporalTimestamp = ({ blockNumber }: Props) => {
     return (
       <>
         <DetailedInfo.ItemLabel
-          hint="Nanosecond-precision temporal timestamp for this block produced by the Roko temporal layer"
+          hint="Nanosecond-precision timestamp of when this block was produced according to the validator time mesh"
         >
-          Temporal timestamp
+          Timestamping time
         </DetailedInfo.ItemLabel>
         <DetailedInfo.ItemValue>
           <Text color="text.secondary">—</Text>

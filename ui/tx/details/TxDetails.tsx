@@ -359,10 +359,10 @@ const TxDetails = ({ data, isLoading, socketStatus, noTxActions }: Props) => {
       { data.timestamp && (
         <>
           <DetailedInfo.ItemLabel
-            hint="Date & time of transaction inclusion, including length of time for confirmation"
+            hint="Date & time when this transaction was included in a block by the block producer"
             isLoading={ isLoading }
           >
-            Timestamp
+            Inclusion time
           </DetailedInfo.ItemLabel>
           <DetailedInfo.ItemValue multiRow>
             <DetailedInfoTimestamp timestamp={ data.timestamp } isLoading={ isLoading }/>

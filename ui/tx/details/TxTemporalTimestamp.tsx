@@ -29,10 +29,10 @@ const TxTemporalTimestamp = ({ txHash }: Props) => {
   return (
     <>
       <DetailedInfo.ItemLabel
-        hint="Nanosecond-precision canonical timestamp assigned to this transaction by the Roko temporal layer"
+        hint="Nanosecond-precision timestamp assigned when this transaction was received by the validator pool — proves when it was first seen by the network"
         isLoading={ isLoading }
       >
-        Temporal timestamp
+        Timestamping time
       </DetailedInfo.ItemLabel>
       <DetailedInfo.ItemValue>
         <VStack alignItems="flex-start" gap={ 0 }>
