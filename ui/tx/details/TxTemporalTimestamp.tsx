@@ -1,4 +1,4 @@
-import { Text, VStack } from '@chakra-ui/react';
+import { Flex, Text, VStack } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
@@ -9,9 +9,23 @@ import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
 
 interface Props {
   txHash: string;
+  blockTimestamp?: string; // ISO string from Blockscout's standard timestamp
 }
 
-const TxTemporalTimestamp = ({ txHash }: Props) => {
+function formatWaitTime(waitNs: string): string {
+  const ns = Number(waitNs);
+  if (isNaN(ns)) return waitNs;
+  if (ns < 1000000) {
+    return `${ns} ns`;
+  }
+  const ms = ns / 1000000;
+  if (ms < 1000) {
+    return `${ms.toFixed(1)} ms`;
+  }
+  return `${(ms / 1000).toFixed(2)} s`;
+}
+
+const TxTemporalTimestamp = ({ txHash, blockTimestamp }: Props) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: [ 'temporal_tx_timestamp', txHash ],
     queryFn: () => fetchTemporalTxTimestamp(txHash),
@@ -25,6 +39,26 @@ const TxTemporalTimestamp = ({ txHash }: Props) => {
 
   const formatted = data ? formatNanoTimestamp(data.timestamp_ns) : '';
   const raw = data?.timestamp_ns ?? '';
+
+  // Compute wait time: difference between timestamping and block inclusion
+  const waitDisplay = (() => {
+    if (data?.wait_ns) {
+      return formatWaitTime(data.wait_ns);
+    }
+    if (data?.timestamp_ns && blockTimestamp) {
+      try {
+        const stampMs = Number(data.timestamp_ns) / 1000000;
+        const blockMs = new Date(blockTimestamp).getTime();
+        if (blockMs > stampMs) {
+          const diffNs = Math.round((blockMs - stampMs) * 1000000);
+          return formatWaitTime(String(diffNs));
+        }
+      } catch {
+        // ignore
+      }
+    }
+    return null;
+  })();
 
   return (
     <>
@@ -40,9 +74,16 @@ const TxTemporalTimestamp = ({ txHash }: Props) => {
             <Text>{ formatted }</Text>
           </Skeleton>
           <Skeleton loading={ isLoading }>
-            <Text fontSize="xs" color="text.secondary" fontFamily="mono">
-              { raw } ns
-            </Text>
+            <Flex gap={ 2 } alignItems="center">
+              <Text fontSize="xs" color="text.secondary" fontFamily="mono">
+                { raw } ns
+              </Text>
+              { waitDisplay && (
+                <Text fontSize="xs" color="#0078D4" fontWeight={ 600 }>
+                  waited { waitDisplay }
+                </Text>
+              ) }
+            </Flex>
           </Skeleton>
         </VStack>
       </DetailedInfo.ItemValue>

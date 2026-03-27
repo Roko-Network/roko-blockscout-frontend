@@ -2,7 +2,7 @@
  * Utilities for formatting nanosecond-precision timestamps.
  *
  * JS Date only has millisecond precision, so we carry the full nanosecond
- * value as a BigInt string and format the sub-millisecond digits ourselves.
+ * value as a numeric string and format the sub-millisecond digits ourselves.
  */
 
 /**
@@ -10,10 +10,9 @@
  * Precision is millisecond-level (the ns string is divided by 1_000_000).
  */
 export function nanoToDatetime(nsStr: string): string {
-  // Use BigInt arithmetic to avoid floating-point loss.
-  const ns = BigInt(nsStr);
-  const ms = ns / BigInt(1_000_000);
-  return new Date(Number(ms)).toISOString();
+  const ns = parseInt(nsStr, 10);
+  const ms = Math.floor(ns / 1_000_000);
+  return new Date(ms).toISOString();
 }
 
 /**
@@ -24,13 +23,13 @@ export function nanoToDatetime(nsStr: string): string {
  * The nanosecond fractional part (9 digits) is derived from the raw ns value.
  */
 export function formatNanoTimestamp(nsStr: string): string {
-  const ns = BigInt(nsStr);
-  const ms = ns / BigInt(1_000_000);
-  const date = new Date(Number(ms));
+  const ns = parseInt(nsStr, 10);
+  const ms = Math.floor(ns / 1_000_000);
+  const date = new Date(ms);
 
   // Extract the nanosecond fraction within the current second (9 digits).
-  const nsInSecond = ns % BigInt(1_000_000_000);
-  const nsFraction = nsInSecond.toString().padStart(9, '0');
+  const nsInSecond = ns % 1_000_000_000;
+  const nsFraction = String(nsInSecond).padStart(9, '0');
 
   const year = date.getUTCFullYear();
   const month = String(date.getUTCMonth() + 1).padStart(2, '0');

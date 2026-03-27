@@ -300,7 +300,13 @@ export default function useNavItems(): ReturnType {
           text: 'Temporal',
           nextRoute: { pathname: '/temporal' as const },
           icon: 'navigation/hourglass',
-          isActive: pathname.startsWith('/temporal'),
+          isActive: pathname === '/temporal',
+        },
+        {
+          text: 'Mesh Dashboard',
+          nextRoute: { pathname: '/temporal/mesh' as const },
+          icon: 'navigation/hourglass',
+          isActive: pathname === '/temporal/mesh',
         },
       ].filter(Boolean);
 

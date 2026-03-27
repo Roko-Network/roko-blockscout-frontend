@@ -59,6 +59,8 @@ export const PAGE_TYPE_DICT: Record<Route['pathname'], string> = {
   '/epochs/[number]': 'Epoch details',
   '/gas-tracker': 'Gas tracker',
   '/temporal': 'Temporal dashboard',
+  '/temporal/mesh': 'Temporal mesh dashboard',
+  '/temporal/validators/[index]': 'Temporal validator time health',
   '/mud-worlds': 'MUD worlds',
   '/token-transfers': 'Token transfers',
   '/advanced-filter': 'Advanced filter',

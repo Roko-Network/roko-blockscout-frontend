@@ -42,6 +42,14 @@ export type TemporalTxTimestamp = {
   timestamp_ns: string;
   // ISO 8601 datetime derived from the nanosecond timestamp
   timestamp_datetime: string;
+  // Wait time in nanoseconds (timestamping → inclusion)
+  wait_ns?: string;
+  // Arrival time in nanoseconds (when tx entered queue)
+  arrival_ns?: string;
+  // Transaction pool priority
+  priority?: number;
+  // Queue position at time of query (if still pending)
+  queue_position?: number | null;
 };
 
 export type TemporalBlockMetadata = {

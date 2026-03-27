@@ -80,16 +80,25 @@ export async function fetchTemporalQueueStats(): Promise<TemporalQueueStats> {
   };
 }
 
-// Backend returns: { timestamp_ns: string }
+// Backend returns: { timestamp_ns, hash, wait_ns, arrival_ns, priority, queue_position }
 interface TxTimestampResponse {
-  timestamp_ns: string;
+  timestamp_ns: string | null;
+  hash: string;
+  wait_ns?: string | null;
+  arrival_ns?: string | null;
+  priority?: number | null;
+  queue_position?: number | null;
 }
 
 export async function fetchTemporalTxTimestamp(txHash: string): Promise<TemporalTxTimestamp> {
   const result = await apiFetch<TxTimestampResponse>(`/transactions/${txHash}/timestamp`);
   return {
-    timestamp_ns: result.timestamp_ns,
-    timestamp_datetime: nanoToDatetime(result.timestamp_ns),
+    timestamp_ns: result.timestamp_ns ?? '',
+    timestamp_datetime: result.timestamp_ns ? nanoToDatetime(result.timestamp_ns) : '',
+    wait_ns: result.wait_ns ?? undefined,
+    arrival_ns: result.arrival_ns ?? undefined,
+    priority: result.priority ?? undefined,
+    queue_position: result.queue_position,
   };
 }
 
@@ -106,4 +115,18 @@ export async function fetchTemporalBlockMetadata(blockNumber: number): Promise<T
     block_number: result.block_number,
     timestamp_datetime: nanoToDatetime(result.block_nano_timestamp),
   };
+}
+
+// One entry per extrinsic/transaction in the block.
+// ethHash is null for Substrate-only (non-EVM) transactions such as inherents.
+// timestampNs is null for transactions that were not temporally stamped.
+export interface BlockTxTimestampEntry {
+  substrateHash: string;
+  ethHash: string | null;
+  timestampNs: string | null;
+  index: number;
+}
+
+export async function fetchBlockTransactionTimestamps(blockNumber: number): Promise<Array<BlockTxTimestampEntry>> {
+  return apiFetch<Array<BlockTxTimestampEntry>>(`/blocks/${blockNumber}/timestamps`);
 }
