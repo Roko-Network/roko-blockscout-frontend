@@ -59,4 +59,19 @@ export type TemporalBlockMetadata = {
   block_number: number;
   // ISO 8601 datetime derived from the nanosecond timestamp
   timestamp_datetime: string;
+  // Authority index of the validator that signed (timestamped) this block
+  miner_key_id?: number | null;
+};
+
+export type TemporalMetrics = {
+  // Total number of temporal transactions processed since genesis
+  total_temporal_transactions: number;
+  // Total number of temporal signature validation failures
+  total_validation_failures: number;
+  // Total number of ordering violations detected
+  total_ordering_violations: number;
+  // Number of validators with active temporal signing keys
+  active_temporal_keys: number;
+  // Total number of expired transactions that have been cleaned up
+  expired_transactions_cleaned: number;
 };

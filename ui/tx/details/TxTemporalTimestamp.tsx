@@ -2,7 +2,7 @@ import { Flex, Text, VStack } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
-import { fetchTemporalTxTimestamp } from 'lib/api/services/general/temporalRpc';
+import { fetchTemporalTxTimestamp, fetchTemporalConsensusTime } from 'lib/api/services/general/temporalRpc';
 import { formatNanoTimestamp } from 'lib/temporal/formatNanoTimestamp';
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
@@ -16,13 +16,13 @@ function formatWaitTime(waitNs: string): string {
   const ns = Number(waitNs);
   if (isNaN(ns)) return waitNs;
   if (ns < 1000000) {
-    return `${ns} ns`;
+    return `${ ns } ns`;
   }
   const ms = ns / 1000000;
   if (ms < 1000) {
-    return `${ms.toFixed(1)} ms`;
+    return `${ ms.toFixed(1) } ms`;
   }
-  return `${(ms / 1000).toFixed(2)} s`;
+  return `${ (ms / 1000).toFixed(2) } s`;
 }
 
 const TxTemporalTimestamp = ({ txHash, blockTimestamp }: Props) => {
@@ -31,6 +31,13 @@ const TxTemporalTimestamp = ({ txHash, blockTimestamp }: Props) => {
     queryFn: () => fetchTemporalTxTimestamp(txHash),
     retry: false,
     staleTime: Infinity,
+  });
+
+  const { data: consensusData } = useQuery({
+    queryKey: [ 'temporal_consensus_time_for_tx', txHash ],
+    queryFn: () => fetchTemporalConsensusTime(),
+    retry: false,
+    staleTime: 30_000,
   });
 
   if (isError || (!isLoading && (!data || !data.timestamp_ns))) {
@@ -60,6 +67,9 @@ const TxTemporalTimestamp = ({ txHash, blockTimestamp }: Props) => {
     return null;
   })();
 
+  const qualityPercent = consensusData?.quality_percent;
+  const showQuality = qualityPercent !== undefined && qualityPercent > 0;
+
   return (
     <>
       <DetailedInfo.ItemLabel
@@ -85,6 +95,11 @@ const TxTemporalTimestamp = ({ txHash, blockTimestamp }: Props) => {
               ) }
             </Flex>
           </Skeleton>
+          { showQuality && (
+            <Text fontSize="xs" color="whiteAlpha.700">
+              { qualityPercent }% mesh quality
+            </Text>
+          ) }
         </VStack>
       </DetailedInfo.ItemValue>
     </>

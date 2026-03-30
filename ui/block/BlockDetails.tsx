@@ -46,6 +46,7 @@ import BlockDetailsBaseFeeCelo from './details/BlockDetailsBaseFeeCelo';
 import BlockDetailsBlobInfo from './details/BlockDetailsBlobInfo';
 import BlockDetailsZilliqaQuorumCertificate from './details/BlockDetailsZilliqaQuorumCertificate';
 import BlockTemporalTimestamp from './details/BlockTemporalTimestamp';
+import BlockProducerInfo from './details/BlockProducerInfo';
 import BlockTemporalTimeline from './details/BlockTemporalTimeline';
 import type { BlockQuery } from './useBlockQuery';
 
@@ -255,6 +256,8 @@ const BlockDetails = ({ query }: Props) => {
       </DetailedInfo.ItemValue>
 
       <BlockTemporalTimestamp blockNumber={ data.height }/>
+
+      <BlockProducerInfo blockNumber={ data.height }/>
 
       <BlockTemporalTimeline blockNumber={ data.height }/>
 

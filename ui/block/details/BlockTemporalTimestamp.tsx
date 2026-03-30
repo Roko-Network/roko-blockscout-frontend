@@ -1,4 +1,4 @@
-import { Text, VStack } from '@chakra-ui/react';
+import { Text, VStack, chakra } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
@@ -37,6 +37,7 @@ const BlockTemporalTimestamp = ({ blockNumber }: Props) => {
 
   const formatted = data ? formatNanoTimestamp(data.block_nano_timestamp) : '';
   const raw = data?.block_nano_timestamp ?? '';
+  const validatorIndex = data?.miner_key_id;
 
   return (
     <>
@@ -49,7 +50,14 @@ const BlockTemporalTimestamp = ({ blockNumber }: Props) => {
       <DetailedInfo.ItemValue>
         <VStack alignItems="flex-start" gap={ 0 }>
           <Skeleton loading={ isLoading }>
-            <Text>{ formatted }</Text>
+            <Text>
+              { formatted }
+              { validatorIndex != null && (
+                <chakra.span ml={ 2 } color="text.secondary" fontSize="sm">
+                  (Validator { validatorIndex })
+                </chakra.span>
+              ) }
+            </Text>
           </Skeleton>
           <Skeleton loading={ isLoading }>
             <Text fontSize="xs" color="text.secondary" fontFamily="mono">

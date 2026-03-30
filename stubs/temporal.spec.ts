@@ -6,6 +6,8 @@ import {
   TEMPORAL_WATERMARK,
   TEMPORAL_TX_TIMESTAMP,
   TEMPORAL_BLOCK_METADATA,
+  TEMPORAL_METRICS,
+  TEMPORAL_METRICS_WITH_FAILURES,
 } from './temporal';
 
 describe('TEMPORAL_WATERMARK stub', () => {
@@ -105,5 +107,60 @@ describe('TEMPORAL_BLOCK_METADATA stub', () => {
   test('has a timestamp_datetime ISO string', () => {
     expect(typeof TEMPORAL_BLOCK_METADATA.timestamp_datetime).toBe('string');
     expect(isNaN(new Date(TEMPORAL_BLOCK_METADATA.timestamp_datetime).getTime())).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// TemporalMetrics stubs
+// ---------------------------------------------------------------------------
+
+describe('TEMPORAL_METRICS stub — healthy chain', () => {
+  test('has a numeric total_temporal_transactions >= 0', () => {
+    expect(typeof TEMPORAL_METRICS.total_temporal_transactions).toBe('number');
+    expect(TEMPORAL_METRICS.total_temporal_transactions).toBeGreaterThanOrEqual(0);
+  });
+
+  test('has numeric total_validation_failures >= 0', () => {
+    expect(typeof TEMPORAL_METRICS.total_validation_failures).toBe('number');
+    expect(TEMPORAL_METRICS.total_validation_failures).toBeGreaterThanOrEqual(0);
+  });
+
+  test('has numeric total_ordering_violations >= 0', () => {
+    expect(typeof TEMPORAL_METRICS.total_ordering_violations).toBe('number');
+    expect(TEMPORAL_METRICS.total_ordering_violations).toBeGreaterThanOrEqual(0);
+  });
+
+  test('has numeric active_temporal_keys >= 0', () => {
+    expect(typeof TEMPORAL_METRICS.active_temporal_keys).toBe('number');
+    expect(TEMPORAL_METRICS.active_temporal_keys).toBeGreaterThanOrEqual(0);
+  });
+
+  test('has numeric expired_transactions_cleaned >= 0', () => {
+    expect(typeof TEMPORAL_METRICS.expired_transactions_cleaned).toBe('number');
+    expect(TEMPORAL_METRICS.expired_transactions_cleaned).toBeGreaterThanOrEqual(0);
+  });
+
+  test('healthy chain stub has zero validation failures', () => {
+    expect(TEMPORAL_METRICS.total_validation_failures).toBe(0);
+  });
+
+  test('healthy chain stub has zero ordering violations', () => {
+    expect(TEMPORAL_METRICS.total_ordering_violations).toBe(0);
+  });
+});
+
+describe('TEMPORAL_METRICS_WITH_FAILURES stub — degraded chain', () => {
+  test('has total_validation_failures > 0', () => {
+    expect(TEMPORAL_METRICS_WITH_FAILURES.total_validation_failures).toBeGreaterThan(0);
+  });
+
+  test('has total_ordering_violations > 0', () => {
+    expect(TEMPORAL_METRICS_WITH_FAILURES.total_ordering_violations).toBeGreaterThan(0);
+  });
+
+  test('has total_temporal_transactions > TEMPORAL_METRICS', () => {
+    expect(TEMPORAL_METRICS_WITH_FAILURES.total_temporal_transactions).toBeGreaterThan(
+      TEMPORAL_METRICS.total_temporal_transactions,
+    );
   });
 });

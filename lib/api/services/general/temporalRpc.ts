@@ -1,7 +1,14 @@
 // Fetch temporal data from the Blockscout backend API.
 // The backend proxies calls to the Roko node's JSON-RPC endpoint.
 
-import type { TemporalWatermark, TemporalConsensusTime, TemporalQueueStats, TemporalTxTimestamp, TemporalBlockMetadata } from 'types/api/temporal';
+import type {
+  TemporalBlockMetadata,
+  TemporalConsensusTime,
+  TemporalMetrics,
+  TemporalQueueStats,
+  TemporalTxTimestamp,
+  TemporalWatermark,
+} from 'types/api/temporal';
 
 import { nanoToDatetime } from 'lib/temporal/formatNanoTimestamp';
 
@@ -102,10 +109,11 @@ export async function fetchTemporalTxTimestamp(txHash: string): Promise<Temporal
   };
 }
 
-// Backend returns: { block_nano_timestamp: string, block_number: number }
+// Backend returns: { block_nano_timestamp: string, block_number: number, miner_key_id?: number }
 interface BlockMetadataResponse {
   block_nano_timestamp: string;
   block_number: number;
+  miner_key_id?: number | null;
 }
 
 export async function fetchTemporalBlockMetadata(blockNumber: number): Promise<TemporalBlockMetadata> {
@@ -114,6 +122,7 @@ export async function fetchTemporalBlockMetadata(blockNumber: number): Promise<T
     block_nano_timestamp: result.block_nano_timestamp,
     block_number: result.block_number,
     timestamp_datetime: nanoToDatetime(result.block_nano_timestamp),
+    miner_key_id: result.miner_key_id ?? null,
   };
 }
 
@@ -129,4 +138,25 @@ export interface BlockTxTimestampEntry {
 
 export async function fetchBlockTransactionTimestamps(blockNumber: number): Promise<Array<BlockTxTimestampEntry>> {
   return apiFetch<Array<BlockTxTimestampEntry>>(`/blocks/${blockNumber}/timestamps`);
+}
+
+// Backend returns the raw JSON from temporal_getTemporalMetrics.
+// Numeric values arrive as strings from the Rust u64 fields.
+interface MetricsResponse {
+  totalTemporalTransactions: string;
+  totalValidationFailures: string;
+  totalOrderingViolations: string;
+  activeTemporalKeys: string;
+  expiredTransactionsCleaned: string;
+}
+
+export async function fetchTemporalMetrics(): Promise<TemporalMetrics> {
+  const result = await apiFetch<MetricsResponse>('/metrics');
+  return {
+    total_temporal_transactions: parseInt(result.totalTemporalTransactions, 10) || 0,
+    total_validation_failures: parseInt(result.totalValidationFailures, 10) || 0,
+    total_ordering_violations: parseInt(result.totalOrderingViolations, 10) || 0,
+    active_temporal_keys: parseInt(result.activeTemporalKeys, 10) || 0,
+    expired_transactions_cleaned: parseInt(result.expiredTransactionsCleaned, 10) || 0,
+  };
 }

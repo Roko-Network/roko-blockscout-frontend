@@ -1,6 +1,7 @@
 import type {
   TemporalBlockMetadata,
   TemporalConsensusTime,
+  TemporalMetrics,
   TemporalQueueStats,
   TemporalTxTimestamp,
   TemporalWatermark,
@@ -39,4 +40,20 @@ export const TEMPORAL_BLOCK_METADATA: TemporalBlockMetadata = {
   block_nano_timestamp: '1711234567890123456',
   block_number: 1234567,
   timestamp_datetime: '2024-03-23T21:29:27.890Z',
+};
+
+export const TEMPORAL_METRICS: TemporalMetrics = {
+  total_temporal_transactions: 12345,
+  total_validation_failures: 0,
+  total_ordering_violations: 0,
+  active_temporal_keys: 3,
+  expired_transactions_cleaned: 7,
+};
+
+export const TEMPORAL_METRICS_WITH_FAILURES: TemporalMetrics = {
+  total_temporal_transactions: 99000,
+  total_validation_failures: 5,
+  total_ordering_violations: 2,
+  active_temporal_keys: 2,
+  expired_transactions_cleaned: 42,
 };
