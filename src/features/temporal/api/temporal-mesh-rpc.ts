@@ -167,11 +167,27 @@ export async function fetchTemporalMeshState(): Promise<TemporalMeshState> {
       last_checkpoint_block: 0,
     }));
 
-    const pairwise_offsets = data.pairwiseOffsets.map((p) => ({
+    // Direct offsets: producer → each peer
+    const directOffsets = data.pairwiseOffsets.map((p) => ({
       from_index: producerIdx,
       to_index: p.authorityIndex,
       offset_ns: parseInt(p.offsetNs, 10) || 0,
     }));
+
+    // Infer cross-peer offsets: if producer→A = X and producer→B = Y,
+    // then A→B ≈ Y - X (transitive offset estimation)
+    const inferredOffsets: Array<{ from_index: number; to_index: number; offset_ns: number }> = [];
+    for (let i = 0; i < directOffsets.length; i++) {
+      for (let j = i + 1; j < directOffsets.length; j++) {
+        inferredOffsets.push({
+          from_index: directOffsets[i].to_index,
+          to_index: directOffsets[j].to_index,
+          offset_ns: directOffsets[j].offset_ns - directOffsets[i].offset_ns,
+        });
+      }
+    }
+
+    const pairwise_offsets = [ ...directOffsets, ...inferredOffsets ];
 
     const diameter = pairwise_offsets.length > 0
       ? Math.max(...pairwise_offsets.map((p) => Math.abs(p.offset_ns)))
