@@ -26,6 +26,7 @@ import { layerLabels } from 'src/features/rollup/common/utils/layer';
 import OptimisticL2TxnBatchDA from 'src/features/rollup/optimism/components/TxnBatchDA';
 import ZkSyncL2TxnBatchHashesInfo from 'src/features/rollup/zk-sync/pages/batch-details/ZkSyncL2TxnBatchHashesInfo';
 import { formatZkSyncL2TxnBatchStatus } from 'src/features/rollup/zk-sync/utils/format-txn-batch-status';
+import BlockProducerInfo from 'src/features/temporal/components/BlockProducerInfo';
 import BlockTemporalTimeline from 'src/features/temporal/components/BlockTemporalTimeline';
 import BlockTemporalTimestamp from 'src/features/temporal/components/BlockTemporalTimestamp';
 
@@ -259,6 +260,8 @@ const BlockDetails = ({ query }: Props) => {
       </DetailedInfo.ItemValue>
 
       <BlockTemporalTimestamp blockNumber={ data.height }/>
+
+      <BlockProducerInfo blockNumber={ data.height }/>
 
       <BlockTemporalTimeline blockNumber={ data.height }/>
 

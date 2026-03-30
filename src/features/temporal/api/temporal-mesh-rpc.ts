@@ -53,6 +53,21 @@ export function formatOffsetNs(ns: number): string {
 }
 
 /**
+ * Format an unsigned nanosecond root distance for display.
+ * Scales to µs or ms and appends "from UTC" for context.
+ */
+export function formatRootDistanceNs(ns: number): string {
+  const abs = Math.abs(ns);
+  if (abs >= 1_000_000) {
+    return `${ (abs / 1_000_000).toFixed(3) } ms from UTC`;
+  }
+  if (abs >= 1_000) {
+    return `${ (abs / 1_000).toFixed(1) } µs from UTC`;
+  }
+  return `${ abs } ns from UTC`;
+}
+
+/**
  * Map a ConvergenceState string to a Chakra colour token.
  */
 export function convergenceColor(state: string): string {
@@ -69,6 +84,16 @@ export function reputationColor(basisPoints: number): string {
   const pct = (basisPoints / 10000) * 100;
   if (pct > 80) return 'green.400';
   if (pct > 50) return 'yellow.400';
+  return 'red.400';
+}
+
+/**
+ * Map a quality percentage to a Chakra colour token.
+ * >=90% → green, >=70% → yellow, else → red.
+ */
+export function qualityColor(pct: number): string {
+  if (pct >= 90) return 'green.400';
+  if (pct >= 70) return 'yellow.400';
   return 'red.400';
 }
 
@@ -115,6 +140,23 @@ interface ValidatorQualityResponse {
   samples: number;
   violationCount: number;
   lastCheckpointBlock: number;
+}
+
+// ---------------------------------------------------------------------------
+// Public types
+// ---------------------------------------------------------------------------
+
+/**
+ * Producer info extracted from the mesh-state endpoint.
+ * Used by the BlockProducerInfo component on the block detail page.
+ */
+export interface TemporalProducerInfo {
+  /** Authority index of the validator that produced the current/latest block. */
+  producerAuthorityIndex: number;
+  /** Producer's root distance from UTC in nanoseconds. */
+  producerRootDistanceNs: number;
+  /** Mesh quality percentage at the time of the last block (0–100). */
+  qualityPercent: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -218,6 +260,49 @@ export async function fetchTemporalMeshState(): Promise<TemporalMeshState> {
       validators: [],
       pairwise_offsets: [],
     };
+  }
+}
+
+/**
+ * Fetch producer info for the latest block from the mesh-state endpoint.
+ *
+ * The mesh-state endpoint always reflects the most recent block producer,
+ * making it suitable for displaying producer details on the block detail page.
+ * Returns null when the endpoint is unavailable.
+ */
+export async function fetchTemporalProducerInfo(): Promise<TemporalProducerInfo | null> {
+  interface RawPairwiseOffset {
+    authorityIndex: number;
+    offsetNs: string;
+    sampleCount: number;
+    rootDistanceNs: string;
+    reputationScore: number;
+    errorOfSourceNs: string;
+  }
+
+  interface RawMeshResponse {
+    timeQuality: number;
+    convergenceState: string;
+    peerCount: number;
+    totalSamples: number;
+    producerAuthorityIndex: number | null;
+    producerRootDistanceNs: string;
+    pairwiseOffsets: Array<RawPairwiseOffset>;
+  }
+
+  try {
+    const data = await apiFetch<RawMeshResponse>('/mesh-state');
+    const qualityPercent = Math.round((data.timeQuality / 10000) * 100);
+    const producerAuthorityIndex = data.producerAuthorityIndex ?? 0;
+    const producerRootDistanceNs = parseInt(data.producerRootDistanceNs, 10) || 0;
+
+    return {
+      producerAuthorityIndex,
+      producerRootDistanceNs,
+      qualityPercent,
+    };
+  } catch {
+    return null;
   }
 }
 

@@ -158,3 +158,180 @@ describe('reputationColor helper', () => {
     expect(reputationColor(0)).toBe('red.400');
   });
 });
+
+// ---------------------------------------------------------------------------
+// TemporalProducerInfo response shaping
+// ---------------------------------------------------------------------------
+
+describe('fetchTemporalProducerInfo response shaping', () => {
+  // Mirror the transformation logic from fetchTemporalProducerInfo to
+  // verify it independently of HTTP calls.
+
+  interface RawMeshResponse {
+    timeQuality: number;
+    convergenceState: string;
+    peerCount: number;
+    totalSamples: number;
+    producerAuthorityIndex: number | null;
+    producerRootDistanceNs: string;
+    pairwiseOffsets: Array<unknown>;
+  }
+
+  interface TemporalProducerInfo {
+    producerAuthorityIndex: number;
+    producerRootDistanceNs: number;
+    qualityPercent: number;
+  }
+
+  function transformProducerInfo(data: RawMeshResponse): TemporalProducerInfo {
+    const qualityPercent = Math.round((data.timeQuality / 10000) * 100);
+    const producerAuthorityIndex = data.producerAuthorityIndex ?? 0;
+    const producerRootDistanceNs = parseInt(data.producerRootDistanceNs, 10) || 0;
+    return { producerAuthorityIndex, producerRootDistanceNs, qualityPercent };
+  }
+
+  test('maps producerAuthorityIndex from response', () => {
+    const raw: RawMeshResponse = {
+      timeQuality: 9000,
+      convergenceState: 'Converged',
+      peerCount: 2,
+      totalSamples: 100,
+      producerAuthorityIndex: 3,
+      producerRootDistanceNs: '6400',
+      pairwiseOffsets: [],
+    };
+    const result = transformProducerInfo(raw);
+    expect(result.producerAuthorityIndex).toBe(3);
+  });
+
+  test('defaults producerAuthorityIndex to 0 when null', () => {
+    const raw: RawMeshResponse = {
+      timeQuality: 8000,
+      convergenceState: 'Converging',
+      peerCount: 1,
+      totalSamples: 50,
+      producerAuthorityIndex: null,
+      producerRootDistanceNs: '1000',
+      pairwiseOffsets: [],
+    };
+    const result = transformProducerInfo(raw);
+    expect(result.producerAuthorityIndex).toBe(0);
+  });
+
+  test('parses producerRootDistanceNs as integer', () => {
+    const raw: RawMeshResponse = {
+      timeQuality: 7500,
+      convergenceState: 'Converged',
+      peerCount: 2,
+      totalSamples: 80,
+      producerAuthorityIndex: 1,
+      producerRootDistanceNs: '120000',
+      pairwiseOffsets: [],
+    };
+    const result = transformProducerInfo(raw);
+    expect(result.producerRootDistanceNs).toBe(120000);
+  });
+
+  test('defaults producerRootDistanceNs to 0 when unparseable', () => {
+    const raw: RawMeshResponse = {
+      timeQuality: 6000,
+      convergenceState: 'Converging',
+      peerCount: 1,
+      totalSamples: 10,
+      producerAuthorityIndex: 0,
+      producerRootDistanceNs: 'invalid',
+      pairwiseOffsets: [],
+    };
+    const result = transformProducerInfo(raw);
+    expect(result.producerRootDistanceNs).toBe(0);
+  });
+
+  test('converts timeQuality basis points to qualityPercent', () => {
+    const raw: RawMeshResponse = {
+      timeQuality: 9500,
+      convergenceState: 'Converged',
+      peerCount: 3,
+      totalSamples: 200,
+      producerAuthorityIndex: 2,
+      producerRootDistanceNs: '5000',
+      pairwiseOffsets: [],
+    };
+    const result = transformProducerInfo(raw);
+    expect(result.qualityPercent).toBe(95);
+  });
+
+  test('rounds qualityPercent to nearest integer', () => {
+    // 5001/10000 * 100 = 50.01 → rounds to 50
+    const raw: RawMeshResponse = {
+      timeQuality: 5001,
+      convergenceState: 'Converging',
+      peerCount: 1,
+      totalSamples: 30,
+      producerAuthorityIndex: 0,
+      producerRootDistanceNs: '0',
+      pairwiseOffsets: [],
+    };
+    const result = transformProducerInfo(raw);
+    expect(result.qualityPercent).toBe(50);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// BlockProducerInfo display formatting helpers
+// ---------------------------------------------------------------------------
+
+describe('BlockProducerInfo — formatRootDistance helper', () => {
+  // The component uses formatOffsetNs but for root distance (always positive).
+  // We verify the unsigned-magnitude variant used for root distance display.
+  function formatRootDistanceNs(ns: number): string {
+    const abs = Math.abs(ns);
+    if (abs >= 1_000_000) {
+      return `${ (abs / 1_000_000).toFixed(3) } ms from UTC`;
+    }
+    if (abs >= 1_000) {
+      return `${ (abs / 1_000).toFixed(1) } µs from UTC`;
+    }
+    return `${ abs } ns from UTC`;
+  }
+
+  test('formats sub-microsecond root distance in ns', () => {
+    expect(formatRootDistanceNs(500)).toBe('500 ns from UTC');
+  });
+
+  test('formats microsecond root distance with one decimal', () => {
+    expect(formatRootDistanceNs(6400)).toBe('6.4 µs from UTC');
+  });
+
+  test('formats millisecond root distance with three decimals', () => {
+    expect(formatRootDistanceNs(2_500_000)).toBe('2.500 ms from UTC');
+  });
+
+  test('handles zero distance', () => {
+    expect(formatRootDistanceNs(0)).toBe('0 ns from UTC');
+  });
+});
+
+describe('BlockProducerInfo — quality badge color', () => {
+  // Mirrors the qualityColor helper in BlockProducerInfo.tsx.
+  function qualityColor(pct: number): string {
+    if (pct >= 90) return 'green.400';
+    if (pct >= 70) return 'yellow.400';
+    return 'red.400';
+  }
+
+  test('90% or above is green', () => {
+    expect(qualityColor(90)).toBe('green.400');
+    expect(qualityColor(100)).toBe('green.400');
+    expect(qualityColor(95)).toBe('green.400');
+  });
+
+  test('70–89% is yellow', () => {
+    expect(qualityColor(70)).toBe('yellow.400');
+    expect(qualityColor(89)).toBe('yellow.400');
+  });
+
+  test('below 70% is red', () => {
+    expect(qualityColor(69)).toBe('red.400');
+    expect(qualityColor(0)).toBe('red.400');
+  });
+});

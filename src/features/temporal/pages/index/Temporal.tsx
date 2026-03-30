@@ -6,10 +6,12 @@ import PageTitle from 'src/shell/page/title/PageTitle';
 
 import {
   fetchTemporalConsensusTime,
+  fetchTemporalMetrics,
   fetchTemporalQueueStats,
   fetchTemporalWatermark,
 } from 'src/features/temporal/api/temporal-rpc';
 import TemporalConsensusCard from 'src/features/temporal/components/TemporalConsensusCard';
+import TemporalMetricsCard from 'src/features/temporal/components/TemporalMetricsCard';
 import TemporalQueueCard from 'src/features/temporal/components/TemporalQueueCard';
 import TemporalWatermarkCard from 'src/features/temporal/components/TemporalWatermarkCard';
 
@@ -36,10 +38,17 @@ const Temporal = () => {
     refetchInterval: BLOCK_TIME_MS,
   });
 
+  const metricsQuery = useQuery({
+    queryKey: [ 'temporal_metrics' ],
+    queryFn: fetchTemporalMetrics,
+    refetchInterval: BLOCK_TIME_MS,
+  });
+
   const isLoading =
     watermarkQuery.isLoading ||
     consensusTimeQuery.isLoading ||
-    queueStatsQuery.isLoading;
+    queueStatsQuery.isLoading ||
+    metricsQuery.isLoading;
 
   return (
     <>
@@ -69,6 +78,11 @@ const Temporal = () => {
 
         <TemporalQueueCard
           data={ queueStatsQuery.data }
+          isLoading={ isLoading }
+        />
+
+        <TemporalMetricsCard
+          data={ metricsQuery.data }
           isLoading={ isLoading }
         />
       </Grid>
