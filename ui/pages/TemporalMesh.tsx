@@ -22,6 +22,7 @@ import {
   TableCell,
 } from 'toolkit/chakra/table';
 import PageTitle from 'ui/shared/Page/PageTitle';
+import MeshNetworkGraph from 'ui/temporal/MeshNetworkGraph';
 
 const REFETCH_INTERVAL_MS = 6 * SECOND;
 
@@ -242,6 +243,11 @@ const TemporalMesh = () => {
           isLoading={ isLoading }
         />
       </Grid>
+
+      { /* ------------------------------------------------------------------ */ }
+      { /* Network graph                                                       */ }
+      { /* ------------------------------------------------------------------ */ }
+      <MeshNetworkGraph data={ data } isLoading={ isLoading }/>
 
       { /* ------------------------------------------------------------------ */ }
       { /* Validator table                                                     */ }
