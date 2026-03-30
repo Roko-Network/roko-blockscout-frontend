@@ -150,12 +150,23 @@ interface MetricsResponse {
 }
 
 export async function fetchTemporalMetrics(): Promise<TemporalMetrics> {
-  const result = await apiFetch<MetricsResponse>('/metrics');
+  // Combine on-chain metrics with live queue stats for accurate counts.
+  // The on-chain TemporalMetricsStorage may not be updated for all tx types,
+  // so we use the queue's totalStamped as the authoritative tx count.
+  const [metricsResult, queueResult, consensusResult] = await Promise.all([
+    apiFetch<MetricsResponse>('/metrics').catch(() => null),
+    apiFetch<QueueResponse>('/queue-stats').catch(() => null),
+    apiFetch<ConsensusResponse>('/consensus-time').catch(() => null),
+  ]);
+
+  const onChainTxs = parseInt(metricsResult?.totalTemporalTransactions ?? '0', 10) || 0;
+  const queueTxs = queueResult?.totalStamped ?? 0;
+
   return {
-    total_temporal_transactions: parseInt(result.totalTemporalTransactions, 10) || 0,
-    total_validation_failures: parseInt(result.totalValidationFailures, 10) || 0,
-    total_ordering_violations: parseInt(result.totalOrderingViolations, 10) || 0,
-    active_temporal_keys: parseInt(result.activeTemporalKeys, 10) || 0,
-    expired_transactions_cleaned: parseInt(result.expiredTransactionsCleaned, 10) || 0,
+    total_temporal_transactions: Math.max(onChainTxs, queueTxs),
+    total_validation_failures: parseInt(metricsResult?.totalValidationFailures ?? '0', 10) || 0,
+    total_ordering_violations: parseInt(metricsResult?.totalOrderingViolations ?? '0', 10) || 0,
+    active_temporal_keys: consensusResult ? consensusResult.peerCount + 1 : parseInt(metricsResult?.activeTemporalKeys ?? '0', 10) || 0,
+    expired_transactions_cleaned: parseInt(metricsResult?.expiredTransactionsCleaned ?? '0', 10) || 0,
   };
 }
