@@ -4,6 +4,7 @@ import React from 'react';
 
 import type { TemporalMeshState, TemporalValidatorReport } from 'src/features/temporal/types/mesh';
 
+import MeshNetworkGraph from 'src/features/temporal/components/MeshNetworkGraph';
 import {
   fetchTemporalMeshState,
   formatOffsetNs,
@@ -242,6 +243,11 @@ const TemporalMesh = () => {
           isLoading={ isLoading }
         />
       </Grid>
+
+      { /* ------------------------------------------------------------------ */ }
+      { /* Network graph                                                       */ }
+      { /* ------------------------------------------------------------------ */ }
+      <MeshNetworkGraph data={ data } isLoading={ isLoading }/>
 
       { /* ------------------------------------------------------------------ */ }
       { /* Validator table                                                     */ }
