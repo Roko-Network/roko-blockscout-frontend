@@ -128,38 +128,70 @@ interface ValidatorQualityResponse {
  * Fallback: Synthesises a minimal TemporalMeshState from consensus-time.
  */
 export async function fetchTemporalMeshState(): Promise<TemporalMeshState> {
-  // Try the dedicated mesh-state endpoint first.
+  interface RawPairwiseOffset {
+    authorityIndex: number;
+    offsetNs: string;
+    sampleCount: number;
+    rootDistanceNs: string;
+    reputationScore: number;
+    errorOfSourceNs: string;
+  }
+
+  interface RawMeshResponse {
+    timeQuality: number;
+    convergenceState: string;
+    peerCount: number;
+    totalSamples: number;
+    producerAuthorityIndex: number | null;
+    producerRootDistanceNs: string;
+    pairwiseOffsets: Array<RawPairwiseOffset>;
+  }
+
   try {
-    const data = await apiFetch<MeshStateResponse>('/mesh-state');
+    const data = await apiFetch<RawMeshResponse>('/mesh-state');
+    const qualityPct = Math.round((data.timeQuality / 10000) * 100);
+    const convergenceState: ConvergenceState =
+      data.convergenceState === 'Converged' ? 'Converged' :
+        data.convergenceState === 'Converging' ? 'Converging' : 'Diverged';
+
+    const producerIdx = data.producerAuthorityIndex ?? 0;
+
+    const validators: Array<TemporalValidatorReport> = data.pairwiseOffsets.map((p) => ({
+      authority_index: p.authorityIndex,
+      clock_offset_ns: parseInt(p.offsetNs, 10) || 0,
+      root_distance_ns: parseInt(p.rootDistanceNs, 10) || 0,
+      reputation: p.reputationScore,
+      tier: 'Standard' as const,
+      samples: p.sampleCount,
+      violation_count: 0,
+      last_checkpoint_block: 0,
+    }));
+
+    const pairwise_offsets = data.pairwiseOffsets.map((p) => ({
+      from_index: producerIdx,
+      to_index: p.authorityIndex,
+      offset_ns: parseInt(p.offsetNs, 10) || 0,
+    }));
+
+    const diameter = pairwise_offsets.length > 0
+      ? Math.max(...pairwise_offsets.map((p) => Math.abs(p.offset_ns)))
+      : null;
+
     return {
-      convergence_state: data.convergenceState as ConvergenceState,
-      quality_percent: data.qualityPct,
-      mesh_diameter_ns: data.meshDiameterNs,
-      peer_count: data.peerCount,
+      convergence_state: convergenceState,
+      quality_percent: qualityPct,
+      mesh_diameter_ns: diameter,
+      peer_count: data.peerCount + 1,
       total_samples: data.totalSamples,
-      validators: data.validators.map((v) => ({
-        authority_index: v.authorityIndex,
-        clock_offset_ns: v.clockOffsetNs,
-        root_distance_ns: v.rootDistanceNs,
-        reputation: v.reputation,
-        tier: v.tier as TemporalValidatorReport['tier'],
-        samples: v.samples,
-        violation_count: v.violationCount,
-        last_checkpoint_block: v.lastCheckpointBlock,
-      })),
-      pairwise_offsets: data.pairwiseOffsets.map((p) => ({
-        from_index: p.fromIndex,
-        to_index: p.toIndex,
-        offset_ns: p.offsetNs,
-      })),
+      validators,
+      pairwise_offsets,
     };
   } catch {
-    // Fallback: synthesise from consensus-time (always available).
     const consensus = await apiFetch<ConsensusResponse>('/consensus-time');
     const qualityPct = Math.round((consensus.timeQuality / 10000) * 100);
     const convergenceState: ConvergenceState =
       consensus.convergenceState === 'Converged' ? 'Converged' :
-      consensus.convergenceState === 'Converging' ? 'Converging' : 'Diverged';
+        consensus.convergenceState === 'Converging' ? 'Converging' : 'Diverged';
 
     return {
       convergence_state: convergenceState,
