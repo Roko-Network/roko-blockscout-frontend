@@ -616,6 +616,17 @@ export const TEMPLATE_MAP: Record<Route['pathname'], RouteTemplateRecord> = {
     },
     og: OG_ROOT_PAGE,
   },
+  '/pwroko': {
+    metadata: {
+      title: {
+        'default': '%chain_name% pwROKO token',
+      },
+      description: {
+        'default': 'Manage pwROKO balances, locks, staking, and unlock requests on %chain_name%.',
+      },
+    },
+    og: OG_ROOT_PAGE,
+  },
   '/token-transfers': {
     metadata: {
       title: {
