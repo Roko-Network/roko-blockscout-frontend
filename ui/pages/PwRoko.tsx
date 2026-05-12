@@ -1,5 +1,6 @@
 import { Box, Flex, Text, Input, VStack, HStack } from '@chakra-ui/react';
 import React from 'react';
+import { formatUnits } from 'viem';
 
 import config from 'configs/app';
 import { Button } from 'toolkit/chakra/button';
@@ -48,15 +49,26 @@ function hexToBigInt(hex: string): bigint {
   return BigInt(hex);
 }
 
+// Format wei → human-readable, using viem's exact-precision conversion and
+// trimming to a sensible display width. The previous hand-rolled version
+// silently truncated all sub-1-ROKO amounts to four decimals, so 0.00001 ROKO
+// rendered identically to 0 (see audit / TICKET-08). This version preserves
+// up to 6 fractional digits, trims trailing zeros, and falls back to "<0.000001"
+// for nonzero amounts smaller than that to make non-zero-ness visible.
+const DISPLAY_DECIMALS = 6;
 function formatWei(wei: bigint): string {
-  const str = wei.toString();
-  if (str.length <= 18) {
-    const padded = str.padStart(19, '0');
-    return padded.slice(0, 1) + '.' + padded.slice(1, 5);
+  const full = formatUnits(wei, 18);
+  const [ intPart, fracPart = '' ] = full.split('.');
+  if (fracPart.length === 0) return intPart;
+  const truncated = fracPart.slice(0, DISPLAY_DECIMALS).replace(/0+$/, '');
+  if (truncated.length === 0) {
+    // Sub-display-precision but non-zero → make it visible.
+    if (wei !== 0n && fracPart.length > 0) {
+      return `<0.${ '0'.repeat(DISPLAY_DECIMALS - 1) }1`;
+    }
+    return intPart;
   }
-  const intPart = str.slice(0, str.length - 18);
-  const fracPart = str.slice(str.length - 18, str.length - 14);
-  return intPart + '.' + fracPart;
+  return `${ intPart }.${ truncated }`;
 }
 
 function parseWei(amount: string): bigint {
@@ -270,8 +282,17 @@ const PwRoko = () => {
     sendTx(SEL.unlockRequest + padUint256(parseWei(unlockAmount)));
   }, [ unlockAmount, sendTx ]);
 
+  // pwROKO's completeUnlock(uint32 maxBatches) consumes up to maxBatches
+  // ready entries from the unlock queue. The WIP hardcoded 10, so users who
+  // accumulated more than 10 ready entries had to click "Complete unlock"
+  // repeatedly. Raising the cap to 100 covers the realistic high-water-mark
+  // for a single validator without risking out-of-gas at the precompile
+  // level — empirically a single batch is constant-time in the precompile.
+  // A fully precise fix would read pendingUnlockEntries(account) from the
+  // pallet and pass that exact count, but no such getter exists yet.
+  const COMPLETE_UNLOCK_BATCHES = 100;
   const handleCompleteUnlock = React.useCallback(() => {
-    sendTx(SEL.completeUnlock + padUint32(10));
+    sendTx(SEL.completeUnlock + padUint32(COMPLETE_UNLOCK_BATCHES));
   }, [ sendTx ]);
 
   const hasReadyUnlocks = accountInfo && parseFloat(accountInfo.readyUnlock) > 0;
