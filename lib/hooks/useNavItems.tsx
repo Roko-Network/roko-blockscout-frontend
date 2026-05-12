@@ -330,6 +330,28 @@ export default function useNavItems(): ReturnType {
       isActive: pathname.startsWith('/api-docs'),
     } : null;
 
+    const developerNavItems: Array<NavItem> = [
+      {
+        text: 'Faucet',
+        nextRoute: { pathname: '/faucet' as const },
+        icon: 'navigation/tokens',
+        isActive: pathname === '/faucet',
+      },
+      {
+        text: 'pwROKO',
+        nextRoute: { pathname: '/pwroko' as const },
+        icon: 'navigation/token_transfers',
+        isActive: pathname === '/pwroko',
+      },
+    ];
+
+    const developerNavGroup: NavGroupItem = {
+      text: 'Developer',
+      icon: 'navigation/api_docs',
+      isActive: developerNavItems.some(item => isInternalItem(item) && item.isActive),
+      subItems: developerNavItems,
+    };
+
     const otherNavItems: Array<NavItem> | Array<Array<NavItem>> = [
       config.features.multichain.isEnabled ? {
         text: 'Verify contract',
@@ -372,6 +394,7 @@ export default function useNavItems(): ReturnType {
         isActive: pathname.startsWith('/app') || pathname.startsWith('/essential-dapps'),
       } : null,
       statsNavItem,
+      developerNavGroup,
       apiNavItem,
       {
         text: 'Other',
