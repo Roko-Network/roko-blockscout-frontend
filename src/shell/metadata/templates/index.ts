@@ -605,6 +605,17 @@ export const TEMPLATE_MAP: Record<Route['pathname'], RouteTemplateRecord> = {
     },
     og: OG_ROOT_PAGE,
   },
+  '/faucet': {
+    metadata: {
+      title: {
+        'default': '%chain_name% testnet faucet',
+      },
+      description: {
+        'default': 'Get free test tokens for development on the %chain_name% testnet.',
+      },
+    },
+    og: OG_ROOT_PAGE,
+  },
   '/token-transfers': {
     metadata: {
       title: {
