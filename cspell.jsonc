@@ -33,6 +33,12 @@
     // words - list of words to be always considered correct
     "words": [
         "aatx",
+        "ROKO",
+        "roko",
+        "Roko",
+        "pwroko",
+        "pwROKO",
+        "PwRoko",
         "abfnrtv",
         "abitype",
         "abkw",

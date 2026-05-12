@@ -65,6 +65,8 @@ const TEMPLATE_MAP: Record<Route['pathname'], string> = {
   '/epochs': '%network_name% epochs',
   '/epochs/[number]': '%network_name% epoch %number% details',
   '/gas-tracker': 'Track %network_name% gas fees in %network_gwei%',
+  '/faucet': '%network_name% testnet faucet',
+  '/pwroko': '%network_name% pwROKO wrapped token',
   '/temporal': '%network_name% temporal ordering dashboard',
   '/temporal/mesh': '%network_name% temporal mesh dashboard',
   '/temporal/validators/[index]': '%network_name% validator %index% time health',
