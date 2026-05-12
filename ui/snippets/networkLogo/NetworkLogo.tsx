@@ -1,4 +1,4 @@
-import { chakra } from '@chakra-ui/react';
+import { chakra, Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 
 import { route } from 'nextjs-routes';
@@ -36,16 +36,23 @@ const NetworkLogo = ({ className }: Props) => {
       href={ route({ pathname: '/' }) }
       aria-label="Link to main page"
     >
-      <Image
-        h="24px"
-        skeletonWidth="120px"
-        src={ logoSrc }
-        alt={ `${ config.chain.name } network logo` }
-        fallback={ <LogoFallback/> }
-        filter={{ _dark: !config.UI.navigation.logo.dark ? INVERT_FILTER : undefined }}
-        objectFit="contain"
-        objectPosition="left"
-      />
+      <Flex alignItems="center" gap={ 2 }>
+        <Image
+          h="24px"
+          w="24px"
+          skeletonWidth="24px"
+          src={ logoSrc }
+          alt={ `${ config.chain.name } network logo` }
+          fallback={ <LogoFallback/> }
+          filter={{ _dark: !config.UI.navigation.logo.dark ? INVERT_FILTER : undefined }}
+          objectFit="contain"
+          objectPosition="left"
+          flexShrink={ 0 }
+        />
+        <Text fontSize="lg" fontWeight={ 700 } lineHeight="24px" whiteSpace="nowrap">
+          { config.chain.name }
+        </Text>
+      </Flex>
     </chakra.a>
   );
 };
