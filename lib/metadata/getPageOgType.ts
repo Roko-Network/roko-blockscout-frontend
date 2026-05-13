@@ -65,6 +65,8 @@ const OG_TYPE_DICT: Record<Route['pathname'], OGPageType> = {
   '/temporal': 'Root page',
   '/temporal/mesh': 'Root page',
   '/temporal/validators/[index]': 'Regular page',
+  '/staking/eras': 'Root page',
+  '/staking/eras/[n]': 'Regular page',
   '/mud-worlds': 'Root page',
   '/token-transfers': 'Root page',
   '/advanced-filter': 'Root page',
