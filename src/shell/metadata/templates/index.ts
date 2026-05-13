@@ -558,7 +558,7 @@ export const TEMPLATE_MAP: Record<Route['pathname'], RouteTemplateRecord> = {
         'default': '%chain_name% validators list',
       },
       description: {
-        'default': 'Explore %chain_name% validators. View validator set, blocks produced, and staking activity.',
+        'default': 'Explore active %chain_name% validators, including clock quality, violations, bonding state, and pwROKO activity.',
       },
     },
     og: OG_ROOT_PAGE,
@@ -569,7 +569,7 @@ export const TEMPLATE_MAP: Record<Route['pathname'], RouteTemplateRecord> = {
         'default': '%chain_name% validator %id% details',
       },
       description: {
-        'default': 'View %chain_name% validator %id% details, including blocks produced and performance.',
+        'default': 'View %chain_name% validator %id%, including live clock health, violations, pwROKO activity, and clock attestation.',
       },
     },
   },
@@ -591,6 +591,27 @@ export const TEMPLATE_MAP: Record<Route['pathname'], RouteTemplateRecord> = {
       },
       description: {
         'default': 'View %chain_name% epoch %number% details, including rewards and validator activity.',
+      },
+    },
+  },
+  '/staking/eras': {
+    metadata: {
+      title: {
+        'default': '%chain_name% staking eras',
+      },
+      description: {
+        'default': 'Browse per-era validator payouts and slashing events on %chain_name%.',
+      },
+    },
+    og: OG_ROOT_PAGE,
+  },
+  '/staking/eras/[n]': {
+    metadata: {
+      title: {
+        'default': '%chain_name% staking era %n%',
+      },
+      description: {
+        'default': 'View payouts, slashes, and the validator-set snapshot for %chain_name% staking era %n%.',
       },
     },
   },

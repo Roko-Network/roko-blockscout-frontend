@@ -16,7 +16,9 @@ const ValidatorDetails = dynamic(() => {
     return import('src/features/chain-variants/zilliqa/pages/validator-details/ValidatorZilliqa');
   }
 
-  throw new Error('Validators feature is not enabled.');
+  // Roko default (S4-T1): substrate-native validator detail page. The
+  // component reads the stash from the [id] route param via useRouter.
+  return import('src/features/substrate/pages/validator/ValidatorRoko');
 }, { ssr: false });
 
 const Page: NextPage<Props> = (props) => {
@@ -29,4 +31,5 @@ const Page: NextPage<Props> = (props) => {
 
 export default Page;
 
-export { validatorDetails as getServerSideProps } from 'src/server/getServerSideProps/main';
+// The Roko default doesn't need the chain-type guard; fall through to base.
+export { base as getServerSideProps } from 'src/server/getServerSideProps/main';

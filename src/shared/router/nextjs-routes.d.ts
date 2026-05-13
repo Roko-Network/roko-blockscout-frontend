@@ -88,6 +88,8 @@ declare module "nextjs-routes" {
     | StaticRoute<"/search-results">
     | StaticRoute<"/sprite">
     | StaticRoute<"/stats">
+    | StaticRoute<"/staking/eras">
+    | DynamicRoute<"/staking/eras/[n]", { "n": string }>
     | DynamicRoute<"/stats/[id]", { "id": string }>
     | StaticRoute<"/token-transfers">
     | StaticRoute<"/temporal">

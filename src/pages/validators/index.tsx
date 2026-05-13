@@ -23,7 +23,12 @@ const Validators = dynamic(() => {
     return import('src/features/chain-variants/zilliqa/pages/validator-index/ValidatorsZilliqa');
   }
 
-  throw new Error('Validators feature is not enabled.');
+  // Roko default: the substrate-native validator list backed by
+  // `/api/v2/substrate/validators` (Sprint 4 / S4-T1). This is the fork's
+  // own validator surface — it doesn't share the Blockscout chainType flag
+  // because the data comes from our indexer, not a Blockscout-supported
+  // chain-specific contract API.
+  return import('src/features/substrate/pages/validators/ValidatorsRoko');
 }, { ssr: false });
 
 const Page: NextPage = () => {
@@ -36,4 +41,4 @@ const Page: NextPage = () => {
 
 export default Page;
 
-export { validators as getServerSideProps } from 'src/server/getServerSideProps/main';
+export { base as getServerSideProps } from 'src/server/getServerSideProps/main';

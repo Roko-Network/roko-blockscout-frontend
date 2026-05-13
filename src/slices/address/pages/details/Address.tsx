@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-Blockscout
 
 import { Box, Flex, HStack } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -56,6 +57,8 @@ import useCheckDomainNameParam from 'src/features/name-services/domains/hooks/us
 import AddressEnsDomains from 'src/features/name-services/domains/pages/address/AddressEnsDomains';
 import useIsSafeAddress from 'src/features/safe/hooks/useIsSafeAddress';
 import SolidityscanReport from 'src/features/solidity-scan/components/SolidityscanReport';
+import AddressPwroko from 'src/features/pwroko/components/AddressPwroko';
+import { fetchAccountPwrokoHistory } from 'src/features/substrate/api/substrate-api';
 import AddressAccountHistory from 'src/features/tx-interpretation/noves/pages/address/AddressAccountHistory';
 import AddressUserOps from 'src/features/user-ops/pages/address/AddressUserOps';
 import { USER_OPS_ACCOUNT } from 'src/features/user-ops/stubs';
@@ -105,6 +108,17 @@ const AddressPageContent = () => {
     hash,
     isDegradedData: addressQuery.isDegradedData,
   });
+
+  // Sprint 4 / S4-T3: peek at the substrate-indexed pwROKO history to decide
+  // whether to show the pwROKO tab on this address. The full event list is
+  // re-fetched inside <AddressPwroko/> with the same cache key.
+  const pwrokoHistoryQuery = useQuery({
+    queryKey: [ 'substrate_account_pwroko_history', hash.toLowerCase() ],
+    queryFn: () => fetchAccountPwrokoHistory(hash, 100),
+    enabled: areQueriesEnabled && Boolean(hash),
+    retry: 0,
+  });
+  const pwrokoEventCount = pwrokoHistoryQuery.data?.items?.length ?? 0;
 
   const userOpsAccountQuery = useApiQuery('core:user_ops_account', {
     pathParams: { hash },
@@ -246,6 +260,15 @@ const AddressPageContent = () => {
         component: <AddressTokenTransfers shouldRender={ !isTabsLoading } isQueryEnabled={ areQueriesEnabled }/>,
         subTabs: ADDRESS_TOKEN_TRANSFERS_TAB_IDS,
       },
+      // Sprint 4 / S4-T3: mounted only when the substrate indexer reports
+      // ≥1 pwROKO event involving this address. Mirrors Blockscout's
+      // "hide empty tabs" convention used by Internal Transactions.
+      pwrokoEventCount > 0 ? {
+        id: 'pwroko',
+        title: 'pwROKO',
+        count: pwrokoEventCount,
+        component: <AddressPwroko addressHash={ hash }/>,
+      } : undefined,
       {
         id: 'tokens',
         title: 'Tokens',
@@ -310,6 +333,8 @@ const AddressPageContent = () => {
     areQueriesEnabled,
     address3rdPartyWidgets,
     addressType,
+    pwrokoEventCount,
+    hash,
   ]);
 
   const usernameApiTag = userPropfileApiQuery.data?.user_profile?.username;

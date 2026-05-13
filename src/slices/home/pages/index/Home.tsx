@@ -9,6 +9,7 @@ import { HomeRpcDataContextProvider } from 'src/slices/home/contexts/rpc-data-co
 
 import AdBanner from 'src/features/ads/banner/components/AdBanner';
 import LatestArbitrumL2Batches from 'src/features/rollup/arbitrum/pages/home/LatestArbitrumL2Batches';
+import SubstrateStatsHome from 'src/features/substrate/components/SubstrateStatsHome';
 import {
   fetchTemporalConsensusTime,
   fetchTemporalQueueStats,
@@ -151,6 +152,9 @@ const Home = () => {
             <Box mt={ 4 }>
               <TemporalQualityChart/>
             </Box>
+          </Box>
+          <Box mt={ 6 }>
+            <SubstrateStatsHome/>
           </Box>
           { !isMobile && config.slices.home.highlights && <Highlights mt={ 3 }/> }
           { isMobile && <AdBanner mt={ 6 } mx="auto" justifyContent="center" format="mobile"/> }
