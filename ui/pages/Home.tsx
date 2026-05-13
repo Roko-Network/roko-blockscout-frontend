@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, Heading, Text } from '@chakra-ui/react';
+import { Box, Flex, Grid, Text } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
@@ -9,6 +9,7 @@ import {
   fetchTemporalWatermark,
 } from 'lib/api/services/general/temporalRpc';
 import useIsMobile from 'lib/hooks/useIsMobile';
+import { Heading } from 'toolkit/chakra/heading';
 import { SECOND } from 'toolkit/utils/consts';
 import { HomeRpcDataContextProvider } from 'ui/home/fallbacks/rpcDataContext';
 import Highlights from 'ui/home/Highlights';
@@ -17,12 +18,13 @@ import LatestArbitrumL2Batches from 'ui/home/latestBatches/LatestArbitrumL2Batch
 import LatestZkEvmL2Batches from 'ui/home/latestBatches/LatestZkEvmL2Batches';
 import LatestBlocks from 'ui/home/LatestBlocks';
 import Stats from 'ui/home/Stats';
+import SubstrateStatsHome from 'ui/home/SubstrateStatsHome';
+import Transactions from 'ui/home/Transactions';
+import AdBanner from 'ui/shared/ad/AdBanner';
 import TemporalConsensusCard from 'ui/temporal/TemporalConsensusCard';
 import TemporalQualityChart from 'ui/temporal/TemporalQualityChart';
 import TemporalQueueCard from 'ui/temporal/TemporalQueueCard';
 import TemporalWatermarkCard from 'ui/temporal/TemporalWatermarkCard';
-import Transactions from 'ui/home/Transactions';
-import AdBanner from 'ui/shared/ad/AdBanner';
 
 const rollupFeature = config.features.rollup;
 
@@ -81,13 +83,13 @@ const Home = () => {
               </Text>
             </Box>
             <Flex gap={ 6 } alignItems="center">
-              {/* Live mesh quality indicator */}
+              { /* Live mesh quality indicator */ }
               <Box textAlign="center">
                 <Text color="whiteAlpha.600" fontSize="xs" textTransform="uppercase" letterSpacing="wider">
                   Mesh Quality
                 </Text>
                 <Text color="white" fontSize="2xl" fontFamily="heading" fontWeight={ 700 }>
-                  {consensusTimeQuery.data?.quality_percent ?? '—'}%
+                  { consensusTimeQuery.data?.quality_percent ?? '—' }%
                 </Text>
               </Box>
               <Box textAlign="center">
@@ -95,7 +97,7 @@ const Home = () => {
                   Validators
                 </Text>
                 <Text color="white" fontSize="2xl" fontFamily="heading" fontWeight={ 700 }>
-                  {consensusTimeQuery.data?.validator_count ?? '—'}
+                  { consensusTimeQuery.data?.validator_count ?? '—' }
                 </Text>
               </Box>
               <Box textAlign="center">
@@ -103,9 +105,9 @@ const Home = () => {
                   Convergence
                 </Text>
                 <Flex alignItems="center" gap={ 1 } justifyContent="center">
-                  <Box w={ 2 } h={ 2 } borderRadius="full" bg={consensusTimeQuery.data?.is_converged ? 'green.400' : 'orange.400'}/>
+                  <Box w={ 2 } h={ 2 } borderRadius="full" bg={ consensusTimeQuery.data?.is_converged ? 'green.400' : 'orange.400' }/>
                   <Text color="white" fontSize="md" fontFamily="heading">
-                    {consensusTimeQuery.data?.is_converged ? 'Converged' : 'Syncing'}
+                    { consensusTimeQuery.data?.is_converged ? 'Converged' : 'Syncing' }
                   </Text>
                 </Flex>
               </Box>
@@ -143,6 +145,10 @@ const Home = () => {
           <Box mt={ 4 }>
             <TemporalQualityChart/>
           </Box>
+        </Box>
+        { /* Sprint 4 / S4-T5: substrate-native overview (validators, era, slashes). */ }
+        <Box mt={ 6 }>
+          <SubstrateStatsHome/>
         </Box>
         { !isMobile && config.UI.homepage.highlights && <Highlights mt={ 3 }/> }
         { isMobile && <AdBanner mt={ 6 } mx="auto" justifyContent="center" format="mobile"/> }

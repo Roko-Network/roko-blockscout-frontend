@@ -1,4 +1,5 @@
 import { Box, Flex, HStack } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -9,6 +10,7 @@ import config from 'configs/app';
 import getCheckedSummedAddress from 'lib/address/getCheckedSummedAddress';
 import useAddressMetadataInfoQuery from 'lib/address/useAddressMetadataInfoQuery';
 import useAddressMetadataInitUpdate from 'lib/address/useAddressMetadataInitUpdate';
+import { fetchAccountPwrokoHistory } from 'lib/api/services/general/substrateApi';
 import useApiQuery from 'lib/api/useApiQuery';
 import { useAddressClusters } from 'lib/clusters/useAddressClusters';
 import useAddressProfileApiQuery from 'lib/hooks/useAddressProfileApiQuery';
@@ -35,6 +37,7 @@ import AddressInternalTxs from 'ui/address/AddressInternalTxs';
 import AddressLogs from 'ui/address/AddressLogs';
 import AddressMud from 'ui/address/AddressMud';
 import AddressMultichainInfoButton from 'ui/address/AddressMultichainInfoButton';
+import AddressPwroko from 'ui/address/AddressPwroko';
 import AddressTokens from 'ui/address/AddressTokens';
 import AddressTokenTransfers, { ADDRESS_TOKEN_TRANSFERS_TAB_IDS } from 'ui/address/AddressTokenTransfers';
 import AddressTxs, { ADDRESS_TXS_TAB_IDS } from 'ui/address/AddressTxs';
@@ -100,6 +103,17 @@ const AddressPageContent = () => {
     isLoading: addressQuery.isPlaceholderData,
     isDegradedData: addressQuery.isDegradedData,
   });
+
+  // Sprint 4 / S4-T3: peek at the substrate-indexed pwROKO history to decide
+  // whether to show the pwROKO tab on this address. The full event list is
+  // re-fetched inside <AddressPwroko/> with the same cache key.
+  const pwrokoHistoryQuery = useQuery({
+    queryKey: [ 'substrate_account_pwroko_history', hash.toLowerCase() ],
+    queryFn: () => fetchAccountPwrokoHistory(hash, 100),
+    enabled: areQueriesEnabled && Boolean(hash),
+    retry: 0,
+  });
+  const pwrokoEventCount = pwrokoHistoryQuery.data?.items?.length ?? 0;
 
   const userOpsAccountQuery = useApiQuery('general:user_ops_account', {
     pathParams: { hash },
@@ -258,6 +272,15 @@ const AddressPageContent = () => {
         component: <AddressTokenTransfers shouldRender={ !isTabsLoading } isQueryEnabled={ areQueriesEnabled }/>,
         subTabs: ADDRESS_TOKEN_TRANSFERS_TAB_IDS,
       },
+      // Sprint 4 / S4-T3: mounted only when the substrate indexer reports
+      // ≥1 pwROKO event involving this address. Mirrors Blockscout's
+      // "hide empty tabs" convention used by Internal Transactions.
+      pwrokoEventCount > 0 ? {
+        id: 'pwroko',
+        title: 'pwROKO',
+        count: pwrokoEventCount,
+        component: <AddressPwroko addressHash={ hash }/>,
+      } : undefined,
       {
         id: 'tokens',
         title: 'Tokens',
@@ -323,6 +346,8 @@ const AddressPageContent = () => {
     mudTablesCountQuery.data,
     address3rdPartyWidgets,
     addressType,
+    pwrokoEventCount,
+    hash,
   ]);
 
   const usernameApiTag = userPropfileApiQuery.data?.user_profile?.username;

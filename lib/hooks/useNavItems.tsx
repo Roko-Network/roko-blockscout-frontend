@@ -352,6 +352,32 @@ export default function useNavItems(): ReturnType {
       subItems: developerNavItems,
     };
 
+    // Sprint 4 / S4-T1 + S4-T2: Roko-specific staking surface — substrate
+    // validators + per-era payout/slashing data. User-facing, not dev-facing,
+    // so this is its own top-level nav group rather than nested under
+    // Developer.
+    const stakingNavItems: Array<NavItem> = [
+      {
+        text: 'Validators',
+        nextRoute: { pathname: '/validators' as const },
+        icon: 'navigation/api_docs',
+        isActive: pathname === '/validators' || pathname.startsWith('/validators/'),
+      },
+      {
+        text: 'Eras',
+        nextRoute: { pathname: '/staking/eras' as const },
+        icon: 'navigation/blockchain',
+        isActive: pathname === '/staking/eras' || pathname.startsWith('/staking/eras/'),
+      },
+    ];
+
+    const stakingNavGroup: NavGroupItem = {
+      text: 'Staking',
+      icon: 'navigation/blockchain',
+      isActive: stakingNavItems.some((item) => isInternalItem(item) && item.isActive),
+      subItems: stakingNavItems,
+    };
+
     const otherNavItems: Array<NavItem> | Array<Array<NavItem>> = [
       config.features.multichain.isEnabled ? {
         text: 'Verify contract',
@@ -394,6 +420,7 @@ export default function useNavItems(): ReturnType {
         isActive: pathname.startsWith('/app') || pathname.startsWith('/essential-dapps'),
       } : null,
       statsNavItem,
+      stakingNavGroup,
       developerNavGroup,
       apiNavItem,
       {
