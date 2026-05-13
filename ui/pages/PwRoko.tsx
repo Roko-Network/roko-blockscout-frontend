@@ -63,7 +63,7 @@ function formatWei(wei: bigint): string {
   const truncated = fracPart.slice(0, DISPLAY_DECIMALS).replace(/0+$/, '');
   if (truncated.length === 0) {
     // Sub-display-precision but non-zero → make it visible.
-    if (wei !== 0n && fracPart.length > 0) {
+    if (wei !== BigInt(0) && fracPart.length > 0) {
       return `<0.${ '0'.repeat(DISPLAY_DECIMALS - 1) }1`;
     }
     return intPart;
