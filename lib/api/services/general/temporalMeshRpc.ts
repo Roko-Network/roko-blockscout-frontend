@@ -67,6 +67,12 @@ export function formatRootDistanceNs(ns: number): string {
   return `${ abs } ns from UTC`;
 }
 
+function toConvergenceState(raw: string): ConvergenceState {
+  if (raw === 'Converged') return 'Converged';
+  if (raw === 'Converging') return 'Converging';
+  return 'Diverged';
+}
+
 /**
  * Map a ConvergenceState string to a Chakra colour token.
  */
@@ -108,38 +114,19 @@ interface ConsensusResponse {
   peerCount: number;
 }
 
-interface MeshStateResponse {
-  convergenceState: string;
-  qualityPct: number;
-  meshDiameterNs: number | null;
-  peerCount: number;
-  totalSamples: number;
-  validators: Array<{
-    authorityIndex: number;
-    clockOffsetNs: number;
-    rootDistanceNs: number;
-    reputation: number;
-    tier: string;
-    samples: number;
-    violationCount: number;
-    lastCheckpointBlock: number;
-  }>;
-  pairwiseOffsets: Array<{
-    fromIndex: number;
-    toIndex: number;
-    offsetNs: number;
-  }>;
-}
-
-interface ValidatorQualityResponse {
+// Actual shape returned by /api/v2/temporal/validators/:index/quality.
+// Field names differ from the polished TemporalValidatorReport — the RPC
+// uses raw substrate-runtime names (offsetNs / reputationScore / sampleCount).
+// `null` is returned when the validator has no quality report yet (e.g. a
+// newly-joined authority before its first checkpoint).
+interface ValidatorQualityRawResponse {
   authorityIndex: number;
-  clockOffsetNs: number;
+  offsetNs: string | number;
   rootDistanceNs: number;
-  reputation: number;
-  tier: string;
-  samples: number;
-  violationCount: number;
-  lastCheckpointBlock: number;
+  reputationScore: number;
+  sampleCount: number;
+  lastUpdated: number;
+  errorOfSourceNs?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -151,10 +138,13 @@ interface ValidatorQualityResponse {
  * Used by the BlockProducerInfo component on the block detail page.
  */
 export interface TemporalProducerInfo {
+
   /** Authority index of the validator that produced the current/latest block. */
   producerAuthorityIndex: number;
+
   /** Producer's root distance from UTC in nanoseconds. */
   producerRootDistanceNs: number;
+
   /** Mesh quality percentage at the time of the last block (0–100). */
   qualityPercent: number;
 }
@@ -192,9 +182,7 @@ export async function fetchTemporalMeshState(): Promise<TemporalMeshState> {
   try {
     const data = await apiFetch<RawMeshResponse>('/mesh-state');
     const qualityPct = Math.round((data.timeQuality / 10000) * 100);
-    const convergenceState: ConvergenceState =
-      data.convergenceState === 'Converged' ? 'Converged' :
-        data.convergenceState === 'Converging' ? 'Converging' : 'Diverged';
+    const convergenceState: ConvergenceState = toConvergenceState(data.convergenceState);
 
     const producerIdx = data.producerAuthorityIndex ?? 0;
 
@@ -229,11 +217,11 @@ export async function fetchTemporalMeshState(): Promise<TemporalMeshState> {
       }
     }
 
-    const pairwise_offsets = [ ...directOffsets, ...inferredOffsets ];
+    const pairwiseOffsets = [ ...directOffsets, ...inferredOffsets ];
 
-    const diameter = pairwise_offsets.length > 0
-      ? Math.max(...pairwise_offsets.map((p) => Math.abs(p.offset_ns)))
-      : null;
+    const diameter = pairwiseOffsets.length > 0 ?
+      Math.max(...pairwiseOffsets.map((p) => Math.abs(p.offset_ns))) :
+      null;
 
     return {
       convergence_state: convergenceState,
@@ -242,14 +230,12 @@ export async function fetchTemporalMeshState(): Promise<TemporalMeshState> {
       peer_count: data.peerCount + 1,
       total_samples: data.totalSamples,
       validators,
-      pairwise_offsets,
+      pairwise_offsets: pairwiseOffsets,
     };
   } catch {
     const consensus = await apiFetch<ConsensusResponse>('/consensus-time');
     const qualityPct = Math.round((consensus.timeQuality / 10000) * 100);
-    const convergenceState: ConvergenceState =
-      consensus.convergenceState === 'Converged' ? 'Converged' :
-        consensus.convergenceState === 'Converging' ? 'Converging' : 'Diverged';
+    const convergenceState: ConvergenceState = toConvergenceState(consensus.convergenceState);
 
     return {
       convergence_state: convergenceState,
@@ -309,23 +295,43 @@ export async function fetchTemporalProducerInfo(): Promise<TemporalProducerInfo 
 /**
  * Fetch time-health data for a single validator by authority index.
  *
- * Primary: GET /api/v2/temporal/validators/:index/quality (pending).
- * Returns null when unavailable.
+ * Calls GET /api/v2/temporal/validators/:index/quality. Throws when the
+ * backend hasn't published a quality report for this validator yet (the
+ * RPC returns `null`); callers should handle the error / show a "no
+ * report yet" empty state.
+ *
+ * Derives `tier` from root-distance thresholds (the RPC does not return a
+ * tier field) so the existing UI tier badge stays meaningful.
  */
 export async function fetchTemporalValidatorQuality(
   index: number,
 ): Promise<TemporalValidatorReport> {
-  const data = await apiFetch<ValidatorQualityResponse>(
+  const data = await apiFetch<ValidatorQualityRawResponse | null>(
     `/validators/${ index }/quality`,
   );
+
+  if (!data) {
+    throw new Error(`No quality report yet for authority ${ index }`);
+  }
+
+  const offsetNs = typeof data.offsetNs === 'string' ? parseInt(data.offsetNs, 10) || 0 : (data.offsetNs ?? 0);
+
   return {
     authority_index: data.authorityIndex,
-    clock_offset_ns: data.clockOffsetNs,
-    root_distance_ns: data.rootDistanceNs,
-    reputation: data.reputation,
-    tier: data.tier as TemporalValidatorReport['tier'],
-    samples: data.samples,
-    violation_count: data.violationCount,
-    last_checkpoint_block: data.lastCheckpointBlock,
+    clock_offset_ns: offsetNs,
+    root_distance_ns: data.rootDistanceNs ?? 0,
+    reputation: data.reputationScore ?? 0,
+    tier: tierFromRootDistance(data.rootDistanceNs ?? 0),
+    samples: data.sampleCount ?? 0,
+    violation_count: 0,
+    last_checkpoint_block: data.lastUpdated ?? 0,
   };
+}
+
+// Tier thresholds mirror node/primitives/src/timesync.rs ClockSource::tier():
+// PPS/PHC (sub-µs) ≤ 1µs → Anchor; Timebeat (low-µs) ≤ 50µs → Standard; everything else → Minimal.
+function tierFromRootDistance(rootDistanceNs: number): TemporalValidatorReport['tier'] {
+  if (rootDistanceNs <= 1_000) return 'Anchor';
+  if (rootDistanceNs <= 50_000) return 'Standard';
+  return 'Minimal';
 }
