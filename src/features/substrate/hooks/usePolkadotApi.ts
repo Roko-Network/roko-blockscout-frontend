@@ -5,29 +5,45 @@
  * on /developer/* routes, not on the existing explorer pages. The connection
  * itself is reused across the developer-console session via React Query.
  *
- * The WS endpoint is derived from `NEXT_PUBLIC_NETWORK_RPC_URL` (HTTP) by
- * swapping the protocol — if the deploy needs a separate WS URL it can
- * be overridden by `NEXT_PUBLIC_NETWORK_RPC_WS_URL`.
+ * Provider selection: prefer HttpProvider against the chain's HTTPS RPC by
+ * default. The deployed testnet only exposes HTTPS POST at `roko-testnetv2
+ * .ntfork.com` (no WebSocket upgrade configured in nginx), so a WsProvider
+ * would hang forever waiting for a handshake. HttpProvider supports all
+ * single-shot queries the dev console needs (chain state reads, constants,
+ * RPC calls) — it doesn't support subscriptions but the dev console doesn't
+ * use any. Set `NEXT_PUBLIC_NETWORK_RPC_WS_URL` to opt back into WS once a
+ * WS endpoint exists.
+ *
+ * Polkadot.js Apps deep-links still use the WS form (Apps refuses HTTPS) so
+ * the link generator below derives a WS URL anyway, with the understanding
+ * that Apps will surface the WS-unreachable error to the operator instead.
  */
 
 import { useQuery } from '@tanstack/react-query';
 
 import config from 'src/config';
 
-function wsEndpoint(): string {
-  // Explicit WS env wins.
-  const wsEnv = (typeof window !== 'undefined' ?
-    (window as unknown as { NEXT_PUBLIC_NETWORK_RPC_WS_URL?: string }).NEXT_PUBLIC_NETWORK_RPC_WS_URL :
-    undefined);
-  if (wsEnv) return wsEnv;
+interface RuntimeEnv {
+  NEXT_PUBLIC_NETWORK_RPC_URL?: string;
+  NEXT_PUBLIC_NETWORK_RPC_WS_URL?: string;
+}
 
-  // Derive from the HTTP RPC URLs by protocol swap.
-  const httpUrl = config.chain.rpcUrls?.[0];
-  if (!httpUrl) {
-    return 'wss://roko-testnetv2.ntfork.com';
-  }
+function runtimeEnv(): RuntimeEnv {
+  if (typeof window === 'undefined') return {};
+  return (window as unknown as RuntimeEnv) ?? {};
+}
+
+function httpEndpoint(): string {
+  const env = runtimeEnv();
+  if (env.NEXT_PUBLIC_NETWORK_RPC_URL) return env.NEXT_PUBLIC_NETWORK_RPC_URL;
+  return config.chain.rpcUrls?.[0] ?? 'https://roko-testnetv2.ntfork.com';
+}
+
+function wsEndpoint(): string {
+  const env = runtimeEnv();
+  if (env.NEXT_PUBLIC_NETWORK_RPC_WS_URL) return env.NEXT_PUBLIC_NETWORK_RPC_WS_URL;
   try {
-    const parsed = new URL(httpUrl);
+    const parsed = new URL(httpEndpoint());
     parsed.protocol = parsed.protocol === 'http:' ? 'ws:' : 'wss:';
     return parsed.toString().replace(/\/$/, '');
   } catch {
@@ -39,6 +55,7 @@ export interface PolkadotApiBundle {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   api: any;
   endpoint: string;
+  transport: 'http' | 'ws';
   chain: string;
   nodeName: string;
   nodeVersion: string;
@@ -48,10 +65,17 @@ export function usePolkadotApi() {
   return useQuery<PolkadotApiBundle>({
     queryKey: [ 'polkadot_api_connection' ],
     queryFn: async() => {
-      const endpoint = wsEndpoint();
-      const { ApiPromise, WsProvider } = await import('@polkadot/api');
-      const provider = new WsProvider(endpoint);
-      const api = await ApiPromise.create({ provider });
+      const env = runtimeEnv();
+      // Explicit WS env opts back into the WS path once a WS endpoint exists.
+      const useWs = Boolean(env.NEXT_PUBLIC_NETWORK_RPC_WS_URL);
+      const endpoint = useWs ? wsEndpoint() : httpEndpoint();
+
+      const polkadotApi = await import('@polkadot/api');
+      const provider = useWs ?
+        new polkadotApi.WsProvider(endpoint) :
+        new polkadotApi.HttpProvider(endpoint);
+
+      const api = await polkadotApi.ApiPromise.create({ provider });
       const [ chain, nodeName, nodeVersion ] = await Promise.all([
         api.rpc.system.chain(),
         api.rpc.system.name(),
@@ -60,6 +84,7 @@ export function usePolkadotApi() {
       return {
         api,
         endpoint,
+        transport: useWs ? 'ws' : 'http',
         chain: chain.toString(),
         nodeName: nodeName.toString(),
         nodeVersion: nodeVersion.toString(),
@@ -74,8 +99,10 @@ export function usePolkadotApi() {
 }
 
 /**
- * Returns the polkadot.js-Apps deep-link for this chain, pre-connected. Used
- * by the "Submit Extrinsic" card (S5-T21) and by other deferral surfaces.
+ * Returns the polkadot.js-Apps deep-link for this chain. Apps requires a WS
+ * endpoint and refuses HTTPS RPC URLs — this returns one regardless of the
+ * dev-console transport. If the underlying chain has no WS exposed, Apps
+ * will display its own connection error.
  */
 export function polkadotAppsLink(path = '/extrinsics'): string {
   const ws = wsEndpoint();

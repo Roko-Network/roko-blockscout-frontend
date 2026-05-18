@@ -17,7 +17,7 @@ interface Card {
 interface ConnectionStatusProps {
   isError: boolean;
   errorMessage: string | null;
-  data: { chain: string; endpoint: string; nodeName: string; nodeVersion: string } | null;
+  data: { chain: string; endpoint: string; transport: 'http' | 'ws'; nodeName: string; nodeVersion: string } | null;
 }
 
 function ConnectionStatus({ isError, errorMessage, data }: ConnectionStatusProps) {
@@ -36,7 +36,7 @@ function ConnectionStatus({ isError, errorMessage, data }: ConnectionStatusProps
     <chakra.span fontSize="sm" color="text.secondary">
       Connected to <chakra.b>{ data.chain }</chakra.b>{ ' ' }
       via <chakra.code fontSize="xs">{ data.endpoint }</chakra.code>{ ' ' }
-      ({ data.nodeName } { data.nodeVersion }).
+      ({ data.nodeName } { data.nodeVersion }, { data.transport === 'ws' ? 'WebSocket' : 'HTTP' }).
     </chakra.span>
   );
 }
@@ -135,9 +135,14 @@ const DeveloperConsole = () => {
         p={ 5 }
       >
         <chakra.h3 fontSize="md" fontWeight={ 700 } mb={ 2 }>Submit Extrinsic</chakra.h3>
-        <chakra.p fontSize="sm" color="text.secondary" mb={ 4 }>
+        <chakra.p fontSize="sm" color="text.secondary" mb={ 2 }>
           Signing and submitting transactions requires a wallet/keyring. Use polkadot.js Apps,
           which handles browser-extension integration — the link below pre-connects it to this chain.
+        </chakra.p>
+        <chakra.p fontSize="xs" color="text.secondary" mb={ 4 }>
+          Note: Roko testnet currently exposes HTTPS RPC only (no WebSocket). polkadot.js Apps
+          may fail to connect via the deep-link until a WS endpoint is added. For now, use it
+          locally and point it at a local <chakra.code>roko-node --rpc-port 9944 --ws-port 9944</chakra.code>.
         </chakra.p>
         <Flex gap={ 3 } align="center">
           <chakra.a
