@@ -10,7 +10,7 @@ import config from 'configs/app';
 import getCheckedSummedAddress from 'lib/address/getCheckedSummedAddress';
 import useAddressMetadataInfoQuery from 'lib/address/useAddressMetadataInfoQuery';
 import useAddressMetadataInitUpdate from 'lib/address/useAddressMetadataInitUpdate';
-import { fetchAccountPwrokoHistory } from 'lib/api/services/general/substrateApi';
+import { fetchAccountExtrinsics, fetchAccountPwrokoHistory } from 'lib/api/services/general/substrateApi';
 import useApiQuery from 'lib/api/useApiQuery';
 import { useAddressClusters } from 'lib/clusters/useAddressClusters';
 import useAddressProfileApiQuery from 'lib/hooks/useAddressProfileApiQuery';
@@ -38,6 +38,7 @@ import AddressLogs from 'ui/address/AddressLogs';
 import AddressMud from 'ui/address/AddressMud';
 import AddressMultichainInfoButton from 'ui/address/AddressMultichainInfoButton';
 import AddressPwroko from 'ui/address/AddressPwroko';
+import AddressSubstrateExtrinsics from 'ui/address/AddressSubstrateExtrinsics';
 import AddressTokens from 'ui/address/AddressTokens';
 import AddressTokenTransfers, { ADDRESS_TOKEN_TRANSFERS_TAB_IDS } from 'ui/address/AddressTokenTransfers';
 import AddressTxs, { ADDRESS_TXS_TAB_IDS } from 'ui/address/AddressTxs';
@@ -114,6 +115,18 @@ const AddressPageContent = () => {
     retry: 0,
   });
   const pwrokoEventCount = pwrokoHistoryQuery.data?.items?.length ?? 0;
+
+  // Sprint 5 / S5-T13: same idea for substrate signed-extrinsic activity —
+  // only mount the "Substrate Calls" tab when the address has actually
+  // signed at least one extrinsic. The detail component re-uses this cache
+  // key so there's no second roundtrip.
+  const substrateExtrinsicsQuery = useQuery({
+    queryKey: [ 'substrate_account_extrinsics', hash.toLowerCase() ],
+    queryFn: () => fetchAccountExtrinsics(hash, 100),
+    enabled: areQueriesEnabled && Boolean(hash),
+    retry: 0,
+  });
+  const substrateExtrinsicCount = substrateExtrinsicsQuery.data?.items?.length ?? 0;
 
   const userOpsAccountQuery = useApiQuery('general:user_ops_account', {
     pathParams: { hash },
@@ -281,6 +294,15 @@ const AddressPageContent = () => {
         count: pwrokoEventCount,
         component: <AddressPwroko addressHash={ hash }/>,
       } : undefined,
+      // Sprint 5 / S5-T13: substrate signed-call history. Hidden when the
+      // address has only ever interacted via EVM (no signed substrate
+      // extrinsics indexed).
+      substrateExtrinsicCount > 0 ? {
+        id: 'substrate_calls',
+        title: 'Substrate Calls',
+        count: substrateExtrinsicCount,
+        component: <AddressSubstrateExtrinsics addressHash={ hash }/>,
+      } : undefined,
       {
         id: 'tokens',
         title: 'Tokens',
@@ -347,6 +369,7 @@ const AddressPageContent = () => {
     address3rdPartyWidgets,
     addressType,
     pwrokoEventCount,
+    substrateExtrinsicCount,
     hash,
   ]);
 

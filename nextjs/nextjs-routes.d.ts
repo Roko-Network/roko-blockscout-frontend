@@ -86,6 +86,12 @@ declare module "nextjs-routes" {
     | StaticRoute<"/stats">
     | StaticRoute<"/staking/eras">
     | DynamicRoute<"/staking/eras/[n]", { "n": string }>
+    | DynamicRoute<"/extrinsic/[block]/[index]", { "block": string; "index": string }>
+    | StaticRoute<"/developer">
+    | StaticRoute<"/developer/chain-state">
+    | StaticRoute<"/developer/constants">
+    | StaticRoute<"/developer/rpc">
+    | StaticRoute<"/developer/metadata">
     | StaticRoute<"/temporal">
     | StaticRoute<"/temporal/mesh">
     | DynamicRoute<"/temporal/validators/[index]", { "index": string }>

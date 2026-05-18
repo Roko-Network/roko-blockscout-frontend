@@ -343,6 +343,13 @@ export default function useNavItems(): ReturnType {
         icon: 'navigation/token_transfers',
         isActive: pathname === '/pwroko',
       },
+      // Sprint 5 / S5-T16: Developer Console — chain state + metadata + RPC.
+      {
+        text: 'Developer Console',
+        nextRoute: { pathname: '/developer' as const },
+        icon: 'navigation/api_docs',
+        isActive: pathname === '/developer' || pathname.startsWith('/developer/'),
+      },
     ];
 
     const developerNavGroup: NavGroupItem = {

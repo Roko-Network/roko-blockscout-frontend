@@ -21,6 +21,8 @@ import BlockCeloEpochTag from 'ui/block/BlockCeloEpochTag';
 import BlockDeposits from 'ui/block/BlockDeposits';
 import BlockDetails from 'ui/block/BlockDetails';
 import BlockInternalTxs from 'ui/block/BlockInternalTxs';
+import BlockSubstrateEvents from 'ui/block/BlockSubstrateEvents';
+import BlockSubstrateExtrinsics from 'ui/block/BlockSubstrateExtrinsics';
 import BlockWithdrawals from 'ui/block/BlockWithdrawals';
 import useBlockBlobTxsQuery from 'ui/block/useBlockBlobTxsQuery';
 import useBlockDepositsQuery from 'ui/block/useBlockDepositsQuery';
@@ -85,13 +87,26 @@ const BlockPageContent = () => {
     },
     {
       id: 'txs',
-      title: 'Transactions',
+      title: 'EVM Transactions',
       component: (
         <>
           { blockTxsQuery.isDegradedData && <ServiceDegradationWarning isLoading={ blockTxsQuery.isPlaceholderData } mb={{ base: 3, lg: 6 }}/> }
           <TxsWithFrontendSorting query={ blockTxsQuery } showBlockInfo={ false } top={ hasPagination ? TABS_HEIGHT : 0 }/>
         </>
       ),
+    },
+    // Sprint 5 / S5-T11 + S5-T12: substrate-side activity inside the block.
+    // Mounted unconditionally — the Roko chain is substrate-native, every
+    // block has 4–6 substrate extrinsics even when EVM count is 0.
+    {
+      id: 'substrate_extrinsics',
+      title: 'Substrate Extrinsics',
+      component: <BlockSubstrateExtrinsics blockNumber={ Number(blockQuery.data?.height ?? heightOrHash) }/>,
+    },
+    {
+      id: 'substrate_events',
+      title: 'Events',
+      component: <BlockSubstrateEvents blockNumber={ Number(blockQuery.data?.height ?? heightOrHash) }/>,
     },
     {
       id: 'internal_txs',
@@ -134,7 +149,16 @@ const BlockPageContent = () => {
           </>
         ),
       } : null,
-  ].filter(Boolean)), [ blockBlobTxsQuery, blockDepositsQuery, blockInternalTxsQuery, blockQuery, blockTxsQuery, blockWithdrawalsQuery, hasPagination ]);
+  ].filter(Boolean)), [
+    blockBlobTxsQuery,
+    blockDepositsQuery,
+    blockInternalTxsQuery,
+    blockQuery,
+    blockTxsQuery,
+    blockWithdrawalsQuery,
+    hasPagination,
+    heightOrHash,
+  ]);
 
   let pagination;
   if (tab === 'txs') {
