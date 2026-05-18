@@ -12,6 +12,8 @@ import { Button } from 'toolkit/chakra/button';
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import PageTitle from 'ui/shared/Page/PageTitle';
 
+import DeveloperSubNav from './DeveloperSubNav';
+
 interface StorageItemInfo {
   name: string;
   modifier: string;
@@ -141,6 +143,7 @@ const DeveloperChainState = () => {
 
   return (
     <>
+      <DeveloperSubNav/>
       <PageTitle
         title="Chain State"
         secondRow={ (

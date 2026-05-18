@@ -5,6 +5,8 @@ import { polkadotAppsLink, usePolkadotApi } from 'lib/polkadot/useApi';
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import PageTitle from 'ui/shared/Page/PageTitle';
 
+import DeveloperSubNav from './DeveloperSubNav';
+
 interface Card {
   title: string;
   description: string;
@@ -67,6 +69,7 @@ const DeveloperConsole = () => {
 
   return (
     <>
+      <DeveloperSubNav/>
       <PageTitle
         title="Developer Console"
         secondRow={ (
