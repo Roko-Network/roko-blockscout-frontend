@@ -18,6 +18,7 @@ import LatestArbitrumL2Batches from 'ui/home/latestBatches/LatestArbitrumL2Batch
 import LatestZkEvmL2Batches from 'ui/home/latestBatches/LatestZkEvmL2Batches';
 import LatestBlocks from 'ui/home/LatestBlocks';
 import Stats from 'ui/home/Stats';
+import SubstrateActivityHome from 'ui/home/SubstrateActivityHome';
 import SubstrateStatsHome from 'ui/home/SubstrateStatsHome';
 import Transactions from 'ui/home/Transactions';
 import AdBanner from 'ui/shared/ad/AdBanner';
@@ -149,6 +150,10 @@ const Home = () => {
         { /* Sprint 4 / S4-T5: substrate-native overview (validators, era, slashes). */ }
         <Box mt={ 6 }>
           <SubstrateStatsHome/>
+        </Box>
+        { /* Sprint 5 / S5-T15: substrate activity (extrinsics, top pallet, top author). */ }
+        <Box mt={ 6 }>
+          <SubstrateActivityHome/>
         </Box>
         { !isMobile && config.UI.homepage.highlights && <Highlights mt={ 3 }/> }
         { isMobile && <AdBanner mt={ 6 } mx="auto" justifyContent="center" format="mobile"/> }

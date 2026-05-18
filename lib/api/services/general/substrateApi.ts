@@ -168,6 +168,137 @@ export function fetchRecentSlashes(limit = 50): Promise<{ items: Array<Substrate
 }
 
 // ---------------------------------------------------------------------------
+// Sprint 5 — extrinsics, events, block authors, stats
+// ---------------------------------------------------------------------------
+
+export interface SubstrateExtrinsic {
+  id: number;
+  block_number: number;
+  block_hash: string | null;
+  index_in_block: number;
+  pallet: string;
+  method: string;
+  args: Record<string, unknown> | null;
+  args_truncated: boolean;
+  signer: string | null;
+  signature: string | null;
+  tip: string | null;
+  era: Record<string, unknown> | null;
+  nonce: number | null;
+  fee_paid: string | null;
+  success: boolean;
+  error: Record<string, unknown> | null;
+  hash: string | null;
+  call_hash: string | null;
+  extrinsic_class: 'Inherent' | 'Signed' | 'Unsigned' | string;
+}
+
+export interface SubstrateExtrinsicWithEvents extends SubstrateExtrinsic {
+  events: Array<SubstrateEvent>;
+}
+
+export interface SubstrateEvent {
+  id: number;
+  block_number: number;
+  block_hash: string | null;
+  extrinsic_index: number | null;
+  phase: 'ApplyExtrinsic' | 'Finalization' | 'Initialization' | string;
+  index_in_block: number;
+  pallet: string;
+  method: string;
+  data: Record<string, unknown> | null;
+}
+
+export interface SubstrateBlockAuthor {
+  block_number: number;
+  block_hash: string | null;
+  author_index: number;
+  author_stash: string | null;
+  slot: number | null;
+}
+
+export interface SubstrateStats {
+  latest_block: number;
+  total_extrinsics: number;
+  signed_extrinsics_24h: number;
+  inherent_extrinsics_24h: number;
+  unsigned_extrinsics_24h: number;
+  total_events_24h: number;
+  avg_extrinsics_per_block: number;
+  top_pallets_24h: Array<{ pallet: string; method: string; count: number }>;
+  block_authors_24h: Array<{ author_stash: string | null; blocks: number }>;
+}
+
+export function fetchBlockExtrinsics(blockNumber: number): Promise<{
+  items: Array<SubstrateExtrinsic>;
+  author: SubstrateBlockAuthor | null;
+}> {
+  return fetchJson(`/blocks/${ blockNumber }/extrinsics`);
+}
+
+export function fetchBlockEvents(blockNumber: number): Promise<{ items: Array<SubstrateEvent> }> {
+  return fetchJson(`/blocks/${ blockNumber }/events`);
+}
+
+export function fetchAccountExtrinsics(
+  address: string,
+  limit = 100,
+): Promise<{ items: Array<SubstrateExtrinsic> }> {
+  return fetchJson(`/accounts/${ address }/extrinsics?limit=${ limit }`);
+}
+
+export function fetchExtrinsicByHash(hash: string): Promise<SubstrateExtrinsicWithEvents | null> {
+  return fetchJsonOrNull(`/extrinsics/${ hash }`);
+}
+
+export function fetchRecentExtrinsics(opts: {
+  pallet?: string;
+  method?: string;
+  limit?: number;
+} = {}): Promise<{ items: Array<SubstrateExtrinsic> }> {
+  const params = new URLSearchParams();
+  if (opts.pallet) params.set('pallet', opts.pallet);
+  if (opts.method) params.set('method', opts.method);
+  if (opts.limit !== undefined) params.set('limit', String(opts.limit));
+  const q = params.toString();
+  return fetchJson(`/extrinsics/recent${ q ? `?${ q }` : '' }`);
+}
+
+export function fetchSubstrateStats(): Promise<SubstrateStats> {
+  return fetchJson('/stats');
+}
+
+export interface SubstrateSearchHit {
+  kind: 'block' | 'extrinsic';
+  block_number: number;
+  index_in_block?: number;
+}
+
+export function searchSubstrateHash(hash: string): Promise<SubstrateSearchHit | null> {
+  return fetchJsonOrNull(`/search/${ hash }`);
+}
+
+/**
+ * True if an `ethereum.transact` row should deep-link to the existing
+ * Blockscout EVM tx page instead of the substrate extrinsic detail page.
+ */
+export function isEthereumTransactExtrinsic(ext: Pick<SubstrateExtrinsic, 'pallet' | 'method'>): boolean {
+  return ext.pallet === 'Ethereum' && ext.method === 'transact';
+}
+
+/**
+ * Stringify an extrinsic's args jsonb for inline table-cell display.
+ * Returns a compact one-line representation with byte-array hex preserved.
+ */
+export function summarizeArgs(args: Record<string, unknown> | null, maxLen = 80): string {
+  if (!args) return '—';
+  if (args.args_truncated) return `(truncated, ${ args.size_bytes } bytes)`;
+  const s = JSON.stringify(args);
+  if (s.length <= maxLen) return s;
+  return `${ s.slice(0, maxLen - 1) }…`;
+}
+
+// ---------------------------------------------------------------------------
 // Display helpers
 // ---------------------------------------------------------------------------
 

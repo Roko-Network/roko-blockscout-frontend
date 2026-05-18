@@ -72,6 +72,7 @@ const TEMPLATE_MAP: Record<Route['pathname'], string> = {
   '/temporal/validators/[index]': '%network_name% validator %index% time health',
   '/staking/eras': '%network_name% staking eras',
   '/staking/eras/[n]': '%network_name% staking era %n%',
+  '/extrinsic/[block]/[index]': '%network_name% extrinsic %block%/%index%',
   '/mud-worlds': '%network_name% MUD worlds list',
   '/token-transfers': '%network_name% token transfers',
   '/advanced-filter': '%network_name% advanced filter',

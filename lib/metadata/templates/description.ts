@@ -70,6 +70,7 @@ const TEMPLATE_MAP: Record<Route['pathname'], string> = {
   '/temporal/validators/[index]': 'Time health report for %network_title% validator %index%: clock offset, root distance, reputation, and tier.',
   '/staking/eras': 'Per-era validator payouts and slashing events on %network_title%.',
   '/staking/eras/[n]': 'Era %n% on %network_title% — payouts, slashes, and validator set snapshot.',
+  '/extrinsic/[block]/[index]': 'Substrate extrinsic %block%/%index% on %network_title% — pallet, method, args, signer, events emitted.',
   '/mud-worlds': DEFAULT_TEMPLATE,
   '/token-transfers': DEFAULT_TEMPLATE,
   '/advanced-filter': DEFAULT_TEMPLATE,

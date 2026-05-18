@@ -65,6 +65,7 @@ export const PAGE_TYPE_DICT: Record<Route['pathname'], string> = {
   '/temporal/validators/[index]': 'Temporal validator time health',
   '/staking/eras': 'Staking eras',
   '/staking/eras/[n]': 'Staking era details',
+  '/extrinsic/[block]/[index]': 'Substrate extrinsic details',
   '/mud-worlds': 'MUD worlds',
   '/token-transfers': 'Token transfers',
   '/advanced-filter': 'Advanced filter',
