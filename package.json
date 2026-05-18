@@ -90,6 +90,7 @@
     "@opentelemetry/sdk-trace-node": "2.8.0",
     "@opentelemetry/semantic-conventions": "1.22.0",
     "@openzeppelin/contracts": "5.4.0",
+    "@polkadot/api": "^16.5.6",
     "@reown/appkit": "1.7.20",
     "@reown/appkit-adapter-wagmi": "1.7.20",
     "@scure/base": "1.1.9",

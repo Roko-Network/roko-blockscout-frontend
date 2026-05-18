@@ -625,6 +625,36 @@ export const TEMPLATE_MAP: Record<Route['pathname'], RouteTemplateRecord> = {
       },
     },
   },
+  '/developer': {
+    metadata: {
+      title: { 'default': '%chain_name% developer console' },
+      description: { 'default': 'Explore %chain_name% chain state, runtime constants, RPC methods, and metadata.' },
+    },
+  },
+  '/developer/chain-state': {
+    metadata: {
+      title: { 'default': '%chain_name% chain state browser' },
+      description: { 'default': 'Query metadata-driven %chain_name% runtime storage.' },
+    },
+  },
+  '/developer/constants': {
+    metadata: {
+      title: { 'default': '%chain_name% runtime constants' },
+      description: { 'default': 'Browse current %chain_name% runtime constants by pallet.' },
+    },
+  },
+  '/developer/rpc': {
+    metadata: {
+      title: { 'default': '%chain_name% RPC console' },
+      description: { 'default': 'Call supported %chain_name% JSON-RPC methods.' },
+    },
+  },
+  '/developer/metadata': {
+    metadata: {
+      title: { 'default': '%chain_name% runtime metadata' },
+      description: { 'default': 'Browse %chain_name% runtime pallets, calls, events, errors, storage, and constants.' },
+    },
+  },
   '/gas-tracker': {
     metadata: {
       title: {
