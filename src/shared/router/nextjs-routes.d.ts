@@ -90,6 +90,7 @@ declare module "nextjs-routes" {
     | StaticRoute<"/stats">
     | StaticRoute<"/staking/eras">
     | DynamicRoute<"/staking/eras/[n]", { "n": string }>
+    | DynamicRoute<"/extrinsic/[block]/[index]", { "block": string; "index": string }>
     | DynamicRoute<"/stats/[id]", { "id": string }>
     | StaticRoute<"/token-transfers">
     | StaticRoute<"/temporal">

@@ -615,6 +615,16 @@ export const TEMPLATE_MAP: Record<Route['pathname'], RouteTemplateRecord> = {
       },
     },
   },
+  '/extrinsic/[block]/[index]': {
+    metadata: {
+      title: {
+        'default': '%chain_name% extrinsic %block%-%index%',
+      },
+      description: {
+        'default': 'View Substrate extrinsic %block%-%index% and its emitted events on %chain_name%.',
+      },
+    },
+  },
   '/gas-tracker': {
     metadata: {
       title: {

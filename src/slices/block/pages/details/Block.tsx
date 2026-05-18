@@ -30,6 +30,8 @@ import useBlockWithdrawalsQuery from 'src/features/chain-variants/beacon-chain/p
 import BlockCeloEpochTag from 'src/features/chain-variants/celo/pages/block/BlockCeloEpochTag';
 import useBlockBlobTxsQuery from 'src/features/data-availability/hooks/useBlockBlobTxsQuery';
 import { useMultichainContext } from 'src/features/multichain/context';
+import BlockSubstrateEvents from 'src/features/substrate/components/BlockSubstrateEvents';
+import BlockSubstrateExtrinsics from 'src/features/substrate/components/BlockSubstrateExtrinsics';
 
 import config from 'src/config';
 import ApiDegradationAlert from 'src/shared/api-degradation/ApiDegradationAlert';
@@ -91,13 +93,26 @@ const BlockPageContent = () => {
     },
     {
       id: 'txs',
-      title: 'Transactions',
+      title: 'EVM Transactions',
       component: (
         <>
           { blockTxsQuery.isDegradedData && <ApiDegradationAlert isLoading={ blockTxsQuery.isPlaceholderData } mb={{ base: 3, lg: 6 }}/> }
           <TxsWithFrontendSorting query={ blockTxsQuery } showBlockInfo={ false } top={ hasPagination ? TABS_HEIGHT : 0 }/>
         </>
       ),
+    },
+    // Sprint 5 / S5-T11 + S5-T12: substrate-side activity inside the block.
+    // Mounted unconditionally — the Roko chain is substrate-native, every
+    // block has 4–6 substrate extrinsics even when EVM count is 0.
+    {
+      id: 'substrate_extrinsics',
+      title: 'Substrate Extrinsics',
+      component: <BlockSubstrateExtrinsics blockNumber={ Number(blockQuery.data?.height ?? heightOrHash) }/>,
+    },
+    {
+      id: 'substrate_events',
+      title: 'Events',
+      component: <BlockSubstrateEvents blockNumber={ Number(blockQuery.data?.height ?? heightOrHash) }/>,
     },
     chainConfig.slices.internalTx.isEnabled ? {
       id: 'internal_txs',
@@ -151,6 +166,7 @@ const BlockPageContent = () => {
     chainConfig.slices.internalTx.isEnabled,
     chainConfig.features.dataAvailability.isEnabled,
     hasPagination,
+    heightOrHash,
   ]);
 
   let pagination;

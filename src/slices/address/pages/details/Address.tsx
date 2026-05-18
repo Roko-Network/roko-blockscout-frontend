@@ -58,7 +58,8 @@ import AddressEnsDomains from 'src/features/name-services/domains/pages/address/
 import useIsSafeAddress from 'src/features/safe/hooks/useIsSafeAddress';
 import SolidityscanReport from 'src/features/solidity-scan/components/SolidityscanReport';
 import AddressPwroko from 'src/features/pwroko/components/AddressPwroko';
-import { fetchAccountPwrokoHistory } from 'src/features/substrate/api/substrate-api';
+import AddressSubstrateExtrinsics from 'src/features/substrate/components/AddressSubstrateExtrinsics';
+import { fetchAccountExtrinsics, fetchAccountPwrokoHistory } from 'src/features/substrate/api/substrate-api';
 import AddressAccountHistory from 'src/features/tx-interpretation/noves/pages/address/AddressAccountHistory';
 import AddressUserOps from 'src/features/user-ops/pages/address/AddressUserOps';
 import { USER_OPS_ACCOUNT } from 'src/features/user-ops/stubs';
@@ -119,6 +120,18 @@ const AddressPageContent = () => {
     retry: 0,
   });
   const pwrokoEventCount = pwrokoHistoryQuery.data?.items?.length ?? 0;
+
+  // Sprint 5 / S5-T13: same idea for substrate signed-extrinsic activity —
+  // only mount the "Substrate Calls" tab when the address has actually
+  // signed at least one extrinsic. The detail component re-uses this cache
+  // key so there's no second roundtrip.
+  const substrateExtrinsicsQuery = useQuery({
+    queryKey: [ 'substrate_account_extrinsics', hash.toLowerCase() ],
+    queryFn: () => fetchAccountExtrinsics(hash, 100),
+    enabled: areQueriesEnabled && Boolean(hash),
+    retry: 0,
+  });
+  const substrateExtrinsicCount = substrateExtrinsicsQuery.data?.items?.length ?? 0;
 
   const userOpsAccountQuery = useApiQuery('core:user_ops_account', {
     pathParams: { hash },
@@ -269,6 +282,15 @@ const AddressPageContent = () => {
         count: pwrokoEventCount,
         component: <AddressPwroko addressHash={ hash }/>,
       } : undefined,
+      // Sprint 5 / S5-T13: substrate signed-call history. Hidden when the
+      // address has only ever interacted via EVM (no signed substrate
+      // extrinsics indexed).
+      substrateExtrinsicCount > 0 ? {
+        id: 'substrate_calls',
+        title: 'Substrate Calls',
+        count: substrateExtrinsicCount,
+        component: <AddressSubstrateExtrinsics addressHash={ hash }/>,
+      } : undefined,
       {
         id: 'tokens',
         title: 'Tokens',
@@ -334,6 +356,7 @@ const AddressPageContent = () => {
     address3rdPartyWidgets,
     addressType,
     pwrokoEventCount,
+    substrateExtrinsicCount,
     hash,
   ]);
 
