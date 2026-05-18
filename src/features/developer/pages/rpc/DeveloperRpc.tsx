@@ -7,6 +7,8 @@ import PageTitle from 'src/shell/page/title/PageTitle';
 import { Button } from 'src/toolkit/chakra/button';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
+import DeveloperSubNav from 'src/features/developer/components/DeveloperSubNav';
+
 interface RpcMethod {
   namespace: string;
   method: string;
@@ -82,6 +84,7 @@ const DeveloperRpc = () => {
 
   return (
     <>
+      <DeveloperSubNav/>
       <PageTitle
         title="RPC Calls"
         secondRow={ (
