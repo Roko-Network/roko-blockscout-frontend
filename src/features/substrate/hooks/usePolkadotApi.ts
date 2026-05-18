@@ -30,7 +30,11 @@ interface RuntimeEnv {
 
 function runtimeEnv(): RuntimeEnv {
   if (typeof window === 'undefined') return {};
-  return (window as unknown as RuntimeEnv) ?? {};
+  // Blockscout's runtime-env loader injects all `NEXT_PUBLIC_*` vars onto
+  // `window.__envs` at request time (see /assets/envs.js). Reading from
+  // `window.*` directly returns undefined.
+  const envs = (window as unknown as { __envs?: RuntimeEnv }).__envs;
+  return envs ?? {};
 }
 
 function httpEndpoint(): string {
@@ -75,7 +79,16 @@ export function usePolkadotApi() {
         new polkadotApi.WsProvider(endpoint) :
         new polkadotApi.HttpProvider(endpoint);
 
-      const api = await polkadotApi.ApiPromise.create({ provider });
+      // 30s hard cap so a wedged WebSocket handshake or unreachable RPC
+      // surfaces a real error instead of leaving the page on a Skeleton
+      // forever. The HTTP path normally returns in <2s.
+      const createTimeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error(`API init timed out after 30s against ${ endpoint }`)), 30_000),
+      );
+      const api = await Promise.race([
+        polkadotApi.ApiPromise.create({ provider, noInitWarn: true }),
+        createTimeout,
+      ]);
       const [ chain, nodeName, nodeVersion ] = await Promise.all([
         api.rpc.system.chain(),
         api.rpc.system.name(),
