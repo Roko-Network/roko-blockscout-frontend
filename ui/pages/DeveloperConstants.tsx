@@ -6,6 +6,8 @@ import { usePolkadotApi } from 'lib/polkadot/useApi';
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import PageTitle from 'ui/shared/Page/PageTitle';
 
+import DeveloperSubNav from './DeveloperSubNav';
+
 interface ConstantInfo {
   pallet: string;
   name: string;
@@ -63,6 +65,7 @@ const DeveloperConstants = () => {
 
   return (
     <>
+      <DeveloperSubNav/>
       <PageTitle
         title="Constants"
         secondRow={ (

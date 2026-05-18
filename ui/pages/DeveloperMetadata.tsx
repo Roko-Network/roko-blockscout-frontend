@@ -6,6 +6,8 @@ import { usePolkadotApi } from 'lib/polkadot/useApi';
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import PageTitle from 'ui/shared/Page/PageTitle';
 
+import DeveloperSubNav from './DeveloperSubNav';
+
 interface PalletEntry {
   name: string;
   calls: Array<{ name: string; args: Array<string>; docs: string }>;
@@ -99,6 +101,7 @@ const DeveloperMetadata = () => {
 
   return (
     <>
+      <DeveloperSubNav/>
       <PageTitle
         title="Runtime Metadata"
         secondRow={ (
