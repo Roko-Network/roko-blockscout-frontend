@@ -13,6 +13,7 @@ export { megaEth } from './megaEth';
 export { mixpanel } from './mixpanel';
 export { monaco } from './monaco';
 export { multichain } from './multichain';
+export { polkadotApi } from './polkadotApi';
 export { rollbar } from './rollbar';
 export { rollup } from './rollup';
 export { safe } from './safe';

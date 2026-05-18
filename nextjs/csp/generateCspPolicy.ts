@@ -19,6 +19,7 @@ function generateCspPolicy(isPrivateMode = false) {
     isPrivateMode ? {} : descriptors.mixpanel(),
     descriptors.monaco(),
     descriptors.multichain(),
+    descriptors.polkadotApi(),
     isPrivateMode ? {} : descriptors.rollbar(),
     descriptors.rollup(),
     descriptors.safe(),
