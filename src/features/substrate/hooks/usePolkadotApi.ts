@@ -26,6 +26,7 @@ import config from 'src/config';
 interface RuntimeEnv {
   NEXT_PUBLIC_NETWORK_RPC_URL?: string;
   NEXT_PUBLIC_NETWORK_RPC_WS_URL?: string;
+  NEXT_PUBLIC_NETWORK_RPC_DIRECT_URL?: string;
 }
 
 function runtimeEnv(): RuntimeEnv {
@@ -38,9 +39,18 @@ function runtimeEnv(): RuntimeEnv {
 }
 
 function httpEndpoint(): string {
+  // Default: same-origin proxy. The backend forwards JSON-RPC envelopes
+  // verbatim to the upstream substrate node — avoids cross-origin preflight
+  // overhead and a class of browser-side fetch hangs that didn't reproduce
+  // server-side. Operators can set NEXT_PUBLIC_NETWORK_RPC_DIRECT_URL to
+  // bypass the proxy and hit the chain endpoint directly (useful when
+  // running against a separate chain than what the backend talks to).
   const env = runtimeEnv();
-  if (env.NEXT_PUBLIC_NETWORK_RPC_URL) return env.NEXT_PUBLIC_NETWORK_RPC_URL;
-  return config.chain.rpcUrls?.[0] ?? 'https://roko-testnetv2.ntfork.com';
+  if (env.NEXT_PUBLIC_NETWORK_RPC_DIRECT_URL) return env.NEXT_PUBLIC_NETWORK_RPC_DIRECT_URL;
+  if (typeof window !== 'undefined') {
+    return `${ window.location.origin }/api/v2/substrate/rpc`;
+  }
+  return env.NEXT_PUBLIC_NETWORK_RPC_URL ?? config.chain.rpcUrls?.[0] ?? 'https://roko-testnetv2.ntfork.com';
 }
 
 function wsEndpoint(): string {
