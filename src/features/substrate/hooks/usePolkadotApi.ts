@@ -73,41 +73,58 @@ export function usePolkadotApi() {
       // Explicit WS env opts back into the WS path once a WS endpoint exists.
       const useWs = Boolean(env.NEXT_PUBLIC_NETWORK_RPC_WS_URL);
       const endpoint = useWs ? wsEndpoint() : httpEndpoint();
+      // eslint-disable-next-line no-console
+      console.log('[dev-console] connecting', { useWs, endpoint });
 
-      const polkadotApi = await import('@polkadot/api');
-      const provider = useWs ?
-        new polkadotApi.WsProvider(endpoint) :
-        new polkadotApi.HttpProvider(endpoint);
+      // Wrap the whole sequence (dynamic import + ApiPromise.create + initial
+      // RPC calls) in one timeout. A long-tail hang in any of these stages
+      // would otherwise leave the page on Skeleton with no error surface.
+      const work = (async() => {
+        // eslint-disable-next-line no-console
+        console.log('[dev-console] loading @polkadot/api chunk');
+        const polkadotApi = await import('@polkadot/api');
+        // eslint-disable-next-line no-console
+        console.log('[dev-console] chunk loaded, instantiating provider');
+        const provider = useWs ?
+          new polkadotApi.WsProvider(endpoint) :
+          new polkadotApi.HttpProvider(endpoint);
+        // eslint-disable-next-line no-console
+        console.log('[dev-console] ApiPromise.create...');
+        const api = await polkadotApi.ApiPromise.create({ provider, noInitWarn: true });
+        // eslint-disable-next-line no-console
+        console.log('[dev-console] api ready, fetching chain identity');
+        const [ chain, nodeName, nodeVersion ] = await Promise.all([
+          api.rpc.system.chain(),
+          api.rpc.system.name(),
+          api.rpc.system.version(),
+        ]);
+        return {
+          api,
+          endpoint,
+          transport: (useWs ? 'ws' : 'http') as 'http' | 'ws',
+          chain: chain.toString(),
+          nodeName: nodeName.toString(),
+          nodeVersion: nodeVersion.toString(),
+        };
+      })();
 
-      // 30s hard cap so a wedged WebSocket handshake or unreachable RPC
-      // surfaces a real error instead of leaving the page on a Skeleton
-      // forever. The HTTP path normally returns in <2s.
-      const createTimeout = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error(`API init timed out after 30s against ${ endpoint }`)), 30_000),
+      const timeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error(`Dev console init timed out after 15s against ${ endpoint } (useWs=${ useWs })`)), 15_000),
       );
-      const api = await Promise.race([
-        polkadotApi.ApiPromise.create({ provider, noInitWarn: true }),
-        createTimeout,
-      ]);
-      const [ chain, nodeName, nodeVersion ] = await Promise.all([
-        api.rpc.system.chain(),
-        api.rpc.system.name(),
-        api.rpc.system.version(),
-      ]);
-      return {
-        api,
-        endpoint,
-        transport: useWs ? 'ws' : 'http',
-        chain: chain.toString(),
-        nodeName: nodeName.toString(),
-        nodeVersion: nodeVersion.toString(),
-      };
+
+      try {
+        return await Promise.race([ work, timeout ]);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('[dev-console] init failed:', err);
+        throw err;
+      }
     },
     staleTime: Infinity,
     gcTime: Infinity,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    retry: 1,
+    retry: false,
   });
 }
 
