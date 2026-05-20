@@ -8,6 +8,7 @@
         "**/*.svg",
         "**/*.sfd",
         ".git",
+        "patches/**",
         "pnpm-lock.yaml",
         "mocks/zetaChain/zetaChainCCTX.ts",
         "mocks/metadata/address.ts",

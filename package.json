@@ -221,6 +221,9 @@
       "@noble/hashes": "1.8.0",
       "vite-plugin-dts>brace-expansion": "2.0.2",
       "vite-plugin-svgr>js-yaml": "4.1.1"
+    },
+    "patchedDependencies": {
+      "@scure/sr25519@0.2.0": "patches/@scure__sr25519@0.2.0.patch"
     }
   },
   "packageManager": "pnpm@10.32.1"
