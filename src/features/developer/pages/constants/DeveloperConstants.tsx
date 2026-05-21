@@ -25,7 +25,7 @@ const DeveloperConstants = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const api: any = apiQuery.data.api;
     const out: Array<ConstantInfo> = [];
-    const metaPallets = api.registry.metadata.asLatest.pallets;
+    const metaPallets = api.runtimeMetadata.asLatest.pallets;
     for (const p of metaPallets) {
       const palletName = p.name.toString();
       const palletKey = palletName.charAt(0).toLowerCase() + palletName.slice(1);

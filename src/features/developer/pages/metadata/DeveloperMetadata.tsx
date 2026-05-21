@@ -35,7 +35,7 @@ const DeveloperMetadata = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const api: any = apiQuery.data.api;
     const out: Array<PalletEntry> = [];
-    const metaPallets = api.registry.metadata.asLatest.pallets;
+    const metaPallets = api.runtimeMetadata.asLatest.pallets;
     for (const p of metaPallets) {
       const palletName = p.name.toString();
       const calls = p.calls.isSome ? (api.registry.lookup.getSiType(p.calls.unwrap().type.toNumber()).def.toJSON() as { Variant?: { variants: Array<{ name: string; fields?: Array<{ typeName?: string; name?: string }>; docs?: Array<string> }> } }).Variant?.variants ?? [] : [];
