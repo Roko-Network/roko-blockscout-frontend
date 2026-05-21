@@ -45,7 +45,7 @@ const DeveloperChainState = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const api: any = apiQuery.data.api;
     const out: Array<PalletInfo> = [];
-    const metaPallets = api.registry.metadata.asLatest.pallets;
+    const metaPallets = api.runtimeMetadata.asLatest.pallets;
     for (const p of metaPallets) {
       const palletName = p.name.toString();
       const storage = p.storage.unwrapOr(null);
