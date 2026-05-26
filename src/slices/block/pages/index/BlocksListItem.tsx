@@ -34,11 +34,12 @@ interface Props {
   enableTimeIncrement?: boolean;
   animation?: string;
   chainData?: ClusterChainConfig;
+  substrateCount?: number;
 }
 
 const isRollup = config.features.rollup.isEnabled;
 
-const BlocksListItem = ({ data, isLoading, enableTimeIncrement, animation, chainData }: Props) => {
+const BlocksListItem = ({ data, isLoading, enableTimeIncrement, animation, chainData, substrateCount }: Props) => {
   const totalReward = getBlockTotalReward(data);
   const burntFees = BigNumber(data.burnt_fees || 0);
   const txFees = BigNumber(data.transaction_fees || 0);
@@ -99,6 +100,16 @@ const BlocksListItem = ({ data, isLoading, enableTimeIncrement, animation, chain
         ) :
           <Text color="text.secondary">{ data.transactions_count }</Text>
         }
+      </Flex>
+      <Flex columnGap={ 2 }>
+        <Text fontWeight={ 500 }>Extrinsics</Text>
+        { substrateCount === undefined && <Skeleton loading display="inline-block">—</Skeleton> }
+        { substrateCount !== undefined && substrateCount > 0 && (
+          <Link href={ route({ pathname: '/block/[height_or_hash]', query: { height_or_hash: String(data.height), tab: 'substrate_extrinsics' } }) }>
+            { substrateCount }
+          </Link>
+        ) }
+        { substrateCount === 0 && <Text color="text.secondary">{ substrateCount }</Text> }
       </Flex>
       <Box>
         <Text fontWeight={ 500 }>Gas used</Text>

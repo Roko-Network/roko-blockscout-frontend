@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-Blockscout
 
 import { Box } from '@chakra-ui/react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 
 import type { operations, schemas } from '@blockscout/api-types';
@@ -18,6 +18,7 @@ import BlocksList from 'src/slices/block/pages/index/BlocksList';
 import BlocksTable from 'src/slices/block/pages/index/BlocksTable';
 
 import { useMultichainContext } from 'src/features/multichain/context';
+import { fetchBlockExtrinsicCounts } from 'src/features/substrate/api/substrate-api';
 
 import useIsMobile from 'src/shared/hooks/useIsMobile';
 import DataList from 'src/shared/lists/DataList';
@@ -112,6 +113,23 @@ const BlocksContent = ({ type, query, enableSocket = true, top }: Props) => {
 
   const chainData = multichainContext?.chain;
 
+  // Substrate extrinsic counts for the currently visible blocks. Fetched
+  // in parallel with the main list and merged into each row's "Extrinsics"
+  // column. Capped to the visible page.
+  const visibleBlockNumbers = React.useMemo(() => {
+    return (query.data?.items ?? [])
+      .map((b) => b.height)
+      .filter((h): h is number => typeof h === 'number');
+  }, [ query.data?.items ]);
+
+  const countsQuery = useQuery({
+    queryKey: [ 'substrate_block_counts', visibleBlockNumbers.join(',') ],
+    queryFn: () => fetchBlockExtrinsicCounts(visibleBlockNumbers),
+    enabled: visibleBlockNumbers.length > 0 && !query.isPlaceholderData,
+    staleTime: 30_000,
+  });
+  const substrateCounts = countsQuery.data?.counts;
+
   const content = query.data?.items ? (
     <>
       <Box hideFrom="lg">
@@ -129,6 +147,7 @@ const BlocksContent = ({ type, query, enableSocket = true, top }: Props) => {
           page={ query.pagination.page }
           chainData={ chainData }
           resetKey={ query.queryHash }
+          substrateCounts={ substrateCounts }
         />
       </Box>
       <Box hideBelow="lg">
@@ -142,6 +161,7 @@ const BlocksContent = ({ type, query, enableSocket = true, top }: Props) => {
           showSocketErrorAlert={ showSocketAlert }
           chainData={ chainData }
           resetKey={ query.queryHash }
+          substrateCounts={ substrateCounts }
         />
       </Box>
     </>

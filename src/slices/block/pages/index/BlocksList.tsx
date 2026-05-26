@@ -17,9 +17,10 @@ interface Props {
   page: number;
   chainData?: ClusterChainConfig;
   resetKey?: string;
+  substrateCounts?: Record<string, number>;
 }
 
-const BlocksList = ({ data, isLoading, page, chainData, resetKey }: Props) => {
+const BlocksList = ({ data, isLoading, page, chainData, resetKey, substrateCounts }: Props) => {
   const initialList = useInitialList({
     data: data ?? [],
     idFn: (item) => item.height,
@@ -38,6 +39,7 @@ const BlocksList = ({ data, isLoading, page, chainData, resetKey }: Props) => {
             enableTimeIncrement={ page === 1 && !isLoading }
             animation={ initialList.getAnimationProp(item) }
             chainData={ chainData }
+            substrateCount={ substrateCounts?.[String(item.height)] }
           />
         )) }
       </Box>

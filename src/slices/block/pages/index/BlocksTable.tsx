@@ -30,6 +30,7 @@ interface Props {
   showSocketInfo?: boolean;
   chainData?: ClusterChainConfig;
   resetKey?: string;
+  substrateCounts?: Record<string, number>;
 }
 
 const VALIDATOR_COL_WEIGHT = 23;
@@ -39,7 +40,18 @@ const FEES_COL_WEIGHT = 22;
 
 const isRollup = config.features.rollup.isEnabled;
 
-const BlocksTable = ({ data, isLoading, top, page, showSocketInfo, socketInfoNum, showSocketErrorAlert, chainData, resetKey }: Props) => {
+const BlocksTable = ({
+  data,
+  isLoading,
+  top,
+  page,
+  showSocketInfo,
+  socketInfoNum,
+  showSocketErrorAlert,
+  chainData,
+  resetKey,
+  substrateCounts,
+}: Props) => {
   const initialList = useInitialList({
     data: data ?? [],
     idFn: (item) => item.height,
@@ -70,6 +82,7 @@ const BlocksTable = ({ data, isLoading, top, page, showSocketInfo, socketInfoNum
               </TableColumnHeader>
             ) }
             <TableColumnHeader width="64px" isNumeric>Txn</TableColumnHeader>
+            <TableColumnHeader width="80px" isNumeric>Extrinsics</TableColumnHeader>
             <TableColumnHeader width={ `${ GAS_COL_WEIGHT / widthBase * 100 }%` }>Gas used</TableColumnHeader>
             { !isRollup && !config.slices.block.hiddenFields?.total_reward &&
               <TableColumnHeader width={ `${ REWARD_COL_WEIGHT / widthBase * 100 }%` }>Reward { currencyUnits.ether }</TableColumnHeader> }
@@ -96,6 +109,7 @@ const BlocksTable = ({ data, isLoading, top, page, showSocketInfo, socketInfoNum
               isLoading={ isLoading }
               animation={ initialList.getAnimationProp(item) }
               chainData={ chainData }
+              substrateCount={ substrateCounts?.[String(item.height)] }
             />
           )) }
         </TableBody>

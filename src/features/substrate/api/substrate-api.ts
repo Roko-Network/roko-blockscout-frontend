@@ -240,6 +240,20 @@ export function fetchBlockEvents(blockNumber: number): Promise<{ items: Array<Su
   return fetchJson(`/blocks/${ blockNumber }/events`);
 }
 
+// Batch per-block extrinsic counts. Used by the EVM-side blocks list to
+// enrich each row with a substrate count column without modifying
+// Blockscout's standard /api/v2/blocks response shape. Missing blocks
+// come back as 0.
+export function fetchBlockExtrinsicCounts(
+  blockNumbers: Array<number>,
+): Promise<{ counts: Record<string, number> }> {
+  if (blockNumbers.length === 0) {
+    return Promise.resolve({ counts: {} });
+  }
+  const numbers = blockNumbers.join(',');
+  return fetchJson(`/blocks/counts?numbers=${ numbers }`);
+}
+
 export function fetchAccountExtrinsics(
   address: string,
   limit = 100,
