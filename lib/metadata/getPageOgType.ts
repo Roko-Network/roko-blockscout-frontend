@@ -68,6 +68,7 @@ const OG_TYPE_DICT: Record<Route['pathname'], OGPageType> = {
   '/staking/eras': 'Root page',
   '/staking/eras/[n]': 'Regular page',
   '/extrinsic/[block]/[index]': 'Regular page',
+  '/extrinsics': 'Root page',
   '/developer': 'Root page',
   '/developer/chain-state': 'Regular page',
   '/developer/constants': 'Regular page',

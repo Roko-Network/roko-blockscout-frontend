@@ -73,6 +73,7 @@ const TEMPLATE_MAP: Record<Route['pathname'], string> = {
   '/staking/eras': '%network_name% staking eras',
   '/staking/eras/[n]': '%network_name% staking era %n%',
   '/extrinsic/[block]/[index]': '%network_name% extrinsic %block%/%index%',
+  '/extrinsics': '%network_name% substrate extrinsics',
   '/developer': '%network_name% developer console',
   '/developer/chain-state': '%network_name% chain state',
   '/developer/constants': '%network_name% runtime constants',
