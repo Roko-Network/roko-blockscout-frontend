@@ -59,6 +59,15 @@ export default function useNavItems(): ReturnType {
         pathname === '/tx/[hash]' ||
         pathname === '/chain/[chain_slug_or_id]/tx/[hash]',
     };
+    // Sprint 5: substrate extrinsics feed, sibling to EVM transactions.
+    const extrinsics: NavItem | null = {
+      text: 'Extrinsics',
+      nextRoute: { pathname: '/extrinsics' as const },
+      icon: 'navigation/transactions',
+      isActive:
+        pathname === '/extrinsics' ||
+        pathname === '/extrinsic/[block]/[index]',
+    };
     const cctxs: NavItem | null = config.features.zetachain.isEnabled ? {
       text: 'Cross-chain transactions',
       nextRoute: { pathname: '/txs' as const, query: { tab: 'cctx' } },
@@ -213,6 +222,7 @@ export default function useNavItems(): ReturnType {
     } else {
       blockchainNavItems = [
         txs,
+        extrinsics,
         operations,
         internalTxs,
         cctxs,

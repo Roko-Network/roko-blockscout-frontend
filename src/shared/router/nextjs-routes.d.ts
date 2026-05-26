@@ -67,7 +67,6 @@ declare module "nextjs-routes" {
     | DynamicRoute<"/essential-dapps/[id]", { "id": string }>
     | StaticRoute<"/faucet">
     | StaticRoute<"/pwroko">
-    | StaticRoute<"/pwroko">
     | StaticRoute<"/gas-tracker">
     | StaticRoute<"/hot-contracts">
     | StaticRoute<"/ictt-users">
@@ -91,6 +90,7 @@ declare module "nextjs-routes" {
     | StaticRoute<"/staking/eras">
     | DynamicRoute<"/staking/eras/[n]", { "n": string }>
     | DynamicRoute<"/extrinsic/[block]/[index]", { "block": string; "index": string }>
+    | StaticRoute<"/extrinsics">
     | StaticRoute<"/developer">
     | StaticRoute<"/developer/chain-state">
     | StaticRoute<"/developer/constants">

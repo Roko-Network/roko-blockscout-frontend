@@ -68,6 +68,7 @@ export const PAGE_TYPE_DICT: Record<Route['pathname'], string> = {
   '/staking/eras': 'Staking eras',
   '/staking/eras/[n]': 'Staking era details',
   '/extrinsic/[block]/[index]': 'Substrate extrinsic details',
+  '/extrinsics': 'Substrate extrinsics',
   '/developer': 'Developer console',
   '/developer/chain-state': 'Chain state',
   '/developer/constants': 'Runtime constants',

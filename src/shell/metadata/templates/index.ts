@@ -625,6 +625,17 @@ export const TEMPLATE_MAP: Record<Route['pathname'], RouteTemplateRecord> = {
       },
     },
   },
+  '/extrinsics': {
+    metadata: {
+      title: {
+        'default': '%chain_name% substrate extrinsics',
+      },
+      description: {
+        'default': 'Browse substrate extrinsics on %chain_name%, including pallet calls, inherents, and signed transactions.',
+      },
+    },
+    og: OG_ROOT_PAGE,
+  },
   '/developer': {
     metadata: {
       title: { 'default': '%chain_name% developer console' },
