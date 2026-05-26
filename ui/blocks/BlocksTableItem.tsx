@@ -30,11 +30,12 @@ interface Props {
   animation?: string;
   enableTimeIncrement?: boolean;
   chainData?: ClusterChainConfig;
+  substrateCount?: number;
 }
 
 const isRollup = config.features.rollup.isEnabled;
 
-const BlocksTableItem = ({ data, isLoading, enableTimeIncrement, animation, chainData }: Props) => {
+const BlocksTableItem = ({ data, isLoading, enableTimeIncrement, animation, chainData, substrateCount }: Props) => {
   const totalReward = getBlockTotalReward(data);
   const burntFees = BigNumber(data.burnt_fees || 0);
   const txFees = BigNumber(data.transaction_fees || 0);
@@ -100,6 +101,18 @@ const BlocksTableItem = ({ data, isLoading, enableTimeIncrement, animation, chai
             </Link>
           </Skeleton>
         ) : data.transactions_count }
+      </TableCell>
+      <TableCell isNumeric>
+        { substrateCount === undefined && <Skeleton loading display="inline-block">—</Skeleton> }
+        { substrateCount !== undefined && substrateCount > 0 && (
+          <Link href={ route({
+            pathname: '/block/[height_or_hash]',
+            query: { height_or_hash: String(data.height), tab: 'substrate_extrinsics' },
+          }) }>
+            { substrateCount }
+          </Link>
+        ) }
+        { substrateCount === 0 && substrateCount }
       </TableCell>
       <TableCell >
         <Skeleton loading={ isLoading } display="inline-block">{ BigNumber(data.gas_used || 0).toFormat() }</Skeleton>

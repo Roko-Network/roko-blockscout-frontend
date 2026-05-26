@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 
 import type { SocketMessage } from 'lib/socket/types';
@@ -7,6 +7,7 @@ import type { BlockType, BlocksResponse } from 'types/api/block';
 
 import { route } from 'nextjs/routes';
 
+import { fetchBlockExtrinsicCounts } from 'lib/api/services/general/substrateApi';
 import { getResourceKey } from 'lib/api/useApiQuery';
 import { useMultichainContext } from 'lib/contexts/multichain';
 import useIsMobile from 'lib/hooks/useIsMobile';
@@ -93,6 +94,23 @@ const BlocksContent = ({ type, query, enableSocket = true, top }: Props) => {
 
   const chainData = multichainContext?.chain;
 
+  // Substrate extrinsic counts for the currently visible blocks. Fetched
+  // in parallel with the main list and merged into each row's "Extrinsics"
+  // column. Capped to the visible page.
+  const visibleBlockNumbers = React.useMemo(() => {
+    return (query.data?.items ?? [])
+      .map((b) => b.height)
+      .filter((h): h is number => typeof h === 'number');
+  }, [ query.data?.items ]);
+
+  const countsQuery = useQuery({
+    queryKey: [ 'substrate_block_counts', visibleBlockNumbers.join(',') ],
+    queryFn: () => fetchBlockExtrinsicCounts(visibleBlockNumbers),
+    enabled: visibleBlockNumbers.length > 0 && !query.isPlaceholderData,
+    staleTime: 30_000,
+  });
+  const substrateCounts = countsQuery.data?.counts;
+
   const content = query.data?.items ? (
     <>
       <Box hideFrom="lg">
@@ -104,7 +122,13 @@ const BlocksContent = ({ type, query, enableSocket = true, top }: Props) => {
             isLoading={ query.isPlaceholderData }
           />
         ) }
-        <BlocksList data={ query.data.items } isLoading={ query.isPlaceholderData } page={ query.pagination.page } chainData={ chainData }/>
+        <BlocksList
+          data={ query.data.items }
+          isLoading={ query.isPlaceholderData }
+          page={ query.pagination.page }
+          chainData={ chainData }
+          substrateCounts={ substrateCounts }
+        />
       </Box>
       <Box hideBelow="lg">
         <BlocksTable
@@ -116,6 +140,7 @@ const BlocksContent = ({ type, query, enableSocket = true, top }: Props) => {
           socketInfoNum={ newItemsCount }
           showSocketErrorAlert={ showSocketAlert }
           chainData={ chainData }
+          substrateCounts={ substrateCounts }
         />
       </Box>
     </>
