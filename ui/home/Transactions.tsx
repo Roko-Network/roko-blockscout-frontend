@@ -7,6 +7,7 @@ import { SocketProvider } from 'lib/socket/context';
 import { Heading } from 'toolkit/chakra/heading';
 import AdaptiveTabs from 'toolkit/components/AdaptiveTabs/AdaptiveTabs';
 import LatestOptimisticDeposits from 'ui/home/latestDeposits/LatestOptimisticDeposits';
+import LatestExtrinsics from 'ui/home/LatestExtrinsics';
 import LatestTxs from 'ui/home/LatestTxs';
 import LatestWatchlistTxs from 'ui/home/LatestWatchlistTxs';
 import LatestZetaChainCCTXs from 'ui/home/latestZetaChainCCTX/LatestZetaChainCCTXs';
@@ -73,13 +74,21 @@ const Transactions = () => {
     );
   }
 
+  // Sprint 5 — Roko-side default: pair EVM "Latest transactions" with a
+  // substrate "Latest extrinsics" tab. The substrate widget self-degrades
+  // if the indexer is unreachable.
+  const defaultTabs = [
+    { id: 'txn', title: 'Latest txn', component: <LatestTxs/> },
+    { id: 'extrinsics', title: 'Latest extrinsics', component: <LatestExtrinsics/> },
+  ];
+
   return (
     <>
       <HStack mb={ 3 }>
-        <Heading level="3" >Latest transactions</Heading>
+        <Heading level="3" >Latest activity</Heading>
         { isRpcData && <FallbackRpcIcon/> }
       </HStack>
-      <LatestTxs/>
+      <AdaptiveTabs tabs={ defaultTabs } unmountOnExit={ false } listProps={{ mb: 3 }}/>
     </>
   );
 };
