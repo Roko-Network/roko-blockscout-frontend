@@ -71,6 +71,7 @@ const TEMPLATE_MAP: Record<Route['pathname'], string> = {
   '/staking/eras': 'Per-era validator payouts and slashing events on %network_title%.',
   '/staking/eras/[n]': 'Era %n% on %network_title% — payouts, slashes, and validator set snapshot.',
   '/extrinsic/[block]/[index]': 'Substrate extrinsic %block%/%index% on %network_title% — pallet, method, args, signer, events emitted.',
+  '/extrinsics': 'Browse substrate extrinsics on %network_title% — every pallet call, inherent, and signed transaction indexed in real time.',
   '/developer': 'Developer console for %network_title% — read pallet storage, browse runtime metadata, call RPCs.',
   '/developer/chain-state': 'Read any pallet storage on %network_title%. Metadata-driven chain-state browser.',
   '/developer/constants': 'Compile-time runtime constants per pallet on %network_title%.',

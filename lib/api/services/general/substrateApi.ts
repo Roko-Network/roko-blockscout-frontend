@@ -251,15 +251,25 @@ export function fetchExtrinsicByHash(hash: string): Promise<SubstrateExtrinsicWi
   return fetchJsonOrNull(`/extrinsics/${ hash }`);
 }
 
+export interface SubstrateExtrinsicCursor {
+  block_number: number;
+  index_in_block: number;
+}
+
 export function fetchRecentExtrinsics(opts: {
   pallet?: string;
   method?: string;
   limit?: number;
-} = {}): Promise<{ items: Array<SubstrateExtrinsic> }> {
+  cursor?: SubstrateExtrinsicCursor | null;
+} = {}): Promise<{ items: Array<SubstrateExtrinsic>; next_page_params: SubstrateExtrinsicCursor | null }> {
   const params = new URLSearchParams();
   if (opts.pallet) params.set('pallet', opts.pallet);
   if (opts.method) params.set('method', opts.method);
   if (opts.limit !== undefined) params.set('limit', String(opts.limit));
+  if (opts.cursor) {
+    params.set('block_number', String(opts.cursor.block_number));
+    params.set('index_in_block', String(opts.cursor.index_in_block));
+  }
   const q = params.toString();
   return fetchJson(`/extrinsics/recent${ q ? `?${ q }` : '' }`);
 }
