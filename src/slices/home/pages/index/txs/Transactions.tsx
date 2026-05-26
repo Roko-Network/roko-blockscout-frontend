@@ -14,6 +14,7 @@ import LatestCrossChainTxs from 'src/features/cross-chain-txs/pages/home/LatestC
 import LatestArbitrumDeposits from 'src/features/rollup/arbitrum/pages/home/LatestArbitrumDeposits';
 import { layerLabels } from 'src/features/rollup/common/utils/layer';
 import LatestOptimisticDeposits from 'src/features/rollup/optimism/pages/home/LatestOptimisticDeposits';
+import LatestExtrinsicsHome from 'src/features/substrate/components/LatestExtrinsicsHome';
 
 import config from 'src/config';
 import ApiDegradationRpcIcon from 'src/shared/api-degradation/ApiDegradationRpcIcon';
@@ -79,13 +80,21 @@ const Transactions = () => {
     );
   }
 
+  // Sprint 5 — Roko-side default: pair EVM "Latest transactions" with a
+  // substrate "Latest extrinsics" tab. The substrate widget self-degrades
+  // if the indexer is unreachable.
+  const defaultTabs = [
+    { id: 'txn', title: 'Latest txn', component: <LatestTxs/> },
+    { id: 'extrinsics', title: 'Latest extrinsics', component: <LatestExtrinsicsHome/> },
+  ];
+
   return (
     <>
       <HStack mb={ 3 }>
-        <Heading level="3" >Latest transactions</Heading>
+        <Heading level="3" >Latest activity</Heading>
         { isRpcData && <ApiDegradationRpcIcon/> }
       </HStack>
-      <LatestTxs/>
+      <AdaptiveTabs tabs={ defaultTabs } unmountOnExit={ false } listProps={{ mb: 3 }}/>
     </>
   );
 };
