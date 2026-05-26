@@ -1,4 +1,5 @@
 import { Box, chakra } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import type { FormEvent } from 'react';
 import React from 'react';
@@ -7,6 +8,7 @@ import { SEARCH_RESULT_TYPES } from 'types/api/search';
 import type { SearchResultItem } from 'types/client/search';
 
 import config from 'configs/app';
+import { searchSubstrateHash } from 'lib/api/services/general/substrateApi';
 import { useSettingsContext } from 'lib/contexts/settings';
 import getQueryParamString from 'lib/router/getQueryParamString';
 import removeQueryParam from 'lib/router/removeQueryParam';
@@ -48,6 +50,17 @@ const SearchResultsPageContent = () => {
   } = useSearchQuery(withRedirectCheck);
   const { data, isError, isPlaceholderData, pagination } = query;
   const [ showContent, setShowContent ] = React.useState(!withRedirectCheck);
+
+  // Sprint 5 — fall-through substrate hash probe. Runs only during the
+  // redirect-check window for 32-byte hex strings the EVM resolver doesn't
+  // claim. Lets users paste an extrinsic-hash, call-hash, or substrate
+  // block-hash into the global search bar and land on the right page.
+  const isSubstrateHashCandidate = /^0x[0-9a-fA-F]{64}$/.test(debouncedSearchTerm);
+  const substrateRedirectQuery = useQuery({
+    queryKey: [ 'substrate_redirect', debouncedSearchTerm ],
+    queryFn: () => searchSubstrateHash(debouncedSearchTerm),
+    enabled: withRedirectCheck && !showContent && isSubstrateHashCandidate,
+  });
 
   const marketplaceApps = useMarketplaceApps(debouncedSearchTerm);
   const settingsContext = useSettingsContext();
@@ -106,10 +119,35 @@ const SearchResultsPageContent = () => {
     }
 
     if (!redirectCheckQuery.isPending) {
+      // EVM resolver had no claim. Try substrate before falling through
+      // to the search-results listing.
+      if (isSubstrateHashCandidate) {
+        if (substrateRedirectQuery.isPending) {
+          return;
+        }
+        const hit = substrateRedirectQuery.data;
+        if (hit) {
+          if (hit.kind === 'extrinsic' && hit.index_in_block !== undefined) {
+            router.replace({
+              pathname: '/extrinsic/[block]/[index]',
+              query: { block: String(hit.block_number), index: String(hit.index_in_block) },
+            });
+            return;
+          }
+          if (hit.kind === 'block') {
+            router.replace({
+              pathname: '/block/[height_or_hash]',
+              query: { height_or_hash: String(hit.block_number) },
+            });
+            return;
+          }
+        }
+      }
+
       setShowContent(true);
       removeQueryParam(router, 'redirect');
     }
-  }, [ redirectCheckQuery, router, debouncedSearchTerm, showContent ]);
+  }, [ redirectCheckQuery, router, debouncedSearchTerm, showContent, isSubstrateHashCandidate, substrateRedirectQuery ]);
 
   const handleSubmit = React.useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
