@@ -1,15 +1,19 @@
 # *****************************
 # *** STAGE 1: Dependencies ***
 # *****************************
-FROM node:22.14.0-alpine AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat python3 make g++
+FROM node:22.14.0-bookworm-slim AS deps
+# Roko: build on Debian (glibc), NOT Alpine (musl). A transitive native addon
+# (@ipshipyard/node-datachannel, pulled in via libp2p) ships a glibc-only `.node`
+# binary; on musl it throws ERR_DLOPEN_FAILED and 500s every /address/* SSR page.
+# Keep all three stages on a glibc base.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      python3 make g++ git ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 RUN corepack enable && corepack prepare pnpm@11.5.1 --activate
 
 ### Install all workspace dependencies in one place
 WORKDIR /app
-RUN apk add git
 COPY . .
 RUN pnpm install --frozen-lockfile
 
@@ -17,8 +21,12 @@ RUN pnpm install --frozen-lockfile
 # *****************************
 # ****** STAGE 2: Build *******
 # *****************************
-FROM node:22.14.0-alpine AS builder
-RUN apk add --no-cache --upgrade libc6-compat bash jq
+FROM node:22.14.0-bookworm-slim AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      bash jq git ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+# Debian's /bin/sh is dash, which lacks `source` used by build_sprite.sh below.
+SHELL ["/bin/bash", "-c"]
 RUN corepack enable && corepack prepare pnpm@11.5.1 --activate
 
 # pass build args to env variables
@@ -86,8 +94,13 @@ RUN pnpm exec tsc -p ./tools/dev-server/tsconfig.json
 # ******* STAGE 3: Run ********
 # *****************************
 # Production image, copy all the files and run next
-FROM node:22.14.0-alpine AS runner
-RUN apk add --no-cache --upgrade bash curl jq unzip
+FROM node:22.14.0-bookworm-slim AS runner
+# ca-certificates is REQUIRED: download_assets.sh fetches the network logo over
+# HTTPS at startup and fail-fasts (curl exit 77, missing CA bundle) without it,
+# crash-looping the container. node:*-bookworm-slim ships without it.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      bash curl jq unzip ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 ### APP
 WORKDIR /app
@@ -95,8 +108,8 @@ WORKDIR /app
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN groupadd --system --gid 1001 nodejs
+RUN useradd --system --uid 1001 --gid 1001 nextjs
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
