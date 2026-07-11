@@ -8,7 +8,7 @@
 #   it exists, the upstream `.github/workflows/*` are ignored on this instance (kept
 #   in the repo untouched for GitHub delivery).
 #
-# Runner: `native` = build01 host-mode. build01 has 16 GB with no swap, which
+# Runner: `s9-build` = build01-unique container-mode (catthehacker; git+docker CLI, host socket). build01 has 16 GB no-swap, which
 #   absorbs the frontend's 8 GB Node heap (NODE_OPTIONS=--max-old-space-size=8192)
 #   without OOM — the reason #49 targets build01 over smaller boxes.
 #
@@ -48,7 +48,7 @@ env:
 jobs:
   build:
     name: Build & push frontend image
-    runs-on: native
+    runs-on: s9-build
     steps:
       - name: Checkout (manual clone — host-mode runner has no node for actions/checkout)
         run: |
