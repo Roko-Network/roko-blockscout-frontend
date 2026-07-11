@@ -1,0 +1,106 @@
+# ROKO Blockscout frontend — Gitea Actions build (roctinam/devops#49 Part A)
+#
+# Builds the Next.js frontend image on build01 (host mode) and pushes it to the
+# Gitea container registry.
+#
+# Why this file also silences the upstream Blockscout CI on Gitea:
+#   Gitea 1.25 gives `.gitea/workflows/` precedence over `.github/workflows/` — when
+#   it exists, the upstream `.github/workflows/*` are ignored on this instance (kept
+#   in the repo untouched for GitHub delivery).
+#
+# Runner: `native` = build01 host-mode. build01 has 16 GB with no swap, which
+#   absorbs the frontend's 8 GB Node heap (NODE_OPTIONS=--max-old-space-size=8192)
+#   without OOM — the reason #49 targets build01 over smaller boxes.
+#
+# The Dockerfile MUST stay on a glibc base (node:22-bookworm-slim, NOT Alpine): a
+#   transitive native addon (@ipshipyard/node-datachannel via libp2p) is glibc-only
+#   and 500s every /address/* page on musl. (deploy/README.md) — this workflow does
+#   not override the base; it just builds the repo Dockerfile as-is.
+#
+# Registry auth: secrets REGISTRY_TOKEN (+ optional REGISTRY_USERNAME); falls back
+#   to the built-in Actions token.
+
+name: build-frontend
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+    paths-ignore:
+      - '.gitea/**'
+      - '.github/**'
+      - 'docs/**'
+      - '**.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: roko-blockscout-frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: git.integrolabs.net
+  IMAGE: git.integrolabs.net/roko/roko-blockscout-frontend
+
+jobs:
+  build:
+    name: Build & push frontend image
+    runs-on: native
+    steps:
+      - name: Checkout (manual clone — host-mode runner has no node for actions/checkout)
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --branch "${GITHUB_REF_NAME:-main}" \
+            "https://token:${{ github.token }}@git.integrolabs.net/${GITHUB_REPOSITORY}.git" .
+          git checkout "${GITHUB_SHA:-HEAD}"
+
+      - name: Registry login
+        env:
+          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+          REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+          GITEA_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TOKEN="${REGISTRY_TOKEN:-$GITEA_TOKEN}"
+          USER_NAME="${REGISTRY_USERNAME:-${{ gitea.actor }}}"
+          if [ -z "$TOKEN" ]; then
+            echo "::error::no registry token (set REGISTRY_TOKEN or ensure github.token is available)"; exit 1
+          fi
+          echo "$TOKEN" | docker login "$REGISTRY" -u "$USER_NAME" --password-stdin
+
+      - name: Compute tags
+        id: tags
+        run: |
+          set -euo pipefail
+          SHORT="$(git rev-parse --short=12 HEAD)"
+          echo "sha=sha-${SHORT}" >> "$GITHUB_OUTPUT"
+          if [ "${GITHUB_REF_NAME:-}" = "main" ]; then
+            echo "moving=testnet" >> "$GITHUB_OUTPUT"
+          else
+            echo "moving=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build frontend image
+        env:
+          SHA_TAG: ${{ steps.tags.outputs.sha }}
+          MOVING_TAG: ${{ steps.tags.outputs.moving }}
+        run: |
+          set -euo pipefail
+          # No build args: NEXT_PUBLIC_* are injected at container start by entrypoint.sh
+          # from envs/frontend.env, not baked in at build time. (deploy/README.md)
+          args=(-t "${IMAGE}:${SHA_TAG}")
+          if [ -n "$MOVING_TAG" ]; then args+=(-t "${IMAGE}:${MOVING_TAG}"); fi
+          docker build "${args[@]}" .
+
+      - name: Push
+        env:
+          SHA_TAG: ${{ steps.tags.outputs.sha }}
+          MOVING_TAG: ${{ steps.tags.outputs.moving }}
+        run: |
+          set -euo pipefail
+          docker push "${IMAGE}:${SHA_TAG}"
+          if [ -n "$MOVING_TAG" ]; then docker push "${IMAGE}:${MOVING_TAG}"; fi
+          echo "pushed ${IMAGE}:${SHA_TAG}${MOVING_TAG:+ + :$MOVING_TAG}"
