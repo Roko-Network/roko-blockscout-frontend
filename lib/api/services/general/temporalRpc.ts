@@ -13,28 +13,30 @@ import type {
 import { nanoToDatetime } from 'lib/temporal/formatNanoTimestamp';
 
 async function apiFetch<T>(path: string): Promise<T> {
-  const response = await fetch(`/api/v2/temporal${path}`);
+  const response = await fetch(`/api/v2/temporal${ path }`);
   if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+    throw new Error(`API error: ${ response.status }`);
   }
   return response.json() as Promise<T>;
 }
 
-function nsToDatetime(ns: number): string {
-  return new Date(ns / 1_000_000).toISOString();
+function nsToDatetime(ns: string | number): string {
+  return nanoToDatetime(String(ns));
 }
 
 // Backend returns: { current_watermark: number, last_update_block: number|null }
 interface WatermarkResponse {
-  current_watermark: number;
+  current_watermark: string | number;
   last_update_block: number | null;
 }
 
 export async function fetchTemporalWatermark(): Promise<TemporalWatermark> {
   const result = await apiFetch<WatermarkResponse>('/watermark');
+  const watermarkNs = String(result.current_watermark);
+  const isEstablished = watermarkNs !== '0';
   return {
-    watermark_ns: String(result.current_watermark),
-    watermark_datetime: nsToDatetime(result.current_watermark),
+    watermark_ns: watermarkNs,
+    watermark_datetime: isEstablished ? nsToDatetime(watermarkNs) : '',
     block_number: result.last_update_block ?? 0,
   };
 }
@@ -98,7 +100,7 @@ interface TxTimestampResponse {
 }
 
 export async function fetchTemporalTxTimestamp(txHash: string): Promise<TemporalTxTimestamp> {
-  const result = await apiFetch<TxTimestampResponse>(`/transactions/${txHash}/timestamp`);
+  const result = await apiFetch<TxTimestampResponse>(`/transactions/${ txHash }/timestamp`);
   return {
     timestamp_ns: result.timestamp_ns ?? '',
     timestamp_datetime: result.timestamp_ns ? nanoToDatetime(result.timestamp_ns) : '',
@@ -117,7 +119,7 @@ interface BlockMetadataResponse {
 }
 
 export async function fetchTemporalBlockMetadata(blockNumber: number): Promise<TemporalBlockMetadata> {
-  const result = await apiFetch<BlockMetadataResponse>(`/blocks/${blockNumber}/metadata`);
+  const result = await apiFetch<BlockMetadataResponse>(`/blocks/${ blockNumber }/metadata`);
   return {
     block_nano_timestamp: result.block_nano_timestamp,
     block_number: result.block_number,
@@ -137,7 +139,7 @@ export interface BlockTxTimestampEntry {
 }
 
 export async function fetchBlockTransactionTimestamps(blockNumber: number): Promise<Array<BlockTxTimestampEntry>> {
-  return apiFetch<Array<BlockTxTimestampEntry>>(`/blocks/${blockNumber}/timestamps`);
+  return apiFetch<Array<BlockTxTimestampEntry>>(`/blocks/${ blockNumber }/timestamps`);
 }
 
 // Backend returns the raw JSON from temporal_getTemporalMetrics.
@@ -154,7 +156,7 @@ export async function fetchTemporalMetrics(): Promise<TemporalMetrics> {
   // Combine on-chain metrics with live queue stats for accurate counts.
   // The on-chain TemporalMetricsStorage may not be updated for all tx types,
   // so we use the queue's totalStamped as the authoritative tx count.
-  const [metricsResult, queueResult, consensusResult] = await Promise.all([
+  const [ metricsResult, queueResult, consensusResult ] = await Promise.all([
     apiFetch<MetricsResponse>('/metrics').catch(() => null),
     apiFetch<QueueResponse>('/queue-stats').catch(() => null),
     apiFetch<ConsensusResponse>('/consensus-time').catch(() => null),
