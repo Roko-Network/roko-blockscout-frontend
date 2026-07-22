@@ -11,6 +11,14 @@ interface Props {
 }
 
 const TemporalWatermarkCard = ({ data, isLoading }: Props) => {
+  const isEstablished = Boolean(data && data.watermark_ns !== '0');
+  let statusColor = 'orange.300';
+  if (isLoading) {
+    statusColor = 'gray.300';
+  } else if (isEstablished) {
+    statusColor = 'green.400';
+  }
+
   return (
     <Box
       borderWidth="1px"
@@ -22,12 +30,12 @@ const TemporalWatermarkCard = ({ data, isLoading }: Props) => {
     >
       <Skeleton loading={ isLoading } mb={ 2 } w="fit-content">
         <chakra.span fontWeight={ 600 } fontSize="sm" color="text.secondary" textTransform="uppercase" letterSpacing="wide">
-          Temporal Watermark
+          Transaction Watermark
         </chakra.span>
       </Skeleton>
 
       <Skeleton loading={ isLoading } w="fit-content" mb={ 1 }>
-        <chakra.span fontSize="sm" color="text.secondary">Block </chakra.span>
+        <chakra.span fontSize="sm" color="text.secondary">Observed at block </chakra.span>
         <chakra.span fontWeight={ 600 }>
           { data?.block_number?.toLocaleString() ?? '-' }
         </chakra.span>
@@ -35,13 +43,13 @@ const TemporalWatermarkCard = ({ data, isLoading }: Props) => {
 
       <Skeleton loading={ isLoading } w="fit-content" mb={ 1 }>
         <chakra.span fontFamily="mono" fontSize="sm" wordBreak="break-all">
-          { data?.watermark_ns ?? '-' } ns
+          { isEstablished ? `${ data?.watermark_ns } ns` : 'Not established' }
         </chakra.span>
       </Skeleton>
 
       <Skeleton loading={ isLoading } w="fit-content">
         <chakra.span fontSize="sm" color="text.secondary">
-          { data?.watermark_datetime ? new Date(data.watermark_datetime).toLocaleString(undefined, {
+          { isEstablished && data?.watermark_datetime ? new Date(data.watermark_datetime).toLocaleString(undefined, {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
@@ -49,13 +57,15 @@ const TemporalWatermarkCard = ({ data, isLoading }: Props) => {
             minute: '2-digit',
             second: '2-digit',
             timeZoneName: 'short',
-          }) : '-' }
+          }) : 'Awaiting first stamped transaction' }
         </chakra.span>
       </Skeleton>
 
       <Flex mt={ 3 } gap={ 1 } alignItems="center">
-        <Box w={ 2 } h={ 2 } borderRadius="full" bg={ isLoading ? 'gray.300' : 'green.400' }/>
-        <chakra.span fontSize="xs" color="text.secondary">Live — updates every block</chakra.span>
+        <Box w={ 2 } h={ 2 } borderRadius="full" bg={ statusColor }/>
+        <chakra.span fontSize="xs" color="text.secondary">
+          { isEstablished ? 'Advances when stamped transactions finalize' : 'No stamped transactions finalized' }
+        </chakra.span>
       </Flex>
     </Box>
   );

@@ -47,10 +47,23 @@ describe('TemporalStatsHome', () => {
     expect(screen.getAllByText('Temporal Ordering').length).toBeGreaterThan(0);
   });
 
-  it('renders watermark label (at least one instance)', () => {
+  it('renders transaction watermark label (at least one instance)', () => {
     render(<TemporalStatsHome/>, { wrapper: makeWrapper() });
     // Skeleton may duplicate children in loading state; use getAllByText.
-    expect(screen.getAllByText('Watermark').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Transaction watermark').length).toBeGreaterThan(0);
+  });
+
+  it('shows an unestablished transaction watermark as status, not the Unix epoch', async() => {
+    vi.mocked(temporalRpc.fetchTemporalWatermark).mockResolvedValue({
+      watermark_ns: '0',
+      watermark_datetime: '',
+      block_number: 113,
+    });
+    render(<TemporalStatsHome/>, { wrapper: makeWrapper() });
+    await waitFor(() => {
+      expect(screen.queryAllByText('Not established').length).toBeGreaterThan(0);
+    });
+    expect(screen.queryByText(/1969|1970/)).toBeNull();
   });
 
   it('renders mesh quality label (at least one instance)', () => {

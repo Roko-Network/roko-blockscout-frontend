@@ -116,10 +116,13 @@ const TemporalStatsHome = () => {
     consensusTimeQuery.isPlaceholderData ||
     queueStatsQuery.isPlaceholderData;
 
-  // Watermark: show human-readable datetime or em-dash
+  // Transaction watermark is zero until the first stamped transaction finalizes.
   const watermarkValue = (() => {
     if (watermarkQuery.isError) {
       return '\u2014';
+    }
+    if (watermarkQuery.data?.watermark_ns === '0') {
+      return 'Not established';
     }
     return formatWatermark(watermarkQuery.data?.watermark_datetime);
   })();
@@ -140,9 +143,9 @@ const TemporalStatsHome = () => {
 
   // Total stamped: "1,234 txs stamped"
   const totalStamped = queueStatsQuery.isError ? undefined : queueStatsQuery.data?.total_stamped;
-  const totalStampedValue = totalStamped !== undefined
-    ? `${ totalStamped.toLocaleString() } txs stamped`
-    : '\u2014';
+  const totalStampedValue = totalStamped !== undefined ?
+    `${ totalStamped.toLocaleString() } txs stamped` :
+    '\u2014';
 
   return (
     <Box
@@ -171,18 +174,18 @@ const TemporalStatsHome = () => {
       <Flex gap={{ base: 4, md: 8 }} flexWrap="wrap" alignItems="flex-start">
 
         { /* Watermark */ }
-        <Metric label="Watermark" value={ watermarkValue } isLoading={ isLoading }/>
+        <Metric label="Transaction watermark" value={ watermarkValue } isLoading={ isLoading }/>
 
         { /* Mesh Quality with dot indicator */ }
         <Metric
           label="Mesh Quality"
           isLoading={ isLoading }
-          value={
+          value={ (
             <Flex as="span" display="inline-flex" alignItems="center" gap={ 1.5 }>
               <Box as="span" display="inline-block" w={ 2 } h={ 2 } borderRadius="full" bg={ dotColor } flexShrink={ 0 }/>
               <chakra.span>{ qualityValue }</chakra.span>
             </Flex>
-          }
+          ) }
         />
 
         { /* Queue Depth */ }
