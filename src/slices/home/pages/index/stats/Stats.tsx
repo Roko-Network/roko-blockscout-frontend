@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-Blockscout
 
 import { Grid } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 
@@ -16,6 +17,8 @@ import { homeStatsWidgetCommonStyles, isHomeStatsItemEnabled, sortHomeStatsItems
 
 import { HOMEPAGE_STATS_MICROSERVICE } from 'src/features/chain-stats/stubs/home';
 import { layerLabels } from 'src/features/rollup/common/utils/layer';
+import { fetchSubstrateStats } from 'src/features/substrate/api/substrate-api';
+import getUserTransactionsTotal from 'src/features/substrate/utils/get-user-transactions-total';
 
 import config from 'src/config';
 import StatsWidget from 'src/shared/stats/StatsWidget';
@@ -53,6 +56,12 @@ const Stats = () => {
 
   const apiQuery = useStatsQuery();
 
+  const substrateStatsQuery = useQuery({
+    queryKey: [ 'home_substrate_stats' ],
+    queryFn: fetchSubstrateStats,
+    refetchInterval: 12_000,
+  });
+
   const isPlaceholderData = statsQuery.isPlaceholderData || apiQuery.isPlaceholderData || blocksQuery?.isPlaceholderData;
 
   React.useEffect(() => {
@@ -69,10 +78,15 @@ const Stats = () => {
     return <StatsDegraded/>;
   }
 
-  const isLoading = isPlaceholderData || latestBatchQuery?.isPlaceholderData;
+  const isLoading = isPlaceholderData || latestBatchQuery?.isPlaceholderData || substrateStatsQuery.isLoading;
 
   const apiData = apiQuery.data;
   const statsData = statsQuery.data;
+  const evmTotalTransactions = statsData?.total_transactions?.value || apiData?.total_transactions;
+  const totalUserTransactions = getUserTransactionsTotal(
+    evmTotalTransactions,
+    substrateStatsQuery.data?.total_native_signed_extrinsics,
+  );
 
   const items: Array<HomeStatsItem> = (() => {
     if (!statsData && !apiData) {
@@ -121,11 +135,11 @@ const Stats = () => {
         }s`,
         isLoading,
       },
-      (statsData?.total_transactions?.value || apiData?.total_transactions) && {
+      totalUserTransactions !== undefined && {
         id: 'total_txs' as const,
         icon: 'transactions' as const,
-        label: statsData?.total_transactions?.title || 'Total transactions',
-        value: Number(statsData?.total_transactions?.value || apiData?.total_transactions).toLocaleString(),
+        label: substrateStatsQuery.data ? 'Total user transactions' : (statsData?.total_transactions?.title || 'Total transactions'),
+        value: totalUserTransactions.toLocaleString(),
         href: { pathname: '/txs' as const },
         isLoading,
       },
