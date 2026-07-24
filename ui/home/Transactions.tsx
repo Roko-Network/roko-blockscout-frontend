@@ -13,6 +13,7 @@ import LatestWatchlistTxs from 'ui/home/LatestWatchlistTxs';
 import LatestZetaChainCCTXs from 'ui/home/latestZetaChainCCTX/LatestZetaChainCCTXs';
 import FallbackRpcIcon from 'ui/shared/fallbacks/FallbackRpcIcon';
 import useAuth from 'ui/snippets/auth/useIsAuth';
+import UserTransactions from 'ui/txs/UserTransactions';
 
 import { useHomeRpcDataContext } from './fallbacks/rpcDataContext';
 import LatestCrossChainTxs from './latestCrossChainTxs/LatestCrossChainTxs';
@@ -74,12 +75,13 @@ const Transactions = () => {
     );
   }
 
-  // Sprint 5 — Roko-side default: pair EVM "Latest transactions" with a
-  // substrate "Latest extrinsics" tab. The substrate widget self-degrades
-  // if the indexer is unreachable.
+  // ROKO's user transaction history spans the EVM and native Substrate
+  // execution paths. Keep the source-specific feeds available for diagnosis,
+  // while making the combined user history the default.
   const defaultTabs = [
-    { id: 'txn', title: 'Latest txn', component: <LatestTxs/> },
-    { id: 'extrinsics', title: 'Latest extrinsics', component: <LatestExtrinsics/> },
+    { id: 'activity', title: 'Latest activity', component: <UserTransactions limit={ 5 } showViewAll/> },
+    { id: 'txn', title: 'EVM transactions', component: <LatestTxs/> },
+    { id: 'extrinsics', title: 'All extrinsics', component: <LatestExtrinsics/> },
   ];
 
   return (
