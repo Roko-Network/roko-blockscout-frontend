@@ -220,6 +220,8 @@ export interface SubstrateBlockAuthor {
 export interface SubstrateStats {
   latest_block: number;
   total_extrinsics: number;
+  total_signed_extrinsics: number;
+  total_native_signed_extrinsics: number;
   signed_extrinsics_24h: number;
   inherent_extrinsics_24h: number;
   unsigned_extrinsics_24h: number;
