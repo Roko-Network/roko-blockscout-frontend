@@ -15,6 +15,7 @@ import LatestArbitrumDeposits from 'src/features/rollup/arbitrum/pages/home/Late
 import { layerLabels } from 'src/features/rollup/common/utils/layer';
 import LatestOptimisticDeposits from 'src/features/rollup/optimism/pages/home/LatestOptimisticDeposits';
 import LatestExtrinsicsHome from 'src/features/substrate/components/LatestExtrinsicsHome';
+import UserTransactions from 'src/features/substrate/components/UserTransactions';
 
 import config from 'src/config';
 import ApiDegradationRpcIcon from 'src/shared/api-degradation/ApiDegradationRpcIcon';
@@ -80,12 +81,13 @@ const Transactions = () => {
     );
   }
 
-  // Sprint 5 — Roko-side default: pair EVM "Latest transactions" with a
-  // substrate "Latest extrinsics" tab. The substrate widget self-degrades
-  // if the indexer is unreachable.
+  // ROKO's user transaction history spans the EVM and native Substrate
+  // execution paths. Keep the source-specific feeds available for diagnosis,
+  // while making the combined user history the default.
   const defaultTabs = [
-    { id: 'txn', title: 'Latest txn', component: <LatestTxs/> },
-    { id: 'extrinsics', title: 'Latest extrinsics', component: <LatestExtrinsicsHome/> },
+    { id: 'activity', title: 'Latest activity', component: <UserTransactions limit={ 5 } showViewAll/> },
+    { id: 'txn', title: 'EVM transactions', component: <LatestTxs/> },
+    { id: 'extrinsics', title: 'All extrinsics', component: <LatestExtrinsicsHome/> },
   ];
 
   return (

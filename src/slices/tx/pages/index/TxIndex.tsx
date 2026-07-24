@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: LicenseRef-Blockscout
 
+import { Text } from '@chakra-ui/react';
 import React from 'react';
 
 import PageTitle from 'src/shell/page/title/PageTitle';
@@ -23,8 +24,10 @@ const Transactions = () => {
   return (
     <>
       <PageTitle title="Transactions" withTextAd/>
+      <Text fontSize="xs" color="text.secondary" mb={ 2 }>EVM activity statistics</Text>
       <TxsStats/>
       <TxsTabs
+        includeSubstrateUserTxs
         listProps={ isMobile ? undefined : TAB_LIST_PROPS }
         tabsHeight={ TABS_HEIGHT }
       />

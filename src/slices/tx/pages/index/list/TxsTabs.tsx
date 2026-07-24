@@ -14,6 +14,7 @@ import useIsAuth from 'src/features/account/hooks/useIsAuth';
 import TxsWatchlist from 'src/features/account/pages/tx-index-watchlist/TxsWatchlist';
 import AdvancedFilterLink from 'src/features/advanced-filter/components/AdvancedFilterLink';
 import { useMultichainContext } from 'src/features/multichain/context';
+import UserTransactions from 'src/features/substrate/components/UserTransactions';
 
 import config from 'src/config';
 import useIsInitialLoading from 'src/shared/hooks/useIsInitialLoading';
@@ -28,15 +29,16 @@ import RoutedTabs from 'src/toolkit/components/RoutedTabs/RoutedTabs';
 
 import TxsWithFrontendSorting from './TxsWithFrontendSorting';
 
-type TabId = 'validated' | 'pending' | 'blob_txs' | 'watchlist';
+type TabId = 'user' | 'validated' | 'pending' | 'blob_txs' | 'watchlist';
 export const getTabId = (id: TabId, prefix?: string) => prefix ? `${ prefix }_${ id }` : id;
 
 interface Props extends Omit<RoutedTabsProps, 'tabs'> {
+  includeSubstrateUserTxs?: boolean;
   parentTab?: string;
   tabsHeight?: number;
 }
 
-const TxsTabs = ({ parentTab, tabsHeight, ...rest }: Props) => {
+const TxsTabs = ({ includeSubstrateUserTxs = false, parentTab, tabsHeight, ...rest }: Props) => {
   const isMobile = useIsMobile();
   const router = useRouter();
   const tab = getQueryParamString(router.query.tab);
@@ -44,6 +46,8 @@ const TxsTabs = ({ parentTab, tabsHeight, ...rest }: Props) => {
   const isAuth = useIsAuth();
 
   const chainConfig = multichainContext?.chain.app_config ?? config;
+  const isUserTab = includeSubstrateUserTxs &&
+    (!tab || tab === getTabId('user', parentTab) || (parentTab ? tab === parentTab : false));
 
   const isPendingTab = !chainConfig?.slices.tx.hiddenViews?.pending_txs && tab === getTabId('pending', parentTab);
   const isBlobTxsTab = chainConfig?.features.dataAvailability.isEnabled && tab === getTabId('blob_txs', parentTab);
@@ -54,9 +58,11 @@ const TxsTabs = ({ parentTab, tabsHeight, ...rest }: Props) => {
     filters: { filter: 'validated' },
     options: {
       enabled: tab === getTabId('validated', parentTab) ||
-        (parentTab ? tab === parentTab : false) ||
-        !tab ||
-        !(isBlobTxsTab || isPendingTab || isWatchlistTab),
+        (!isUserTab && (
+          (parentTab ? tab === parentTab : false) ||
+          !tab ||
+          !(isBlobTxsTab || isPendingTab || isWatchlistTab)
+        )),
       placeholderData: generateListStub<'core:txs'>(TX_ITEM, 50, { next_page_params: {
         block_number: 9005713,
         index: 5,
@@ -107,9 +113,14 @@ const TxsTabs = ({ parentTab, tabsHeight, ...rest }: Props) => {
   const verifiedTitle = capitalize(getChainValidationActionText(chainConfig));
 
   const tabs: Array<TabItemRegular> = [
+    includeSubstrateUserTxs && {
+      id: getTabId('user', parentTab),
+      title: 'All user transactions',
+      component: <UserTransactions showSummary/>,
+    },
     {
       id: getTabId('validated', parentTab),
-      title: verifiedTitle,
+      title: `EVM ${ verifiedTitle.toLowerCase() }`,
       component:
         <TxsWithFrontendSorting
           query={ txsValidatedQuery }
@@ -163,10 +174,10 @@ const TxsTabs = ({ parentTab, tabsHeight, ...rest }: Props) => {
     }
   })();
 
-  const isTabsLoading = useIsInitialLoading(currentQuery.isPlaceholderData);
+  const isTabsLoading = useIsInitialLoading(isUserTab ? false : currentQuery.isPlaceholderData);
 
   const rightSlot = (() => {
-    if (isMobile) {
+    if (isMobile || isUserTab) {
       return null;
     }
 

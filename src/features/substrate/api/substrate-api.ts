@@ -273,12 +273,14 @@ export interface SubstrateExtrinsicCursor {
 export function fetchRecentExtrinsics(opts: {
   pallet?: string;
   method?: string;
+  extrinsicClass?: 'Signed' | 'Inherent' | 'Unsigned';
   limit?: number;
   cursor?: SubstrateExtrinsicCursor | null;
 } = {}): Promise<{ items: Array<SubstrateExtrinsic>; next_page_params: SubstrateExtrinsicCursor | null }> {
   const params = new URLSearchParams();
   if (opts.pallet) params.set('pallet', opts.pallet);
   if (opts.method) params.set('method', opts.method);
+  if (opts.extrinsicClass) params.set('extrinsic_class', opts.extrinsicClass);
   if (opts.limit !== undefined) params.set('limit', String(opts.limit));
   if (opts.cursor) {
     params.set('block_number', String(opts.cursor.block_number));
