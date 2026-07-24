@@ -1,3 +1,4 @@
+import { Text } from '@chakra-ui/react';
 import React from 'react';
 
 import config from 'configs/app';
@@ -23,8 +24,10 @@ const Transactions = () => {
         title={ config.meta.seo.enhancedDataEnabled ? `${ config.chain.name } transactions` : 'Transactions' }
         withTextAd
       />
+      <Text fontSize="xs" color="text.secondary" mb={ 2 }>EVM activity statistics</Text>
       <TxsStats/>
       <TxsTabs
+        includeSubstrateUserTxs
         listProps={ isMobile ? undefined : TAB_LIST_PROPS }
         tabsHeight={ TABS_HEIGHT }
       />

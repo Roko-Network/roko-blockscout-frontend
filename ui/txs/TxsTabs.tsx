@@ -20,32 +20,36 @@ import Pagination from 'ui/shared/pagination/Pagination';
 import useQueryWithPages from 'ui/shared/pagination/useQueryWithPages';
 import useIsAuth from 'ui/snippets/auth/useIsAuth';
 import TxsWithFrontendSorting from 'ui/txs/TxsWithFrontendSorting';
+import UserTransactions from 'ui/txs/UserTransactions';
 
 import TxsWatchlist from './TxsWatchlist';
 
-type TabId = 'validated' | 'pending' | 'blob_txs' | 'watchlist';
+type TabId = 'user' | 'validated' | 'pending' | 'blob_txs' | 'watchlist';
 export const getTabId = (id: TabId, prefix?: string) => prefix ? `${ prefix }_${ id }` : id;
 
 interface Props extends Omit<RoutedTabsProps, 'tabs'> {
+  includeSubstrateUserTxs?: boolean;
   parentTab?: string;
   tabsHeight?: number;
 }
 
-const TxsTabs = ({ parentTab, tabsHeight, ...rest }: Props) => {
+const TxsTabs = ({ includeSubstrateUserTxs = false, parentTab, tabsHeight, ...rest }: Props) => {
   const isMobile = useIsMobile();
   const router = useRouter();
   const tab = getQueryParamString(router.query.tab);
   const multichainContext = useMultichainContext();
 
   const chainConfig = multichainContext?.chain.app_config ?? config;
+  const isUserTab = includeSubstrateUserTxs &&
+    (!tab || tab === getTabId('user', parentTab) || (parentTab ? tab === parentTab : false));
 
   const txsValidatedQuery = useQueryWithPages({
     resourceName: 'general:txs_validated',
     filters: { filter: 'validated' },
     options: {
       enabled: tab === getTabId('validated', parentTab) ||
-        (parentTab ? tab === parentTab : true) ||
-        !tab ||
+        (!includeSubstrateUserTxs && (parentTab ? tab === parentTab : true)) ||
+        (!includeSubstrateUserTxs && !tab) ||
         (!chainConfig?.features.dataAvailability.isEnabled && tab === getTabId('blob_txs', parentTab)),
       placeholderData: generateListStub<'general:txs_validated'>(TX, 50, { next_page_params: {
         block_number: 9005713,
@@ -99,9 +103,14 @@ const TxsTabs = ({ parentTab, tabsHeight, ...rest }: Props) => {
   const verifiedTitle = capitalize(getNetworkValidationActionText(chainConfig));
 
   const tabs: Array<TabItemRegular> = [
+    includeSubstrateUserTxs && {
+      id: getTabId('user', parentTab),
+      title: 'All user transactions',
+      component: <UserTransactions showSummary/>,
+    },
     {
       id: getTabId('validated', parentTab),
-      title: verifiedTitle,
+      title: `EVM ${ verifiedTitle.toLowerCase() }`,
       component:
         <TxsWithFrontendSorting
           query={ txsValidatedQuery }
@@ -155,10 +164,10 @@ const TxsTabs = ({ parentTab, tabsHeight, ...rest }: Props) => {
     }
   })();
 
-  const isTabsLoading = useIsInitialLoading(currentQuery.isPlaceholderData);
+  const isTabsLoading = useIsInitialLoading(isUserTab ? false : currentQuery.isPlaceholderData);
 
   const rightSlot = (() => {
-    if (isMobile) {
+    if (isMobile || isUserTab) {
       return null;
     }
 
