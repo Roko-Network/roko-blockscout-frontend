@@ -43,9 +43,9 @@ describe('TEMPORAL_CONSENSUS_TIME stub', () => {
     expect(typeof TEMPORAL_CONSENSUS_TIME.is_converged).toBe('boolean');
   });
 
-  test('has a numeric validator_count', () => {
-    expect(typeof TEMPORAL_CONSENSUS_TIME.validator_count).toBe('number');
-    expect(TEMPORAL_CONSENSUS_TIME.validator_count).toBeGreaterThan(0);
+  test('has a numeric mesh_node_count', () => {
+    expect(typeof TEMPORAL_CONSENSUS_TIME.mesh_node_count).toBe('number');
+    expect(TEMPORAL_CONSENSUS_TIME.mesh_node_count).toBeGreaterThan(0);
   });
 });
 

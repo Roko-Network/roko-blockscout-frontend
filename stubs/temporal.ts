@@ -18,7 +18,7 @@ export const TEMPORAL_CONSENSUS_TIME: TemporalConsensusTime = {
   consensus_time_datetime: '2024-03-24T00:00:00.000Z',
   quality_percent: 98.5,
   is_converged: true,
-  validator_count: 3,
+  mesh_node_count: 3,
 };
 
 export const TEMPORAL_QUEUE_STATS: TemporalQueueStats = {
