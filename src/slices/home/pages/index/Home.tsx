@@ -97,10 +97,10 @@ const Home = () => {
                 </Box>
                 <Box textAlign="center">
                   <Text color="whiteAlpha.600" fontSize="xs" textTransform="uppercase" letterSpacing="wider">
-                    Validators
+                    Mesh nodes
                   </Text>
                   <Text color="white" fontSize="2xl" fontFamily="heading" fontWeight={ 700 }>
-                    { consensusTimeQuery.data?.validator_count ?? '—' }
+                    { consensusTimeQuery.data?.mesh_node_count ?? '—' }
                   </Text>
                 </Box>
                 <Box textAlign="center">

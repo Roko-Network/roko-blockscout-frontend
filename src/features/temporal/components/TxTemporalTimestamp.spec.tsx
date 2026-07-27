@@ -30,12 +30,16 @@ vi.mock('src/features/temporal/api/temporal-rpc', () => ({
 // The DetailedInfo wrappers and Skeleton are presentation-only; render them
 // transparently so we can query text content directly.
 vi.mock('src/shared/detailed-info/DetailedInfo', () => ({
+  // Component export names intentionally mirror the mocked module.
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ItemLabel: ({ children }: { children: React.ReactNode }) => <dt>{ children }</dt>,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ItemValue: ({ children }: { children: React.ReactNode }) => <dd>{ children }</dd>,
 }));
 
 vi.mock('src/toolkit/chakra/skeleton', () => ({
-  Skeleton: ({ children }: { children: React.ReactNode }) => <>{ children }</>,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Skeleton: ({ children }: { children: React.ReactNode }) => <span>{ children }</span>,
 }));
 
 vi.mock('src/features/temporal/utils/formatNanoTimestamp', () => ({
@@ -58,7 +62,7 @@ const CONSENSUS_DATA = {
   consensus_time_datetime: '2023-11-14T22:13:21.000Z',
   quality_percent: 87,
   is_converged: true,
-  validator_count: 3,
+  mesh_node_count: 3,
 };
 
 // ---------------------------------------------------------------------------
@@ -92,7 +96,7 @@ describe('TxTemporalTimestamp', () => {
   });
 
   // -------------------------------------------------------------------------
-  // Existing behaviour — must not regress
+  // Existing behavior — must not regress
   // -------------------------------------------------------------------------
 
   it('renders the "Timestamping time" label', async() => {
@@ -139,7 +143,7 @@ describe('TxTemporalTimestamp', () => {
   });
 
   // -------------------------------------------------------------------------
-  // New behaviour — mesh quality indicator
+  // New behavior — mesh quality indicator
   // -------------------------------------------------------------------------
 
   it('renders the quality indicator line after data loads', async() => {

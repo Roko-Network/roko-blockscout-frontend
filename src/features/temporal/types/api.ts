@@ -18,8 +18,8 @@ export type TemporalConsensusTime = {
   quality_percent: number;
   // Whether mesh convergence has been achieved
   is_converged: boolean;
-  // Number of validators participating in mesh
-  validator_count: number;
+  // Number of connected nodes participating in the temporal mesh
+  mesh_node_count: number;
 };
 
 export type TemporalQueueStats = {

@@ -98,7 +98,7 @@ const TemporalConsensusCard = ({ data, isLoading }: Props) => {
 
         <Skeleton loading={ isLoading } w="fit-content">
           <chakra.span fontSize="xs" color="text.secondary">
-            { data?.validator_count ?? '-' } validator{ (data?.validator_count ?? 0) !== 1 ? 's' : '' } in mesh
+            { data?.mesh_node_count ?? '-' } node{ (data?.mesh_node_count ?? 0) !== 1 ? 's' : '' } in mesh
           </chakra.span>
         </Skeleton>
       </Flex>
