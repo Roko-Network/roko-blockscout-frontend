@@ -6,7 +6,7 @@ export const recipe = defineSlotRecipe({
   slots: [ 'root', 'list', 'trigger', 'content', 'indicator' ],
   base: {
     root: {
-      '--tabs-trigger-radius': 'radii.l2',
+      '--tabs-trigger-radius': 'radii.base',
       position: 'relative',
       _horizontal: {
         display: 'block',
@@ -20,7 +20,7 @@ export const recipe = defineSlotRecipe({
       width: '100%',
       position: 'relative',
       isolation: 'isolate',
-      '--tabs-indicator-shadow': 'shadows.xs',
+      '--tabs-indicator-shadow': 'none',
       '--tabs-indicator-bg': 'colors.bg',
       minH: 'var(--tabs-height)',
       _horizontal: {
@@ -39,6 +39,8 @@ export const recipe = defineSlotRecipe({
       position: 'relative',
       cursor: 'button',
       gap: '2',
+      fontFamily: 'heading',
+      fontWeight: '600',
       _focusVisible: {
         zIndex: 1,
         outline: '2px solid',
@@ -105,7 +107,7 @@ export const recipe = defineSlotRecipe({
     size: {
       sm: {
         root: {
-          '--tabs-height': 'sizes.8',
+          '--tabs-height': 'sizes.10',
           '--tabs-content-padding': 'spacing.6',
         },
         trigger: {
@@ -116,7 +118,7 @@ export const recipe = defineSlotRecipe({
       },
       md: {
         root: {
-          '--tabs-height': 'sizes.10',
+          '--tabs-height': 'sizes.12',
           '--tabs-content-padding': 'spacing.6',
         },
         trigger: {

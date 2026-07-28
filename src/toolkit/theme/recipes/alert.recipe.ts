@@ -13,8 +13,11 @@ export const recipe = defineSlotRecipe({
       position: 'relative',
       borderRadius: 'base',
       color: 'alert.fg',
+      borderWidth: '2px',
+      borderColor: 'border.divider',
     },
     title: {
+      fontFamily: 'heading',
       fontWeight: '600',
     },
     description: {

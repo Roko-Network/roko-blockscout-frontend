@@ -6,11 +6,23 @@ export const recipe = defineRecipe({
   base: {
     display: 'flex',
     gap: 0,
+    fontFamily: 'body',
     fontWeight: 600,
+    letterSpacing: '0.01em',
+    lineHeight: 1,
     overflow: 'hidden',
     borderRadius: 'base',
+    borderWidth: '2px',
+    borderStyle: 'solid',
+    borderColor: 'transparent',
+    _focusVisible: {
+      outline: '2px solid',
+      outlineColor: 'focus.ring',
+      outlineOffset: '2px',
+    },
     _disabled: {
       opacity: 'control.disabled',
+      transform: 'none',
     },
   },
   variants: {
@@ -19,7 +31,8 @@ export const recipe = defineRecipe({
         bg: 'button.solid.bg',
         color: 'button.solid.text',
         _hover: {
-          bg: 'hover',
+          bg: 'button.solid.bg.hover',
+          transform: 'translateY(-1px)',
         },
         _loading: {
           opacity: 1,
@@ -30,7 +43,7 @@ export const recipe = defineRecipe({
           },
         },
         _expanded: {
-          bg: 'hover',
+          bg: 'button.solid.bg.hover',
         },
       },
       solid_danger: {
@@ -58,9 +71,10 @@ export const recipe = defineRecipe({
         color: 'button.outline.fg',
         borderColor: 'button.outline.fg',
         _hover: {
-          bg: 'transparent',
-          color: 'hover',
-          borderColor: 'hover',
+          bg: 'button.outline.bg.hover',
+          color: 'button.outline.fg',
+          borderColor: 'button.outline.fg',
+          transform: 'translateY(-1px)',
         },
         _loading: {
           opacity: 1,
@@ -98,7 +112,7 @@ export const recipe = defineRecipe({
         color: 'button.dropdown.fg',
         borderColor: 'button.dropdown.border',
         _hover: {
-          bg: 'transparent',
+          bg: 'button.outline.bg.hover',
           color: 'hover',
           borderColor: 'hover',
         },
@@ -140,7 +154,7 @@ export const recipe = defineRecipe({
         borderWidth: '2px',
         borderStyle: 'solid',
         _hover: {
-          bg: 'transparent',
+          bg: 'button.outline.bg.hover',
           color: 'hover',
           borderColor: 'hover',
         },
@@ -254,8 +268,9 @@ export const recipe = defineRecipe({
         bg: 'button.subtle.bg',
         color: 'button.subtle.fg',
         _hover: {
-          bg: 'button.subtle.bg',
-          color: 'hover',
+          bg: 'button.subtle.bg.hover',
+          color: 'button.subtle.fg',
+          transform: 'translateY(-1px)',
         },
         _disabled: {
           bg: 'button.subtle.bg',
@@ -266,6 +281,7 @@ export const recipe = defineRecipe({
         bg: 'transparent',
         color: 'link.primary',
         border: 'none',
+        borderRadius: 'none',
         fontWeight: '400',
         px: 0,
         h: 'auto',
@@ -302,7 +318,7 @@ export const recipe = defineRecipe({
       icon_background: {
         bg: 'button.icon_background.bg',
         color: 'icon.secondary',
-        border: 'none',
+        borderColor: 'border.divider',
         _hover: {
           color: 'hover',
         },
@@ -355,8 +371,8 @@ export const recipe = defineRecipe({
     size: {
       '2xs': {
         px: 2,
-        h: 5,
-        minW: 5,
+        h: 6,
+        minW: 6,
         textStyle: 'xs',
         borderRadius: 'sm',
         gap: 1,
@@ -364,26 +380,26 @@ export const recipe = defineRecipe({
       },
       xs: {
         px: 2,
-        h: 6,
-        minW: 6,
+        h: 8,
+        minW: 8,
         textStyle: 'sm',
         borderRadius: 'sm',
         gap: 1,
         _icon: { boxSize: 'auto' },
       },
       sm: {
-        px: 3,
-        h: 8,
-        minW: 8,
+        px: 4,
+        h: 10,
+        minW: 10,
         textStyle: 'sm',
         borderRadius: 'base',
         gap: 1,
         _icon: { boxSize: 'auto' },
       },
       md: {
-        px: 3,
-        h: 10,
-        minW: 10,
+        px: 6,
+        h: 12,
+        minW: 12,
         textStyle: 'md',
         borderRadius: 'base',
         gap: 2,

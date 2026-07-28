@@ -6,12 +6,14 @@ import type { ExcludeUndefined } from 'src/shared/types/utils';
 
 import config from 'src/config';
 
-export const BODY_TYPEFACE = config.misc.fonts.body?.name ?? 'Inter, InterFallback';
-export const HEADING_TYPEFACE = config.misc.fonts.heading?.name ?? 'Poppins';
+export const BODY_TYPEFACE = config.misc.fonts.body?.name ??
+  'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI"';
+export const HEADING_TYPEFACE = config.misc.fonts.heading?.name ?? 'Rajdhani';
 
 export const fonts: ExcludeUndefined<ThemingConfig['tokens']>['fonts'] = {
   heading: { value: `${ HEADING_TYPEFACE }, sans-serif` },
   body: { value: `${ BODY_TYPEFACE }, sans-serif` },
+  mono: { value: '"JetBrains Mono", "SFMono-Regular", Consolas, monospace' },
 };
 
 export const textStyles: ThemingConfig['textStyles'] = {
@@ -19,17 +21,18 @@ export const textStyles: ThemingConfig['textStyles'] = {
     xl: {
       value: {
         fontSize: '32px',
-        lineHeight: '40px',
-        fontWeight: '500',
-        letterSpacing: '-0.5px',
+        lineHeight: '36px',
+        fontWeight: '700',
+        letterSpacing: '-0.64px',
         fontFamily: 'heading',
       },
     },
     lg: {
       value: {
         fontSize: '24px',
-        lineHeight: '32px',
-        fontWeight: '500',
+        lineHeight: '30px',
+        fontWeight: '700',
+        letterSpacing: '-0.24px',
         fontFamily: 'heading',
       },
     },
@@ -37,15 +40,17 @@ export const textStyles: ThemingConfig['textStyles'] = {
       value: {
         fontSize: '18px',
         lineHeight: '24px',
-        fontWeight: '500',
+        fontWeight: '600',
+        letterSpacing: '-0.18px',
         fontFamily: 'heading',
       },
     },
     sm: {
       value: {
         fontSize: '16px',
-        lineHeight: '24px',
-        fontWeight: '500',
+        lineHeight: '22px',
+        fontWeight: '600',
+        letterSpacing: '0.16px',
         fontFamily: 'heading',
       },
     },
@@ -54,6 +59,7 @@ export const textStyles: ThemingConfig['textStyles'] = {
         fontSize: '14px',
         lineHeight: '20px',
         fontWeight: '600',
+        letterSpacing: '0.42px',
         fontFamily: 'heading',
       },
     },

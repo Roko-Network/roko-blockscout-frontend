@@ -26,7 +26,8 @@ export const recipe = defineSlotRecipe({
       lineClamp: '1',
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
-      fontWeight: 'medium',
+      fontFamily: 'heading',
+      fontWeight: '600',
       display: 'inline',
     },
     closeTrigger: {
@@ -135,9 +136,9 @@ export const recipe = defineSlotRecipe({
           },
           _selected: {
             bgColor: 'selected.option.bg',
-            color: 'whiteAlpha.800',
+            color: 'button.solid.text',
             _hover: {
-              color: 'whiteAlpha.800',
+              color: 'button.solid.text',
               opacity: 0.76,
             },
           },

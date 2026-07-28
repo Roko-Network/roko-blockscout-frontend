@@ -96,7 +96,7 @@ const DeveloperConstants = () => {
             key={ `${ c.pallet }.${ c.name }` }
             p={ 3 }
             borderBottomWidth={ idx < filtered.length - 1 ? '1px' : 0 }
-            borderColor={{ _light: 'gray.100', _dark: 'whiteAlpha.100' }}
+            borderColor="border.divider"
             direction="column"
             gap={ 1 }
           >

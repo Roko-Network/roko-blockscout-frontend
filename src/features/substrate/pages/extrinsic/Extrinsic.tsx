@@ -33,7 +33,7 @@ function StatRow({ label, value }: { label: string; value: React.ReactNode }) {
       alignItems="baseline"
       py={ 2 }
       borderBottomWidth="1px"
-      borderColor={{ _light: 'gray.100', _dark: 'whiteAlpha.100' }}
+      borderColor="border.divider"
       _last={{ borderBottomWidth: 0 }}
       gap={ 4 }
     >
@@ -103,7 +103,7 @@ const Extrinsic = () => {
 
   if (!ext) {
     return (
-      <Box p={ 6 } borderWidth="1px" borderRadius="md" color="red.500">
+      <Box p={ 6 } borderWidth="1px" borderRadius="md" color="text.error">
         Extrinsic { index } not found in block { block.toLocaleString() }.
         The sidecar may not have indexed this block yet, or the index is out of range.
       </Box>
@@ -138,15 +138,15 @@ const Extrinsic = () => {
       ) }
 
       <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr' }} gap={ 4 } mb={ 6 }>
-        <Box borderWidth="1px" borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }} borderRadius="xl" p={ 5 }>
+        <Box borderWidth="2px" borderColor="border.divider" borderRadius="base" bg="bg.elevated" p={ 5 }>
           <chakra.h3 fontSize="md" fontWeight={ 700 } mb={ 4 }>Extrinsic</chakra.h3>
           <StatRow label="Class" value={ ext.extrinsic_class }/>
           <StatRow
             label="Result"
             value={ ext.success ? (
-              <chakra.span color="green.500">✓ Success</chakra.span>
+              <chakra.span color="text.success">✓ Success</chakra.span>
             ) : (
-              <chakra.span color="red.500">✗ Failed</chakra.span>
+              <chakra.span color="text.error">✗ Failed</chakra.span>
             ) }
           />
           <StatRow
@@ -163,7 +163,7 @@ const Extrinsic = () => {
           <StatRow label="Era" value={ ext.era ? JSON.stringify(ext.era) : '—' }/>
         </Box>
 
-        <Box borderWidth="1px" borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }} borderRadius="xl" p={ 5 }>
+        <Box borderWidth="2px" borderColor="border.divider" borderRadius="base" bg="bg.elevated" p={ 5 }>
           <chakra.h3 fontSize="md" fontWeight={ 700 } mb={ 4 }>Hashes</chakra.h3>
           <StatRow label="Extrinsic hash" value={ ext.hash ?? '—' }/>
           <StatRow label="Call hash" value={ ext.call_hash ?? '—' }/>
@@ -174,7 +174,7 @@ const Extrinsic = () => {
       <Box mb={ 6 }>
         <chakra.h3 fontSize="md" fontWeight={ 700 } mb={ 3 }>Arguments</chakra.h3>
         { ext.args_truncated ? (
-          <Box p={ 4 } borderWidth="1px" borderRadius="md" color="orange.500" fontSize="sm">
+          <Box p={ 4 } borderWidth="1px" borderRadius="md" color="text.warning" fontSize="sm">
             Arguments truncated (oversize payload — e.g. system.setCode).
             Use the substrate RPC to fetch the full extrinsic.
           </Box>

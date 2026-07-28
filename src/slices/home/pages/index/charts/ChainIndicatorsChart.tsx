@@ -47,7 +47,7 @@ const ChainIndicatorsChart = ({ isLoading: isLoadingProp, value, valueDiff, char
       return null;
     }
 
-    const diffColor = valueDiff >= 0 ? 'green.500' : 'red.500';
+    const diffColor = valueDiff >= 0 ? 'text.success' : 'text.error';
 
     return (
       <Skeleton loading={ isLoading } display="flex" alignItems="center" color={ diffColor } ml={ 2 }>

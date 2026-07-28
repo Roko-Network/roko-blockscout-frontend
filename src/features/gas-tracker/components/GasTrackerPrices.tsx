@@ -17,9 +17,9 @@ const GasTrackerPrices = ({ prices, isLoading }: Props) => {
     <Flex
       as="ul"
       flexDir={{ base: 'column', lg: 'row' }}
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
+      borderColor="border.divider"
       borderWidth="2px"
-      borderRadius="xl"
+      borderRadius="base"
       overflow="hidden"
     >
       { prices.fast && <GasTrackerPriceSnippet type="fast" data={ prices.fast } isLoading={ isLoading }/> }
