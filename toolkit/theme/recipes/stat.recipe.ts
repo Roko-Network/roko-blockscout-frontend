@@ -14,7 +14,10 @@ export const recipe = defineSlotRecipe({
       display: 'inline-flex',
       gap: '1.5',
       alignItems: 'center',
-      color: 'text.primary',
+      color: 'text.secondary',
+      fontFamily: 'heading',
+      fontWeight: '600',
+      letterSpacing: '0.04em',
       textStyle: 'sm',
     },
     helpText: {
@@ -29,7 +32,8 @@ export const recipe = defineSlotRecipe({
     },
     valueText: {
       verticalAlign: 'baseline',
-      fontWeight: '500',
+      fontFamily: 'heading',
+      fontWeight: '700',
       letterSpacing: 'normal',
       fontFeatureSettings: 'initial',
       fontVariantNumeric: 'initial',

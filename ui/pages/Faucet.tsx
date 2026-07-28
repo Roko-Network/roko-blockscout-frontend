@@ -99,10 +99,10 @@ const Faucet = () => {
       <Flex direction={{ base: 'column', lg: 'row' }} gap={ 6 }>
         <Box flex={ 1 } maxW={{ lg: '560px' }}>
           <Box
-            bg="dialog.bg"
-            borderWidth="1px"
-            borderColor="divider"
-            borderRadius="xl"
+            bg="bg.elevated"
+            borderWidth="2px"
+            borderColor="border.divider"
+            borderRadius="base"
             p={ 6 }
           >
             <form onSubmit={ handleRequest }>
@@ -143,14 +143,14 @@ const Faucet = () => {
             </form>
 
             { error && (
-              <Box mt={ 4 } p={ 3 } bg="red.500/10" borderWidth="1px" borderColor="red.500/20" borderRadius="lg">
-                <Text color="red.500" fontSize="sm">{ error }</Text>
+              <Box mt={ 4 } p={ 3 } bg="red.500/10" borderWidth="1px" borderColor="red.500/20" borderRadius="base">
+                <Text color="text.error" fontSize="sm">{ error }</Text>
               </Box>
             ) }
 
             { result && (
-              <Box mt={ 4 } p={ 4 } bg="green.500/10" borderWidth="1px" borderColor="green.500/20" borderRadius="lg" textAlign="center">
-                <Text color="green.500" fontWeight={ 700 } fontSize="lg" mb={ 1 }>Tokens sent</Text>
+              <Box mt={ 4 } p={ 4 } bg="green.500/10" borderWidth="1px" borderColor="green.500/20" borderRadius="base" textAlign="center">
+                <Text color="text.success" fontWeight={ 700 } fontSize="lg" mb={ 1 }>Tokens sent</Text>
                 { result.amount && (
                   <Text fontSize="sm" color="text.secondary" mb={ 2 }>
                     { result.amount } { config.chain.currency.symbol } sent to { result.recipient }
@@ -173,10 +173,10 @@ const Faucet = () => {
 
         <Box w={{ base: '100%', lg: '280px' }}>
           <Box
-            bg="dialog.bg"
-            borderWidth="1px"
-            borderColor="divider"
-            borderRadius="xl"
+            bg="bg.elevated"
+            borderWidth="2px"
+            borderColor="border.divider"
+            borderRadius="base"
             p={ 6 }
           >
             <Text fontSize="sm" fontWeight={ 600 } mb={ 3 }>Faucet info</Text>
@@ -184,7 +184,7 @@ const Faucet = () => {
               <Flex justifyContent="space-between">
                 <Text color="text.secondary">Status</Text>
                 <Skeleton loading={ statusLoading }>
-                  <Text color={ status?.enabled ? 'green.500' : 'red.500' } fontWeight={ 600 }>
+                  <Text color={ status?.enabled ? 'text.success' : 'text.error' } fontWeight={ 600 }>
                     { status?.enabled ? 'Active' : 'Disabled' }
                   </Text>
                 </Skeleton>

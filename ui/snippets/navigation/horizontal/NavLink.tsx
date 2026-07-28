@@ -42,6 +42,8 @@ const NavLink = ({ className, item, noIcon }: Props) => {
         py="9px"
         textStyle="sm"
         fontWeight={ 500 }
+        letterSpacing="0.025em"
+        textTransform="uppercase"
         borderRadius="base"
       >
         { !noIcon && <NavLinkIcon item={ item } mr={ 3 }/> }

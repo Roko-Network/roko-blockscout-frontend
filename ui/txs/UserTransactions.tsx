@@ -95,7 +95,7 @@ function UserTransactionsTable({ items }: { items: Array<UserTransactionActivity
                   ) : '—' }
                 </TableCell>
                 <TableCell>
-                  <chakra.span color={ succeeded ? 'green.500' : 'red.500' } fontWeight={ 600 }>
+                  <chakra.span color={ succeeded ? 'text.success' : 'text.error' } fontWeight={ 600 }>
                     { succeeded ? 'Success' : 'Failed' }
                   </chakra.span>
                 </TableCell>
@@ -136,7 +136,7 @@ const UserTransactions = ({ limit = 50, showSummary = false, showViewAll = false
   }
 
   if (items.length === 0 && hasError) {
-    return <Box p={ 4 } color="red.500" fontSize="sm">Unable to load user transactions.</Box>;
+    return <Box p={ 4 } color="text.error" fontSize="sm">Unable to load user transactions.</Box>;
   }
 
   return (
@@ -152,7 +152,7 @@ const UserTransactions = ({ limit = 50, showSummary = false, showViewAll = false
         </Flex>
       ) }
       { hasError && items.length > 0 && (
-        <Box mb={ 3 } color="orange.500" fontSize="sm">
+        <Box mb={ 3 } color="text.warning" fontSize="sm">
           One transaction source is temporarily unavailable; showing partial results.
         </Box>
       ) }

@@ -5,69 +5,66 @@ import config from 'configs/app';
 const DEFAULT_THEME_COLORS = {
   bg: {
     primary: {
-      // for some reason links to colors.white and colors.black variables are not working here
-      // so we use hex values instead
-      // but it is not the case for other colors
-      _light: { value: '#FFFFFF' }, // colors.white
-      _dark: { value: '#101112' }, // colors.black
+      _light: { value: '#FFFFFF' },
+      _dark: { value: '#0A0A0A' },
     },
   },
   text: {
     primary: {
-      _light: { value: '{colors.blackAlpha.800}' },
-      _dark: { value: '{colors.whiteAlpha.800}' },
+      _light: { value: '{colors.gray.800}' },
+      _dark: { value: '{colors.gray.100}' },
     },
     secondary: {
-      _light: { value: '{colors.gray.500}' },
-      _dark: { value: '{colors.gray.400}' },
+      _light: { value: '{colors.gray.600}' },
+      _dark: { value: '{colors.gray.300}' },
     },
   },
   hover: {
-    _light: { value: '{colors.blue.400}' },
-    _dark: { value: '{colors.blue.400}' },
+    _light: { value: '{colors.blue.700}' },
+    _dark: { value: '{colors.blue.300}' },
   },
   selected: {
     control: {
       text: {
-        _light: { value: '{colors.blue.700}' },
-        _dark: { value: '{colors.gray.50}' },
+        _light: { value: '{colors.gray.900}' },
+        _dark: { value: '{colors.white}' },
       },
       bg: {
-        _light: { value: '{colors.blue.50}' },
-        _dark: { value: '{colors.whiteAlpha.50}' },
+        _light: { value: '{colors.gray.100}' },
+        _dark: { value: '{colors.gray.800}' },
       },
     },
     option: {
       bg: {
-        _light: { value: '{colors.blue.500}' },
-        _dark: { value: '{colors.blue.500}' },
+        _light: { value: '{colors.black}' },
+        _dark: { value: '{colors.white}' },
       },
     },
   },
   icon: {
     primary: {
-      _light: { value: '{colors.gray.500}' },
-      _dark: { value: '{colors.gray.400}' },
+      _light: { value: '{colors.gray.700}' },
+      _dark: { value: '{colors.gray.200}' },
     },
     secondary: {
-      _light: { value: '{colors.gray.400}' },
-      _dark: { value: '{colors.gray.500}' },
+      _light: { value: '{colors.gray.500}' },
+      _dark: { value: '{colors.gray.400}' },
     },
   },
   button: {
     primary: {
-      _light: { value: '{colors.blue.600}' },
-      _dark: { value: '{colors.blue.600}' },
+      _light: { value: '{colors.black}' },
+      _dark: { value: '{colors.white}' },
       text: {
         _light: { value: '{colors.white}' },
-        _dark: { value: '{colors.white}' },
+        _dark: { value: '{colors.black}' },
       },
     },
   },
   link: {
     primary: {
-      _light: { value: '{colors.blue.600}' },
-      _dark: { value: '{colors.blue.300}' },
+      _light: { value: '{colors.gray.800}' },
+      _dark: { value: '{colors.gray.100}' },
     },
   },
   graph: {
@@ -77,46 +74,46 @@ const DEFAULT_THEME_COLORS = {
     },
     gradient: {
       start: {
-        _light: { value: 'rgba(144, 205, 244, 0.3)' }, // blue.200 with opacity 0.3
-        _dark: { value: 'rgba(144, 205, 244, 0.3)' }, // blue.200 with opacity 0.3
+        _light: { value: 'rgba(0, 212, 170, 0.22)' },
+        _dark: { value: 'rgba(0, 212, 170, 0.18)' },
       },
       stop: {
-        _light: { value: 'rgba(144, 205, 244, 0)' }, // blue.200 with opacity 0
-        _dark: { value: 'rgba(144, 205, 244, 0)' }, // blue.200 with opacity 0
+        _light: { value: 'rgba(0, 212, 170, 0)' },
+        _dark: { value: 'rgba(0, 212, 170, 0)' },
       },
     },
   },
   navigation: {
     bg: {
       selected: {
-        _light: { value: '{colors.blue.50}' },
-        _dark: { value: '{colors.gray.800}' },
+        _light: { value: '{colors.gray.100}' },
+        _dark: { value: '{colors.gray.900}' },
       },
     },
     text: {
       selected: {
-        _light: { value: '{colors.blue.700}' },
-        _dark: { value: '{colors.gray.50}' },
+        _light: { value: '{colors.gray.900}' },
+        _dark: { value: '{colors.white}' },
       },
     },
   },
   stats: {
     bg: {
       _light: { value: '{colors.gray.50}' },
-      _dark: { value: '{colors.whiteAlpha.100}' },
+      _dark: { value: '{colors.gray.900}' },
     },
   },
   topbar: {
     bg: {
       _light: { value: '{colors.gray.50}' },
-      _dark: { value: '{colors.whiteAlpha.100}' },
+      _dark: { value: '{colors.gray.900}' },
     },
   },
   tabs: {
     text: {
       primary: {
-        _light: { value: '{colors.blue.700}' },
-        _dark: { value: '{colors.blue.100}' },
+        _light: { value: '{colors.gray.900}' },
+        _dark: { value: '{colors.white}' },
       },
     },
   },
@@ -137,16 +134,16 @@ const colors = {
     '900': { value: '#1C4532' },
   },
   blue: {
-    '50': { value: '#EBF8FF' },
-    '100': { value: '#BEE3F8' },
-    '200': { value: '#90CDF4' },
-    '300': { value: '#63B3ED' },
-    '400': { value: '#4299E1' },
-    '500': { value: '#3182CE' },
-    '600': { value: '#2B6CB0' },
-    '700': { value: '#2C5282' },
-    '800': { value: '#2A4365' },
-    '900': { value: '#1A365D' },
+    '50': { value: '#E8FFF9' },
+    '100': { value: '#C5FFF2' },
+    '200': { value: '#8FF4DE' },
+    '300': { value: '#52E9CB' },
+    '400': { value: '#18DDB8' },
+    '500': { value: '#00D4AA' },
+    '600': { value: '#00A987' },
+    '700': { value: '#00836A' },
+    '800': { value: '#075C4E' },
+    '900': { value: '#083E35' },
   },
   red: {
     '50': { value: '#FFF5F5' },
@@ -185,16 +182,16 @@ const colors = {
     '900': { value: '#5F370E' },
   },
   gray: {
-    '50': { value: '#F7FAFC' },
-    '100': { value: '#EDF2F7' },
-    '200': { value: '#E2E8F0' },
-    '300': { value: '#CBD5E0' },
-    '400': { value: '#A0AEC0' },
-    '500': { value: '#718096' },
+    '50': { value: '#F5F5F5' },
+    '100': { value: '#EAEAEA' },
+    '200': { value: '#D9DBE3' },
+    '300': { value: '#BAC0CC' },
+    '400': { value: '#9097A3' },
+    '500': { value: '#68707E' },
     '600': { value: '#4A5568' },
     '700': { value: '#2D3748' },
     '800': { value: '#1A202C' },
-    '900': { value: '#171923' },
+    '900': { value: '#181818' },
   },
   teal: {
     '50': { value: '#E6FFFA' },
@@ -244,8 +241,14 @@ const colors = {
     '800': { value: '#702459' },
     '900': { value: '#521B41' },
   },
-  black: { value: '#101112' },
-  white: { value: '#ffffff' },
+  black: { value: '#000000' },
+  white: { value: '#FFFFFF' },
+  roko: {
+    teal: { value: '#00D4AA' },
+    tealHover: { value: '#00FFCC' },
+    graphite: { value: '#1A202C' },
+    silver: { value: '#BAC0CC' },
+  },
   whiteAlpha: {
     '50': { value: 'RGBA(255, 255, 255, 0.04)' },
     '100': { value: 'RGBA(255, 255, 255, 0.06)' },
@@ -259,16 +262,16 @@ const colors = {
     '900': { value: 'RGBA(255, 255, 255, 0.92)' },
   },
   blackAlpha: {
-    '50': { value: 'RGBA(16, 17, 18, 0.04)' },
-    '100': { value: 'RGBA(16, 17, 18, 0.06)' },
-    '200': { value: 'RGBA(16, 17, 18, 0.08)' },
-    '300': { value: 'RGBA(16, 17, 18, 0.16)' },
-    '400': { value: 'RGBA(16, 17, 18, 0.24)' },
-    '500': { value: 'RGBA(16, 17, 18, 0.36)' },
-    '600': { value: 'RGBA(16, 17, 18, 0.48)' },
-    '700': { value: 'RGBA(16, 17, 18, 0.64)' },
-    '800': { value: 'RGBA(16, 17, 18, 0.80)' },
-    '900': { value: 'RGBA(16, 17, 18, 0.92)' },
+    '50': { value: 'RGBA(0, 0, 0, 0.04)' },
+    '100': { value: 'RGBA(0, 0, 0, 0.06)' },
+    '200': { value: 'RGBA(0, 0, 0, 0.08)' },
+    '300': { value: 'RGBA(0, 0, 0, 0.16)' },
+    '400': { value: 'RGBA(0, 0, 0, 0.24)' },
+    '500': { value: 'RGBA(0, 0, 0, 0.36)' },
+    '600': { value: 'RGBA(0, 0, 0, 0.48)' },
+    '700': { value: 'RGBA(0, 0, 0, 0.64)' },
+    '800': { value: 'RGBA(0, 0, 0, 0.80)' },
+    '900': { value: 'RGBA(0, 0, 0, 0.92)' },
   },
 
   // BRAND COLORS

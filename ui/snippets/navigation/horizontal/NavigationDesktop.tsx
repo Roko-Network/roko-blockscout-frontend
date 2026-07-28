@@ -9,7 +9,6 @@ import useIsAuth from 'ui/snippets/auth/useIsAuth';
 import NetworkLogo from 'ui/snippets/networkLogo/NetworkLogo';
 import UserProfileDesktop from 'ui/snippets/user/UserProfileDesktop';
 
-import NavigationPromoBanner from '../promoBanner/NavigationPromoBanner';
 import RollupStageBadge from '../RollupStageBadge';
 import TestnetBadge from '../TestnetBadge';
 import NavLink from './NavLink';
@@ -31,12 +30,12 @@ const NavigationDesktop = () => {
   }, [ accountNavItems, isAuth ]);
 
   return (
-    <Box borderColor="border.divider" borderBottomWidth="1px">
+    <Box borderColor="border.divider" borderBottomWidth="2px" bg="bg.primary">
       <Flex
         display={{ base: 'none', lg: 'flex' }}
         alignItems="center"
         px={ 6 }
-        py={ 2 }
+        py={ 3 }
         maxW={ `${ CONTENT_MAX_WIDTH }px` }
         m="0 auto"
       >
@@ -61,7 +60,6 @@ const NavigationDesktop = () => {
           </Flex>
         </chakra.nav>
         <Flex gap={ 2 } ml={ 8 } _empty={{ display: 'none' }}>
-          <NavigationPromoBanner/>
           { config.features.rewards.isEnabled && <RewardsButton size="sm"/> }
           <UserProfileDesktop buttonSize="sm"/>
         </Flex>

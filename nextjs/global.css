@@ -4,3 +4,58 @@
   unicode-range: U+2192; /* Only the right arrow */
   font-display: swap;
 }
+
+/*
+ * ROKO brand typography.
+ *
+ * The marketing site uses Rajdhani for its display language and falls back to
+ * the platform UI face for long-form text. Explorer data uses JetBrains Mono
+ * so hashes, timestamps, and numeric columns remain easy to scan.
+ */
+@font-face {
+  font-family: 'Rajdhani';
+  src: url('/static/fonts/roko/rajdhani-300.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rajdhani';
+  src: url('/static/fonts/roko/rajdhani-400.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rajdhani';
+  src: url('/static/fonts/roko/rajdhani-500.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rajdhani';
+  src: url('/static/fonts/roko/rajdhani-600.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rajdhani';
+  src: url('/static/fonts/roko/rajdhani-700.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/static/fonts/roko/jetbrains-mono.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+}

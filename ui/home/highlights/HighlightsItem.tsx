@@ -62,11 +62,10 @@ const HighlightsItem = ({ data, isLoading, totalNum }: Props) => {
       pl={ 6 }
       w={ `calc((100% - ${ (totalNum - 1) * 12 }px) / ${ totalNum })` }
       overflow="hidden"
-      borderRadius="md"
-      bg={ !isLoading ? {
-        _light: data.background?.[0] || '#EFF7FF',
-        _dark: data.background?.[1] || data.background?.[0] || '#2A3340',
-      } : undefined }
+      borderRadius="base"
+      borderWidth="2px"
+      borderColor="border.divider"
+      bg={ !isLoading ? 'bg.elevated' : undefined }
     >
       <HStack overflow="hidden" w="100%" gap={ 3 }>
         <VStack
@@ -77,19 +76,13 @@ const HighlightsItem = ({ data, isLoading, totalNum }: Props) => {
         >
           <Heading
             level="3"
-            color={{
-              _light: data.title_color?.[0] || '#101112',
-              _dark: data.title_color?.[1] || data.title_color?.[0] || '#F8FCFF',
-            }}
+            color="heading"
           >
             { data.title }
           </Heading>
           <Text
             textStyle="sm"
-            color={{
-              _light: data.description_color?.[0] || '#718096',
-              _dark: data.description_color?.[1] || data.description_color?.[0] || '#AEB1B6',
-            }}
+            color="text.secondary"
           >
             { data.description }
           </Text>

@@ -12,9 +12,9 @@ export default function getNetworkUtilizationParams(value: number) {
   })();
 
   const colors = {
-    high: 'red.600',
-    medium: 'orange.600',
-    low: 'green.600',
+    high: 'text.error',
+    medium: 'text.warning',
+    low: 'text.success',
   };
   const color = colors[load];
 

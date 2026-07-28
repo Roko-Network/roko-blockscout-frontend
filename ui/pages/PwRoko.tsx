@@ -306,10 +306,10 @@ const PwRoko = () => {
       </Text>
 
       { account && wrongChain && (
-        <Box mb={ 4 } p={ 4 } bg="orange.500/10" borderWidth="1px" borderColor="orange.500/30" borderRadius="lg">
+        <Box mb={ 4 } p={ 4 } bg="orange.500/10" borderWidth="1px" borderColor="orange.500/30" borderRadius="base">
           <Flex direction={{ base: 'column', sm: 'row' }} gap={ 3 } alignItems={{ sm: 'center' }} justifyContent="space-between">
             <Box>
-              <Text color="orange.500" fontWeight={ 600 } fontSize="sm" mb={ 1 }>Wrong network</Text>
+              <Text color="text.warning" fontWeight={ 600 } fontSize="sm" mb={ 1 }>Wrong network</Text>
               <Text fontSize="xs" color="text.secondary">
                 Connected to { chainId }; pwROKO lives on { config.chain.name } ({ EXPECTED_CHAIN_ID_HEX }). All actions are disabled until you switch.
               </Text>
@@ -320,13 +320,13 @@ const PwRoko = () => {
       ) }
 
       { loadError && (
-        <Box mb={ 4 } p={ 3 } bg="red.500/10" borderWidth="1px" borderColor="red.500/20" borderRadius="lg">
-          <Text color="red.500" fontSize="sm">{ loadError }</Text>
+        <Box mb={ 4 } p={ 3 } bg="red.500/10" borderWidth="1px" borderColor="red.500/20" borderRadius="base">
+          <Text color="text.error" fontSize="sm">{ loadError }</Text>
         </Box>
       ) }
 
       { !account ? (
-        <Box bg="dialog.bg" borderWidth="1px" borderColor="divider" borderRadius="xl" p={ 8 } maxW="480px" textAlign="center">
+        <Box bg="bg.elevated" borderWidth="2px" borderColor="border.divider" borderRadius="base" p={ 8 } maxW="480px" textAlign="center">
           <Text mb={ 4 } color="text.secondary">Connect your wallet to manage pwROKO tokens</Text>
           <Button onClick={ connectWallet } size="lg">Connect MetaMask</Button>
         </Box>
@@ -334,13 +334,13 @@ const PwRoko = () => {
         <Flex direction={{ base: 'column', lg: 'row' }} gap={ 6 }>
           <Box flex={ 1 } maxW={{ lg: '560px' }}>
             <VStack gap={ 4 } alignItems="stretch">
-              <Box bg="dialog.bg" borderWidth="1px" borderColor="divider" borderRadius="xl" p={ 4 }>
+              <Box bg="bg.elevated" borderWidth="2px" borderColor="border.divider" borderRadius="base" p={ 4 }>
                 <Text fontSize="xs" color="text.secondary" mb={ 1 }>Connected Wallet</Text>
                 <Text fontFamily="mono" fontSize="sm" wordBreak="break-all">{ account }</Text>
               </Box>
 
               { /* Lock */ }
-              <Box bg="dialog.bg" borderWidth="1px" borderColor="divider" borderRadius="xl" p={ 6 }>
+              <Box bg="bg.elevated" borderWidth="2px" borderColor="border.divider" borderRadius="base" p={ 6 }>
                 <Heading as="h3" fontSize="md" mb={ 4 }>Lock { config.chain.currency.symbol } &rarr; pwROKO</Heading>
                 <form onSubmit={ handleLock }>
                   <VStack gap={ 3 } alignItems="stretch">
@@ -357,7 +357,7 @@ const PwRoko = () => {
               </Box>
 
               { /* Unlock */ }
-              <Box bg="dialog.bg" borderWidth="1px" borderColor="divider" borderRadius="xl" p={ 6 }>
+              <Box bg="bg.elevated" borderWidth="2px" borderColor="border.divider" borderRadius="base" p={ 6 }>
                 <Heading as="h3" fontSize="md" mb={ 1 }>Unlock pwROKO &rarr; { config.chain.currency.symbol }</Heading>
                 <Text fontSize="xs" color="text.secondary" mb={ 4 }>
                   Two-phase process: request unlock (starts cooldown), then complete after cooldown.
@@ -376,18 +376,18 @@ const PwRoko = () => {
                 </form>
 
                 { (hasPendingUnlocks || hasReadyUnlocks) && (
-                  <Box mt={ 4 } p={ 3 } bg="bg.base" borderRadius="lg">
+                  <Box mt={ 4 } p={ 3 } bg="bg.muted" borderRadius="base">
                     <Text fontSize="sm" fontWeight={ 600 } mb={ 2 }>Unlock Status</Text>
                     { hasPendingUnlocks && (
                       <HStack fontSize="sm" mb={ 1 }>
-                        <Text color="orange.500">Pending:</Text>
+                        <Text color="text.warning">Pending:</Text>
                         <Text fontFamily="mono">{ accountInfo?.pendingUnlock } pwROKO</Text>
                         <Text color="text.secondary">(waiting)</Text>
                       </HStack>
                     ) }
                     { hasReadyUnlocks && (
                       <HStack fontSize="sm">
-                        <Text color="green.500">Ready:</Text>
+                        <Text color="text.success">Ready:</Text>
                         <Text fontFamily="mono">{ accountInfo?.readyUnlock } pwROKO</Text>
                       </HStack>
                     ) }
@@ -405,13 +405,13 @@ const PwRoko = () => {
               </Box>
 
               { txError && (
-                <Box p={ 3 } bg="red.500/10" borderWidth="1px" borderColor="red.500/20" borderRadius="lg">
-                  <Text color="red.500" fontSize="sm">{ txError }</Text>
+                <Box p={ 3 } bg="red.500/10" borderWidth="1px" borderColor="red.500/20" borderRadius="base">
+                  <Text color="text.error" fontSize="sm">{ txError }</Text>
                 </Box>
               ) }
               { txHash && (
-                <Box p={ 3 } bg="green.500/10" borderWidth="1px" borderColor="green.500/20" borderRadius="lg">
-                  <Text color="green.500" fontSize="sm" fontWeight={ 600 } mb={ 1 }>Transaction submitted</Text>
+                <Box p={ 3 } bg="green.500/10" borderWidth="1px" borderColor="green.500/20" borderRadius="base">
+                  <Text color="text.success" fontSize="sm" fontWeight={ 600 } mb={ 1 }>Transaction submitted</Text>
                   <Text fontSize="xs" fontFamily="mono" color="text.secondary" wordBreak="break-all">{ txHash }</Text>
                 </Box>
               ) }
@@ -420,7 +420,7 @@ const PwRoko = () => {
 
           <Box w={{ base: '100%', lg: '300px' }}>
             <VStack gap={ 4 } alignItems="stretch">
-              <Box bg="dialog.bg" borderWidth="1px" borderColor="divider" borderRadius="xl" p={ 6 }>
+              <Box bg="bg.elevated" borderWidth="2px" borderColor="border.divider" borderRadius="base" p={ 6 }>
                 <Text fontSize="sm" fontWeight={ 600 } mb={ 3 }>Your Balances</Text>
                 <VStack gap={ 2 } alignItems="stretch" fontSize="sm">
                   <Flex justifyContent="space-between">
@@ -429,7 +429,7 @@ const PwRoko = () => {
                       <Text fontFamily="mono" fontWeight={ 600 }>{ accountInfo?.nativeBalance ?? '---' }</Text>
                     </Skeleton>
                   </Flex>
-                  <Box borderBottomWidth="1px" borderColor="divider"/>
+                  <Box borderBottomWidth="1px" borderColor="border.divider"/>
                   <Flex justifyContent="space-between">
                     <Text color="text.secondary">pwROKO</Text>
                     <Skeleton loading={ loading }>
@@ -445,7 +445,7 @@ const PwRoko = () => {
                   <Flex justifyContent="space-between">
                     <Text color="text.secondary">Pending unlock</Text>
                     <Skeleton loading={ loading }>
-                      <Text fontFamily="mono" color={ hasPendingUnlocks ? 'orange.500' : undefined }>
+                      <Text fontFamily="mono" color={ hasPendingUnlocks ? 'text.warning' : undefined }>
                         { accountInfo?.pendingUnlock ?? '---' }
                       </Text>
                     </Skeleton>
@@ -453,7 +453,7 @@ const PwRoko = () => {
                   <Flex justifyContent="space-between">
                     <Text color="text.secondary">Ready to claim</Text>
                     <Skeleton loading={ loading }>
-                      <Text fontFamily="mono" color={ hasReadyUnlocks ? 'green.500' : undefined }>
+                      <Text fontFamily="mono" color={ hasReadyUnlocks ? 'text.success' : undefined }>
                         { accountInfo?.readyUnlock ?? '---' }
                       </Text>
                     </Skeleton>
@@ -462,7 +462,7 @@ const PwRoko = () => {
                 <Button mt={ 3 } variant="outline" size="sm" w="100%" onClick={ loadAccountInfo }>Refresh</Button>
               </Box>
 
-              <Box bg="dialog.bg" borderWidth="1px" borderColor="divider" borderRadius="xl" p={ 6 }>
+              <Box bg="bg.elevated" borderWidth="2px" borderColor="border.divider" borderRadius="base" p={ 6 }>
                 <Text fontSize="sm" fontWeight={ 600 } mb={ 3 }>Token Info</Text>
                 <VStack gap={ 2 } alignItems="stretch" fontSize="sm">
                   <Flex justifyContent="space-between">
@@ -487,12 +487,12 @@ const PwRoko = () => {
                   </Flex>
                   <Flex justifyContent="space-between">
                     <Text color="text.secondary">Transfers</Text>
-                    <Text color="orange.500">Disabled</Text>
+                    <Text color="text.warning">Disabled</Text>
                   </Flex>
                 </VStack>
               </Box>
 
-              <Box bg="dialog.bg" borderWidth="1px" borderColor="divider" borderRadius="xl" p={ 6 }>
+              <Box bg="bg.elevated" borderWidth="2px" borderColor="border.divider" borderRadius="base" p={ 6 }>
                 <Text fontSize="sm" fontWeight={ 600 } mb={ 3 }>How it works</Text>
                 <VStack gap={ 2 } alignItems="stretch" fontSize="xs" color="text.secondary">
                   <Text>1. <b>Lock</b> native { config.chain.currency.symbol } to mint pwROKO (1:1)</Text>

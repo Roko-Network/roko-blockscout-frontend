@@ -21,6 +21,7 @@ import type {
   TemporalValidatorReport,
   TemporalPairwiseOffset,
 } from 'types/api/temporalMesh';
+
 import { formatOffsetNs } from 'lib/api/services/general/temporalMeshRpc';
 
 // ---------------------------------------------------------------------------
@@ -49,21 +50,22 @@ const NODE_RADIUS_MIN = 12;
 const NODE_RADIUS_MAX = 22;
 
 /** Reputation basis-point threshold (0–10000) for colour transitions. */
-const REP_GREEN_THRESHOLD = 8000;  // >80%
+const REP_GREEN_THRESHOLD = 8000; // >80%
 const REP_YELLOW_THRESHOLD = 5000; // >50%
 
-// Hex colours used in SVG (must be plain hex — not Chakra tokens).
+// Status colours remain explicit; surface and text colours use semantic CSS
+// variables so the graph follows the application colour mode.
 const COLOR_GREEN = '#48BB78';
 const COLOR_YELLOW = '#ECC94B';
 const COLOR_RED = '#FC8181';
 
 // Edge colour thresholds (nanoseconds).
-const EDGE_GREEN_MAX_NS = 50_000;   // <50 µs
+const EDGE_GREEN_MAX_NS = 50_000; // <50 µs
 const EDGE_YELLOW_MAX_NS = 1_000_000; // <1 ms
 
-const BG_COLOR = '#1A202C';
-const TEXT_COLOR = '#E2E8F0';
-const TEXT_MUTED = '#718096';
+const BG_COLOR = 'var(--chakra-colors-bg-elevated)';
+const TEXT_COLOR = 'var(--chakra-colors-text-primary)';
+const TEXT_MUTED = 'var(--chakra-colors-text-secondary)';
 
 // ---------------------------------------------------------------------------
 // Pure geometry / colour helpers (non-React — fast, stable)
@@ -159,7 +161,7 @@ function ValidatorNode({ cx, cy, radius, fill, strokeWidth, label, isProducer }:
         r={ radius }
         fill={ fill }
         fillOpacity={ 0.85 }
-        stroke={ isProducer ? '#FFFFFF' : fill }
+        stroke={ isProducer ? 'var(--chakra-colors-border-strong)' : fill }
         strokeWidth={ strokeWidth }
         data-testid={ isProducer ? 'producer-node' : 'validator-node' }
       />
@@ -221,9 +223,9 @@ function computeGraph(data: TemporalMeshState): {
 
   // The producer is the from_index that appears most often in pairwise_offsets,
   // defaulting to 0.
-  const producerIndex = data.pairwise_offsets.length > 0
-    ? data.pairwise_offsets[0]!.from_index
-    : 0;
+  const producerIndex = data.pairwise_offsets.length > 0 ?
+    data.pairwise_offsets[0]!.from_index :
+    0;
 
   // Build the full set of authority indices to display.
   const indicesSet = new Set<number>();
@@ -319,9 +321,9 @@ function convergenceHexColor(state: string): string {
 const MeshNetworkGraph: React.FC<Props> = ({ data, isLoading }) => {
   // Memoize the computed graph so positions are stable across renders.
   const graph = useMemo(
-    () => (data && data.validators.length > 0 || (data?.pairwise_offsets?.length ?? 0) > 0
-      ? computeGraph(data!)
-      : null),
+    () => (data && (data.validators.length > 0 || data.pairwise_offsets.length > 0) ?
+      computeGraph(data!) :
+      null),
     [ data ],
   );
 
@@ -331,10 +333,10 @@ const MeshNetworkGraph: React.FC<Props> = ({ data, isLoading }) => {
   return (
     <Box
       bg={ BG_COLOR }
-      borderWidth="1px"
-      borderColor="whiteAlpha.200"
-      borderRadius="lg"
-      p={ 4 }
+      borderWidth="2px"
+      borderColor="border.divider"
+      borderRadius="base"
+      p={{ base: 4, lg: 6 }}
       mb={ 6 }
     >
       { /* Loading placeholder */ }
@@ -391,7 +393,7 @@ const MeshNetworkGraph: React.FC<Props> = ({ data, isLoading }) => {
           <defs>
             { /* Subtle radial gradient for background depth */ }
             <radialGradient id="bgGradient" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#2D3748" stopOpacity="0.6"/>
+              <stop offset="0%" stopColor="var(--chakra-colors-bg-muted)" stopOpacity="0.9"/>
               <stop offset="100%" stopColor={ BG_COLOR } stopOpacity="0"/>
             </radialGradient>
           </defs>
@@ -410,7 +412,7 @@ const MeshNetworkGraph: React.FC<Props> = ({ data, isLoading }) => {
             cy={ CENTER_Y }
             r={ ORBIT_RADIUS }
             fill="none"
-            stroke="rgba(255,255,255,0.06)"
+            stroke="var(--chakra-colors-border-divider)"
             strokeWidth="1"
             strokeDasharray="4 6"
           />

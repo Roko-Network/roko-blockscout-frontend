@@ -100,12 +100,13 @@ const DeveloperConsole = () => {
         { CARDS.map((card) => {
           const inner = (
             <Box
-              borderWidth="1px"
-              borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-              borderRadius="xl"
+              borderWidth="2px"
+              borderColor="border.divider"
+              borderRadius="base"
+              bg="bg.elevated"
               p={ 5 }
               h="full"
-              _hover={{ borderColor: 'blue.400' }}
+              _hover={{ borderColor: 'brand.accentText' }}
             >
               <chakra.h3 fontSize="md" fontWeight={ 700 } mb={ 2 }>{ card.title }</chakra.h3>
               <chakra.p fontSize="sm" color="text.secondary">{ card.description }</chakra.p>
@@ -129,9 +130,10 @@ const DeveloperConsole = () => {
       </Grid>
 
       <Box
-        borderWidth="1px"
-        borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-        borderRadius="xl"
+        borderWidth="2px"
+        borderColor="border.divider"
+        borderRadius="base"
+        bg="bg.elevated"
         p={ 5 }
       >
         <chakra.h3 fontSize="md" fontWeight={ 700 } mb={ 2 }>Submit Extrinsic</chakra.h3>

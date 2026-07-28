@@ -61,9 +61,10 @@ const HeaderMobile = ({ hideSearchButton, onGoToSearchResults }: Props) => {
         bgColor="bg.primary"
         width="100%"
         alignItems="center"
-        transitionProperty="box-shadow"
+        borderBottomWidth="1px"
+        borderBottomColor={ isSticky ? 'border.divider' : 'transparent' }
+        transitionProperty="border-color"
         transitionDuration="slow"
-        boxShadow={ isSticky ? 'md' : 'none' }
       >
         <Burger/>
         <Flex alignItems="center" flexGrow={ 1 } mx={ 2 }>

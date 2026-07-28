@@ -11,7 +11,6 @@ import {
   reputationColor,
   reputationToPercent,
 } from 'lib/api/services/general/temporalMeshRpc';
-import { SECOND } from 'toolkit/utils/consts';
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import {
   TableRoot,
@@ -21,6 +20,7 @@ import {
   TableColumnHeader,
   TableCell,
 } from 'toolkit/chakra/table';
+import { SECOND } from 'toolkit/utils/consts';
 import PageTitle from 'ui/shared/Page/PageTitle';
 import MeshNetworkGraph from 'ui/temporal/MeshNetworkGraph';
 
@@ -43,18 +43,20 @@ function StatCard({
 }) {
   return (
     <Box
-      borderWidth="1px"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-      borderRadius="xl"
+      borderWidth="2px"
+      borderColor="border.divider"
+      borderRadius="base"
+      bg="bg.elevated"
       p={ 5 }
     >
       <chakra.span
         display="block"
         fontWeight={ 600 }
+        fontFamily="heading"
         fontSize="xs"
-        color="text.secondary"
+        color="heading"
         textTransform="uppercase"
-        letterSpacing="wide"
+        letterSpacing="0.04em"
         mb={ 2 }
       >
         { label }
@@ -106,7 +108,7 @@ function ValidatorRow({
     <TableRow>
       <TableCell>
         <Skeleton loading={ isLoading } w="fit-content">
-          <chakra.span fontFamily="mono" fontSize="sm" color="#0078D4" fontWeight={ 600 }>
+          <chakra.span fontFamily="mono" fontSize="sm" color="brand.accentText" fontWeight={ 600 }>
             #{ report.authority_index }
           </chakra.span>
         </Skeleton>
@@ -162,9 +164,15 @@ const TemporalMesh = () => {
     refetchInterval: REFETCH_INTERVAL_MS,
   });
 
-  const meshDiameter = data?.mesh_diameter_ns != null
-    ? formatOffsetNs(data.mesh_diameter_ns)
-    : '—';
+  const meshDiameter = data?.mesh_diameter_ns != null ?
+    formatOffsetNs(data.mesh_diameter_ns) :
+    '—';
+  const qualityAccent = (() => {
+    if (data?.quality_percent == null) return undefined;
+    if (data.quality_percent >= 90) return 'green.500';
+    if (data.quality_percent >= 70) return 'yellow.500';
+    return 'red.500';
+  })();
 
   return (
     <>
@@ -182,6 +190,7 @@ const TemporalMesh = () => {
       { /* ------------------------------------------------------------------ */ }
       <chakra.span
         display="block"
+        fontFamily="heading"
         fontWeight={ 700 }
         fontSize="lg"
         mb={ 4 }
@@ -196,18 +205,20 @@ const TemporalMesh = () => {
       >
         { /* Convergence — special: shows a coloured dot */ }
         <Box
-          borderWidth="1px"
-          borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-          borderRadius="xl"
+          borderWidth="2px"
+          borderColor="border.divider"
+          borderRadius="base"
+          bg="bg.elevated"
           p={ 5 }
         >
           <chakra.span
             display="block"
             fontWeight={ 600 }
+            fontFamily="heading"
             fontSize="xs"
-            color="text.secondary"
+            color="heading"
             textTransform="uppercase"
-            letterSpacing="wide"
+            letterSpacing="0.04em"
             mb={ 2 }
           >
             Convergence
@@ -219,10 +230,7 @@ const TemporalMesh = () => {
           label="Mesh Quality"
           value={ data?.quality_percent != null ? `${ data.quality_percent }%` : '—' }
           isLoading={ isLoading }
-          accent={ data?.quality_percent != null ? (
-            data.quality_percent >= 90 ? 'green.500' :
-            data.quality_percent >= 70 ? 'yellow.500' : 'red.500'
-          ) : undefined }
+          accent={ qualityAccent }
         />
 
         <StatCard
@@ -254,6 +262,7 @@ const TemporalMesh = () => {
       { /* ------------------------------------------------------------------ */ }
       <chakra.span
         display="block"
+        fontFamily="heading"
         fontWeight={ 700 }
         fontSize="lg"
         mb={ 4 }
@@ -262,9 +271,10 @@ const TemporalMesh = () => {
       </chakra.span>
 
       <Box
-        borderWidth="1px"
-        borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-        borderRadius="xl"
+        borderWidth="2px"
+        borderColor="border.divider"
+        borderRadius="base"
+        bg="bg.elevated"
         overflow="hidden"
         mb={ 8 }
       >
@@ -284,7 +294,7 @@ const TemporalMesh = () => {
               // Skeleton rows while loading
               Array.from({ length: 3 }).map((_, i) => (
                 <TableRow key={ i }>
-                  { Array.from({ length: 6 }).map((__, j) => (
+                  { Array.from({ length: 6 }).map((_cell, j) => (
                     <TableCell key={ j }>
                       <Skeleton loading h={ 4 } w={ j === 0 ? '60px' : '80px' }/>
                     </TableCell>
@@ -317,6 +327,7 @@ const TemporalMesh = () => {
       { /* ------------------------------------------------------------------ */ }
       <chakra.span
         display="block"
+        fontFamily="heading"
         fontWeight={ 700 }
         fontSize="lg"
         mb={ 4 }
@@ -325,9 +336,10 @@ const TemporalMesh = () => {
       </chakra.span>
 
       <Box
-        borderWidth="1px"
-        borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-        borderRadius="xl"
+        borderWidth="2px"
+        borderColor="border.divider"
+        borderRadius="base"
+        bg="bg.elevated"
         overflow="hidden"
       >
         <TableRoot>
@@ -362,12 +374,12 @@ const TemporalMesh = () => {
             { !isLoading && (data?.pairwise_offsets ?? []).map((p, i) => (
               <TableRow key={ i }>
                 <TableCell>
-                  <chakra.span fontFamily="mono" fontSize="sm" color="#0078D4" fontWeight={ 600 }>
+                  <chakra.span fontFamily="mono" fontSize="sm" color="brand.accentText" fontWeight={ 600 }>
                     #{ p.from_index }
                   </chakra.span>
                 </TableCell>
                 <TableCell>
-                  <chakra.span fontFamily="mono" fontSize="sm" color="#0078D4" fontWeight={ 600 }>
+                  <chakra.span fontFamily="mono" fontSize="sm" color="brand.accentText" fontWeight={ 600 }>
                     #{ p.to_index }
                   </chakra.span>
                 </TableCell>

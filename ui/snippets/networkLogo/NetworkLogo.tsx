@@ -3,22 +3,24 @@ import React from 'react';
 
 import { route } from 'nextjs-routes';
 
-import config from 'configs/app';
-import { useColorModeValue } from 'toolkit/chakra/color-mode';
 import { Image } from 'toolkit/chakra/image';
-import IconSvg from 'ui/shared/IconSvg';
 
-import { INVERT_FILTER } from './consts';
+const ROKO_LOGO_SRC = '/roko-logo.png';
 
 const LogoFallback = () => {
   return (
-    <IconSvg
-      name="networks/logo-placeholder"
-      width="120px"
-      height="24px"
-      color={{ base: 'blue.600', _dark: 'white' }}
+    <Flex
+      w="36px"
+      h="36px"
+      alignItems="center"
+      justifyContent="center"
+      border="2px solid"
+      borderColor="border"
+      borderRadius="full"
       aria-label="Network logo placeholder"
-    />
+    >
+      <Text fontFamily="heading" fontWeight={ 700 }>R</Text>
+    </Flex>
   );
 };
 
@@ -27,9 +29,6 @@ type Props = {
 };
 
 const NetworkLogo = ({ className }: Props) => {
-
-  const logoSrc = useColorModeValue(config.UI.navigation.logo.default, config.UI.navigation.logo.dark || config.UI.navigation.logo.default);
-
   return (
     <chakra.a
       className={ className }
@@ -38,19 +37,25 @@ const NetworkLogo = ({ className }: Props) => {
     >
       <Flex alignItems="center" gap={ 2 }>
         <Image
-          h="24px"
-          w="24px"
-          skeletonWidth="24px"
-          src={ logoSrc }
-          alt={ `${ config.chain.name } network logo` }
+          h="36px"
+          w="36px"
+          skeletonWidth="36px"
+          src={ ROKO_LOGO_SRC }
+          alt="Roko Network logo"
           fallback={ <LogoFallback/> }
-          filter={{ _dark: !config.UI.navigation.logo.dark ? INVERT_FILTER : undefined }}
           objectFit="contain"
-          objectPosition="left"
+          objectPosition="center"
           flexShrink={ 0 }
         />
-        <Text fontSize="lg" fontWeight={ 700 } lineHeight="24px" whiteSpace="nowrap">
-          { config.chain.name }
+        <Text
+          fontSize="md"
+          fontWeight={ 500 }
+          lineHeight="24px"
+          letterSpacing="0.08em"
+          textTransform="uppercase"
+          whiteSpace="nowrap"
+        >
+          Roko Network
         </Text>
       </Flex>
     </chakra.a>

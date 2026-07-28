@@ -9,7 +9,6 @@ import useIsAuth from 'ui/snippets/auth/useIsAuth';
 import NetworkIcon from 'ui/snippets/networkLogo/NetworkIcon';
 import NetworkLogo from 'ui/snippets/networkLogo/NetworkLogo';
 
-import NavigationPromoBanner from '../promoBanner/NavigationPromoBanner';
 import RollupStageBadge from '../RollupStageBadge';
 import TestnetBadge from '../TestnetBadge';
 import NavLink from './NavLink';
@@ -55,7 +54,7 @@ const NavigationDesktop = () => {
       position="relative"
       flexDirection="column"
       alignItems="stretch"
-      borderRight="1px solid"
+      borderRight="2px solid"
       borderColor="border.divider"
       px={{ lg: isExpanded ? 6 : 4, xl: isCollapsed ? 4 : 6 }}
       pt={ 12 }
@@ -108,7 +107,6 @@ const NavigationDesktop = () => {
           </VStack>
         </Box>
       ) }
-      <NavigationPromoBanner isCollapsed={ isCollapsed }/>
       <IconSvg
         name="arrows/east-mini"
         width={ 6 }

@@ -35,7 +35,7 @@ const ChainIndicatorItem = ({ indicator, isSelected, onClick, isLoading }: Props
       return null;
     }
 
-    const diffColor = indicator.valueDiff >= 0 ? 'green.500' : 'red.500';
+    const diffColor = indicator.valueDiff >= 0 ? 'text.success' : 'text.error';
 
     return (
       <Skeleton loading={ isLoading } ml={ 1 } display="flex" alignItems="center" color={ diffColor }>
@@ -56,12 +56,12 @@ const ChainIndicatorItem = ({ indicator, isSelected, onClick, isLoading }: Props
       borderRadius="base"
       cursor="pointer"
       color={ isSelected ? 'text.secondary' : 'link.primary' }
-      bgColor={ isSelected ? 'bg.primary' : undefined }
+      bgColor={ isSelected ? 'bg.muted' : undefined }
       onClick={ handleClick }
       fontSize="xs"
       fontWeight={ 500 }
       _hover={{
-        bgColor: 'bg.primary',
+        bgColor: 'bg.muted',
         color: isSelected ? 'text.secondary' : 'hover',
         zIndex: 1,
       }}

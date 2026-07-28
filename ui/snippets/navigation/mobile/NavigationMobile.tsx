@@ -6,7 +6,6 @@ import { useColorModeValue } from 'toolkit/chakra/color-mode';
 import IconSvg from 'ui/shared/IconSvg';
 import useIsAuth from 'ui/snippets/auth/useIsAuth';
 
-import NavigationPromoBanner from '../promoBanner/NavigationPromoBanner';
 import NavLink from '../vertical/NavLink';
 import NavLinkRewards from '../vertical/NavLinkRewards';
 import NavLinkGroup from './NavLinkGroup';
@@ -99,7 +98,6 @@ const NavigationMobile = ({ onNavLinkClick, isMarketplaceAppPage }: Props) => {
             </VStack>
           </Box>
         ) }
-        <NavigationPromoBanner isCollapsed={ isCollapsed }/>
       </Box>
       <Box
         key="sub"

@@ -28,7 +28,6 @@ import PageTitle from 'ui/shared/Page/PageTitle';
 import Pagination from 'ui/shared/pagination/Pagination';
 import ExternalSearchItem from 'ui/shared/search/ExternalSearchItem';
 import type { SearchResultAppItem } from 'ui/shared/search/utils';
-import HeaderAlert from 'ui/snippets/header/HeaderAlert';
 import HeaderDesktop from 'ui/snippets/header/HeaderDesktop';
 import HeaderMobile from 'ui/snippets/header/HeaderMobile';
 import SearchBarSuggestBlockCountdown from 'ui/snippets/searchBar/SearchBarSuggest/SearchBarSuggestBlockCountdown';
@@ -331,7 +330,6 @@ const SearchResultsPageContent = () => {
       <Layout.MainArea>
         <Layout.SideBar/>
         <Layout.MainColumn>
-          <HeaderAlert/>
           <HeaderDesktop renderSearchBar={ renderSearchBar }/>
           <AppErrorBoundary>
             <Layout.Content flexGrow={ 0 }>

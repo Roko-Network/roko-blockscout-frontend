@@ -148,8 +148,8 @@ const TemporalStatsHome = () => {
 
   return (
     <Box
-      borderWidth="1px"
-      borderColor={{ _light: 'gray.100', _dark: 'whiteAlpha.200' }}
+      borderWidth="2px"
+      borderColor="border.divider"
       borderRadius="base"
       px={ 4 }
       py={ 3 }
@@ -159,8 +159,8 @@ const TemporalStatsHome = () => {
           fontFamily="heading"
           fontWeight={ 700 }
           fontSize="sm"
-          color="#0078D4"
-          letterSpacing="wide"
+          color="heading"
+          letterSpacing="0.04em"
           textTransform="uppercase"
         >
           Temporal Ordering

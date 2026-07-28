@@ -53,15 +53,11 @@ const TxTemporalTimestamp = ({ txHash, blockTimestamp }: Props) => {
       return formatWaitTime(data.wait_ns);
     }
     if (data?.timestamp_ns && blockTimestamp) {
-      try {
-        const stampMs = Number(data.timestamp_ns) / 1000000;
-        const blockMs = new Date(blockTimestamp).getTime();
-        if (blockMs > stampMs) {
-          const diffNs = Math.round((blockMs - stampMs) * 1000000);
-          return formatWaitTime(String(diffNs));
-        }
-      } catch {
-        // ignore
+      const stampMs = Number(data.timestamp_ns) / 1000000;
+      const blockMs = new Date(blockTimestamp).getTime();
+      if (Number.isFinite(stampMs) && Number.isFinite(blockMs) && blockMs > stampMs) {
+        const diffNs = Math.round((blockMs - stampMs) * 1000000);
+        return formatWaitTime(String(diffNs));
       }
     }
     return null;
@@ -89,14 +85,14 @@ const TxTemporalTimestamp = ({ txHash, blockTimestamp }: Props) => {
                 { raw } ns
               </Text>
               { waitDisplay && (
-                <Text fontSize="xs" color="#0078D4" fontWeight={ 600 }>
+                <Text fontSize="xs" color="brand.accentText" fontWeight={ 600 }>
                   waited { waitDisplay }
                 </Text>
               ) }
             </Flex>
           </Skeleton>
           { showQuality && (
-            <Text fontSize="xs" color="whiteAlpha.700">
+            <Text fontSize="xs" color="text.secondary">
               { qualityPercent }% mesh quality
             </Text>
           ) }

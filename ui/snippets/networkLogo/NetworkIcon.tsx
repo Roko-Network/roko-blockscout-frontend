@@ -1,24 +1,26 @@
-import { chakra } from '@chakra-ui/react';
+import { chakra, Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 
 import { route } from 'nextjs-routes';
 
-import config from 'configs/app';
-import { useColorModeValue } from 'toolkit/chakra/color-mode';
 import { Image } from 'toolkit/chakra/image';
-import IconSvg from 'ui/shared/IconSvg';
 
-import { INVERT_FILTER } from './consts';
+const ROKO_ICON_SRC = '/roko-logo.png';
 
 const IconFallback = () => {
   return (
-    <IconSvg
-      name="networks/icon-placeholder"
-      w="30px"
-      h="30px"
-      color={{ base: 'blue.600', _dark: 'white' }}
+    <Flex
+      w="36px"
+      h="36px"
+      alignItems="center"
+      justifyContent="center"
+      border="2px solid"
+      borderColor="border"
+      borderRadius="full"
       aria-label="Network icon placeholder"
-    />
+    >
+      <Text fontFamily="heading" fontWeight={ 700 }>R</Text>
+    </Flex>
   );
 };
 
@@ -27,9 +29,6 @@ type Props = {
 };
 
 const NetworkIcon = ({ className }: Props) => {
-
-  const iconSrc = useColorModeValue(config.UI.navigation.icon.default, config.UI.navigation.icon.dark || config.UI.navigation.icon.default);
-
   return (
     <chakra.a
       className={ className }
@@ -37,14 +36,14 @@ const NetworkIcon = ({ className }: Props) => {
       aria-label="Link to main page"
     >
       <Image
-        w="30px"
-        h="30px"
-        src={ iconSrc }
-        alt={ `${ config.chain.name } network icon` }
+        w="36px"
+        h="36px"
+        skeletonWidth="36px"
+        src={ ROKO_ICON_SRC }
+        alt="Roko Network icon"
         fallback={ <IconFallback/> }
-        filter={{ _dark: !config.UI.navigation.icon.dark ? INVERT_FILTER : undefined }}
         objectFit="contain"
-        objectPosition="left"
+        objectPosition="center"
       />
     </chakra.a>
   );

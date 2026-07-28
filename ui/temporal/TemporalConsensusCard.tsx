@@ -13,12 +13,12 @@ interface Props {
 
 function getQualityColor(quality: number): string {
   if (quality >= 90) {
-    return 'green.400';
+    return 'text.success';
   }
   if (quality >= 70) {
-    return 'yellow.400';
+    return 'text.warning';
   }
-  return 'red.400';
+  return 'text.error';
 }
 
 const TemporalConsensusCard = ({ data, isLoading }: Props) => {
@@ -27,15 +27,14 @@ const TemporalConsensusCard = ({ data, isLoading }: Props) => {
 
   return (
     <Box
-      borderWidth="1px"
-      borderTopWidth="3px"
-      borderTopColor="#0078D4"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-      borderRadius="xl"
+      borderWidth="2px"
+      borderColor="border.divider"
+      borderRadius="base"
+      bg="bg.elevated"
       p={ 6 }
     >
       <Skeleton loading={ isLoading } mb={ 2 } w="fit-content">
-        <chakra.span fontWeight={ 600 } fontSize="sm" color="text.secondary" textTransform="uppercase" letterSpacing="wide">
+        <chakra.span fontFamily="heading" fontWeight={ 600 } fontSize="sm" color="heading" textTransform="uppercase" letterSpacing="0.04em">
           Mesh Consensus Time
         </chakra.span>
       </Skeleton>
@@ -73,7 +72,7 @@ const TemporalConsensusCard = ({ data, isLoading }: Props) => {
           size="sm"
           color={ qualityColor }
           w="full"
-          borderRadius="full"
+          borderRadius="sm"
           minW="200px"
         />
       </Skeleton>

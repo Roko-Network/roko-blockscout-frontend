@@ -23,7 +23,7 @@ const StatRow = ({ label, value, isLoading, indicator = 'none' }: StatRowProps) 
     alignItems="baseline"
     py={ 2 }
     borderBottomWidth="1px"
-    borderColor={{ _light: 'gray.100', _dark: 'whiteAlpha.100' }}
+    borderColor="border.divider"
     _last={{ borderBottomWidth: 0 }}
   >
     <Flex alignItems="center" gap={ 2 }>
@@ -65,20 +65,20 @@ function healthIndicator(value: number | undefined): 'healthy' | 'warning' | 'no
 const TemporalMetricsCard = ({ data, isLoading }: Props) => {
   return (
     <Box
-      borderWidth="1px"
-      borderTopWidth="3px"
-      borderTopColor="#0078D4"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-      borderRadius="xl"
+      borderWidth="2px"
+      borderColor="border.divider"
+      borderRadius="base"
+      bg="bg.elevated"
       p={ 6 }
     >
       <Skeleton loading={ isLoading } mb={ 4 } w="fit-content">
         <chakra.span
           fontWeight={ 600 }
+          fontFamily="heading"
           fontSize="sm"
-          color="text.secondary"
+          color="heading"
           textTransform="uppercase"
-          letterSpacing="wide"
+          letterSpacing="0.04em"
         >
           Network Temporal Health
         </chakra.span>

@@ -12,9 +12,10 @@ export const recipe = defineRecipe({
     height: 'var(--input-height)',
     minW: 'var(--input-height)',
     color: 'input.fg',
-    '--focus-color': 'colors.border.error',
+    fontFamily: 'body',
+    '--focus-color': 'colors.focus.ring',
     '--error-color': 'colors.border.error',
-    fontWeight: 'medium',
+    fontWeight: 'normal',
     _invalid: {
       focusRingColor: 'var(--error-color)',
       borderColor: 'var(--error-color)',
@@ -30,13 +31,13 @@ export const recipe = defineRecipe({
     size: {
       sm: {
         textStyle: 'sm',
-        px: '2',
-        '--input-height': 'sizes.8',
+        px: '3',
+        '--input-height': 'sizes.10',
       },
       md: {
         textStyle: 'sm',
-        px: '2',
-        '--input-height': 'sizes.10',
+        px: '4',
+        '--input-height': 'sizes.12',
       },
       lg: {
         textStyle: 'md',
@@ -68,7 +69,6 @@ export const recipe = defineRecipe({
         },
         _focus: {
           borderColor: 'input.border.focus',
-          boxShadow: 'size.md',
           _hover: {
             borderColor: 'input.border.focus',
           },

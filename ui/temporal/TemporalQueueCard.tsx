@@ -19,7 +19,7 @@ interface StatRowProps {
 const StatRow = ({ label, value, isLoading }: StatRowProps) => (
   <Flex justifyContent="space-between" alignItems="baseline" py={ 2 }
     borderBottomWidth="1px"
-    borderColor={{ _light: 'gray.100', _dark: 'whiteAlpha.100' }}
+    borderColor="border.divider"
     _last={{ borderBottomWidth: 0 }}
   >
     <chakra.span fontSize="sm" color="text.secondary">{ label }</chakra.span>
@@ -32,15 +32,14 @@ const StatRow = ({ label, value, isLoading }: StatRowProps) => (
 const TemporalQueueCard = ({ data, isLoading }: Props) => {
   return (
     <Box
-      borderWidth="1px"
-      borderTopWidth="3px"
-      borderTopColor="#0078D4"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-      borderRadius="xl"
+      borderWidth="2px"
+      borderColor="border.divider"
+      borderRadius="base"
+      bg="bg.elevated"
       p={ 6 }
     >
       <Skeleton loading={ isLoading } mb={ 4 } w="fit-content">
-        <chakra.span fontWeight={ 600 } fontSize="sm" color="text.secondary" textTransform="uppercase" letterSpacing="wide">
+        <chakra.span fontFamily="heading" fontWeight={ 600 } fontSize="sm" color="heading" textTransform="uppercase" letterSpacing="0.04em">
           Fee-Priority Queue
         </chakra.span>
       </Skeleton>
@@ -67,11 +66,11 @@ const TemporalQueueCard = ({ data, isLoading }: Props) => {
       />
 
       <Grid templateColumns="1fr 1fr" gap={ 3 } mt={ 4 }>
-        <Skeleton loading={ isLoading } borderRadius="lg">
+        <Skeleton loading={ isLoading } borderRadius="base">
           <Box
             borderWidth="1px"
-            borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.200' }}
-            borderRadius="lg"
+            borderColor="border.divider"
+            borderRadius="base"
             p={ 3 }
             textAlign="center"
           >
@@ -93,11 +92,11 @@ const TemporalQueueCard = ({ data, isLoading }: Props) => {
           </Box>
         </Skeleton>
 
-        <Skeleton loading={ isLoading } borderRadius="lg">
+        <Skeleton loading={ isLoading } borderRadius="base">
           <Box
             borderWidth="1px"
-            borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.200' }}
-            borderRadius="lg"
+            borderColor="border.divider"
+            borderRadius="base"
             p={ 3 }
             textAlign="center"
           >

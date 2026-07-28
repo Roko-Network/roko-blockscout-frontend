@@ -28,7 +28,7 @@ function StatRow({ label, value }: { label: string; value: React.ReactNode }) {
       alignItems="baseline"
       py={ 2 }
       borderBottomWidth="1px"
-      borderColor={{ _light: 'gray.100', _dark: 'whiteAlpha.100' }}
+      borderColor="border.divider"
       _last={{ borderBottomWidth: 0 }}
       gap={ 4 }
     >
@@ -46,9 +46,10 @@ function formatFinalized(era: SubstrateEra | null): string {
 function EraSummaryCard({ era, isLoading }: { era: SubstrateEra | null; isLoading: boolean }) {
   return (
     <Box
-      borderWidth="1px"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-      borderRadius="xl"
+      borderWidth="2px"
+      borderColor="border.divider"
+      borderRadius="base"
+      bg="bg.elevated"
       p={ 5 }
     >
       <chakra.h3 fontSize="md" fontWeight={ 700 } mb={ 4 }>Era summary</chakra.h3>
@@ -164,9 +165,10 @@ const Era = () => {
       <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={ 4 } mb={ 6 }>
         <EraSummaryCard era={ era ?? null } isLoading={ eraLoading }/>
         <Box
-          borderWidth="1px"
-          borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-          borderRadius="xl"
+          borderWidth="2px"
+          borderColor="border.divider"
+          borderRadius="base"
+          bg="bg.elevated"
           p={ 5 }
         >
           <chakra.h3 fontSize="md" fontWeight={ 700 } mb={ 4 }>Validator set snapshot</chakra.h3>

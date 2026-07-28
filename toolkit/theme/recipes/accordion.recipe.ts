@@ -18,7 +18,8 @@ export const recipe = defineSlotRecipe({
       width: 'full',
       outline: '0',
       gap: '1',
-      fontWeight: 'medium',
+      fontFamily: 'heading',
+      fontWeight: '600',
       borderRadius: 'var(--accordion-radius)',
       cursor: 'pointer',
       _focusVisible: {

@@ -11,7 +11,6 @@ import SearchResultsInput from 'ui/searchResults/SearchResultsInput';
 import AppErrorBoundary from 'ui/shared/AppError/AppErrorBoundary';
 import * as Layout from 'ui/shared/layout/components';
 import PageTitle from 'ui/shared/Page/PageTitle';
-import HeaderAlert from 'ui/snippets/header/HeaderAlert';
 import HeaderDesktop from 'ui/snippets/header/HeaderDesktop';
 import HeaderMobile from 'ui/snippets/header/HeaderMobile';
 
@@ -146,7 +145,6 @@ const SearchResults = () => {
       <Layout.MainArea>
         <Layout.SideBar/>
         <Layout.MainColumn>
-          <HeaderAlert/>
           <HeaderDesktop renderSearchBar={ renderSearchBar }/>
           <AppErrorBoundary>
             <Layout.Content>

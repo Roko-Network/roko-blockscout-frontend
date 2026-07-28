@@ -163,9 +163,10 @@ const TimelineSvg: React.FC<TimelineProps> = ({ entries, blockNumber }) => {
   const rawPositions: Array<PositionedEntry> = stamped.map(e => ({ ...e, x: toX(e.ts) }));
   const positions = enforceMinSpread(rawPositions);
 
-  const handleDotClick = (entry: BlockTxTimestampEntry) => {
-    if (entry.ethHash) {
-      void router.push({ pathname: '/tx/[hash]', query: { hash: entry.ethHash } });
+  const handleDotClick = (event: React.MouseEvent<SVGGElement>) => {
+    const hash = event.currentTarget.dataset.hash;
+    if (hash) {
+      void router.push({ pathname: '/tx/[hash]', query: { hash } });
     }
   };
 
@@ -178,7 +179,7 @@ const TimelineSvg: React.FC<TimelineProps> = ({ entries, blockNumber }) => {
       aria-label={ `Temporal transaction ordering timeline for block ${ blockNumber }` }
     >
       { /* Axis line */ }
-      <line x1={ 0 } y1={ AXIS_Y } x2={ CHART_W } y2={ AXIS_Y } stroke="#CBD5E0" strokeWidth="1.5"/>
+      <line x1={ 0 } y1={ AXIS_Y } x2={ CHART_W } y2={ AXIS_Y } stroke="var(--chakra-colors-border)" strokeWidth="1.5"/>
 
       { /* Gap labels between consecutive stamped dots */ }
       { positions.map((pos, i) => {
@@ -208,7 +209,7 @@ const TimelineSvg: React.FC<TimelineProps> = ({ entries, blockNumber }) => {
         const entry = stamped[i]!;
         const inherent = isInherent(entry);
         const r = inherent ? INHERENT_R : DOT_R;
-        const fill = inherent ? '#A0AEC0' : '#3182CE';
+        const fill = inherent ? '#A0AEC0' : 'var(--chakra-colors-brand-accent)';
         const hash = entry.ethHash ?? entry.substrateHash;
         const label = truncateHash(hash, 4);
         const clickable = !inherent;
@@ -216,8 +217,9 @@ const TimelineSvg: React.FC<TimelineProps> = ({ entries, blockNumber }) => {
         return (
           <g
             key={ `dot-${ entry.substrateHash }-${ i }` }
+            data-hash={ clickable ? entry.ethHash : undefined }
             style={ clickable ? { cursor: 'pointer' } : undefined }
-            onClick={ clickable ? () => handleDotClick(entry) : undefined }
+            onClick={ clickable ? handleDotClick : undefined }
             role={ clickable ? 'link' : undefined }
             aria-label={ clickable ? `Navigate to transaction ${ hash }` : undefined }
           >
@@ -229,7 +231,7 @@ const TimelineSvg: React.FC<TimelineProps> = ({ entries, blockNumber }) => {
               y={ AXIS_Y + 16 }
               textAnchor="middle"
               fontSize="8"
-              fill={ inherent ? '#A0AEC0' : '#2D3748' }
+              fill={ inherent ? '#A0AEC0' : 'var(--chakra-colors-text-primary)' }
               fontFamily="monospace"
             >
               { label }
@@ -268,7 +270,7 @@ const BlockTemporalTimeline: React.FC<Props> = ({ blockNumber }) => {
     queryKey: [ 'temporal_block_tx_timestamps', blockNumber ],
     queryFn: () => fetchBlockTransactionTimestamps(blockNumber),
     retry: false,
-    // Block data is immutable once finalised.
+    // Block data is immutable once finalized.
     staleTime: Infinity,
   });
 
@@ -287,12 +289,12 @@ const BlockTemporalTimeline: React.FC<Props> = ({ blockNumber }) => {
         Temporal ordering
       </DetailedInfo.ItemLabel>
       <GridItem colSpan={{ base: undefined, lg: 2 }}>
-        <Skeleton loading={ isLoading } borderRadius="md">
+        <Skeleton loading={ isLoading } borderRadius="base">
           { data && data.length === 0 ? (
             <Flex
-              borderWidth="1px"
-              borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.200' }}
-              borderRadius="md"
+              borderWidth="2px"
+              borderColor="border.divider"
+              borderRadius="base"
               p={ 3 }
               alignItems="center"
               justifyContent="center"
@@ -303,9 +305,9 @@ const BlockTemporalTimeline: React.FC<Props> = ({ blockNumber }) => {
             </Flex>
           ) : (
             <Box
-              borderWidth="1px"
-              borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.200' }}
-              borderRadius="md"
+              borderWidth="2px"
+              borderColor="border.divider"
+              borderRadius="base"
               p={ 3 }
               overflow="hidden"
             >
@@ -328,7 +330,7 @@ const BlockTemporalTimeline: React.FC<Props> = ({ blockNumber }) => {
                           w="8px"
                           h="8px"
                           borderRadius="full"
-                          bg="#3182CE"
+                          bg="brand.accent"
                           mr="4px"
                           verticalAlign="middle"
                         />

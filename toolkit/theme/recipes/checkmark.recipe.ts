@@ -7,7 +7,7 @@ export const recipe = defineRecipe({
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: '0',
-    color: 'white',
+    color: 'button.solid.text',
     borderWidth: '2px',
     borderColor: 'transparent',
     focusVisibleRing: 'outside',
@@ -55,7 +55,7 @@ export const recipe = defineRecipe({
         },
         '&:is([data-state=checked], [data-state=indeterminate])': {
           bg: 'selected.option.bg',
-          color: 'white',
+          color: 'button.solid.text',
           borderColor: 'selected.option.bg',
           _hover: {
             bg: 'hover',

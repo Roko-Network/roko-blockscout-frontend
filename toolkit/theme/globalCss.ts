@@ -18,12 +18,42 @@ const webkitAutofillRules = {
 };
 
 const globalCss: SystemConfig['globalCss'] = {
+  html: {
+    bg: 'global.body.bg',
+    color: 'global.body.fg',
+    scrollBehavior: 'smooth',
+  },
   body: {
     bg: 'global.body.bg',
     color: 'global.body.fg',
     WebkitTapHighlightColor: 'transparent',
     fontVariantLigatures: 'no-contextual',
     focusRingStyle: 'hidden',
+    lineHeight: '1.6',
+    transitionProperty: 'background-color, color',
+    transitionDuration: 'normal',
+  },
+  'h1, h2, h3, h4, h5, h6': {
+    color: 'heading',
+    fontFamily: 'heading',
+    fontWeight: '700',
+    letterSpacing: '-0.01em',
+  },
+  'code, kbd, pre, samp': {
+    fontFamily: 'mono',
+    fontVariantLigatures: 'none',
+  },
+  'button, [role="button"], a, input, textarea, select': {
+    transitionProperty: 'background-color, border-color, color, opacity, transform',
+    transitionDuration: 'fast',
+  },
+  ':where(a, button, input, textarea, select, [role="button"], [tabindex]):focus-visible': {
+    outline: '2px solid',
+    outlineColor: 'focus.ring',
+    outlineOffset: '2px',
+  },
+  hr: {
+    borderColor: 'border.divider',
   },
   mark: {
     bg: 'global.mark.bg',

@@ -35,14 +35,10 @@ class MyDocument extends Document {
       <Html lang="en">
         <Head>
           { /* FONTS */ }
-          <link
-            href={ config.UI.fonts.heading?.url ?? 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap' }
-            rel="stylesheet"
-          />
-          <link
-            href={ config.UI.fonts.body?.url ?? 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' }
-            rel="stylesheet"
-          />
+          <link rel="preload" href="/static/fonts/roko/rajdhani-600.woff2" as="font" type="font/woff2" crossOrigin="anonymous"/>
+          <link rel="preload" href="/static/fonts/roko/rajdhani-700.woff2" as="font" type="font/woff2" crossOrigin="anonymous"/>
+          { config.UI.fonts.heading?.url && <link href={ config.UI.fonts.heading.url } rel="stylesheet"/> }
+          { config.UI.fonts.body?.url && <link href={ config.UI.fonts.body.url } rel="stylesheet"/> }
 
           { /* eslint-disable-next-line @next/next/no-sync-scripts */ }
           <script src="/assets/envs.js"/>

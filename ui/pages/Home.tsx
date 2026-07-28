@@ -73,41 +73,59 @@ const Home = () => {
   return (
     <HomeRpcDataContextProvider>
       <Box as="main">
-        <Box bg="#1A202C" py={ 8 } px={ 6 } borderRadius="xl" mb={ 4 }>
-          <Flex direction={{ base: 'column', lg: 'row' }} justifyContent="space-between" alignItems="center" gap={ 6 }>
-            <Box>
-              <Heading as="h1" fontSize={{ base: '2xl', lg: '3xl' }} fontFamily="heading" color="white" mb={ 2 }>
+        <Box
+          bg="bg.hero"
+          py={{ base: 6, lg: 8 }}
+          px={{ base: 4, lg: 8 }}
+          border="2px solid"
+          borderColor="border"
+          borderRadius="base"
+          mb={ 4 }
+        >
+          <Flex
+            direction={{ base: 'column', lg: 'row' }}
+            justifyContent="space-between"
+            alignItems={{ base: 'flex-start', lg: 'center' }}
+            gap={{ base: 8, lg: 12 }}
+          >
+            <Box maxW="680px">
+              <Heading as="h1" textStyle={{ base: 'heading.xl', lg: 'heading.xl' }} color="heading" mb={ 2 }>
                 Roko Network Explorer
               </Heading>
-              <Text color="whiteAlpha.700" fontSize="md">
+              <Text color="text.secondary" fontSize="md">
                 The Temporal Layer for Web3 — Nanosecond-Precision Transaction Ordering
               </Text>
             </Box>
-            <Flex gap={ 6 } alignItems="center">
+            <Flex
+              gap={{ base: 6, md: 10 }}
+              alignItems="center"
+              flexWrap="wrap"
+              width={{ base: 'full', lg: 'auto' }}
+            >
               { /* Live mesh quality indicator */ }
-              <Box textAlign="center">
-                <Text color="whiteAlpha.600" fontSize="xs" textTransform="uppercase" letterSpacing="wider">
+              <Box textAlign="left">
+                <Text color="text.secondary" fontSize="xs" textTransform="uppercase" letterSpacing="0.08em">
                   Mesh Quality
                 </Text>
-                <Text color="white" fontSize="2xl" fontFamily="heading" fontWeight={ 700 }>
+                <Text color="heading" fontSize="2xl" fontFamily="heading" fontWeight={ 700 }>
                   { consensusTimeQuery.data?.quality_percent ?? '—' }%
                 </Text>
               </Box>
-              <Box textAlign="center">
-                <Text color="whiteAlpha.600" fontSize="xs" textTransform="uppercase" letterSpacing="wider">
+              <Box textAlign="left">
+                <Text color="text.secondary" fontSize="xs" textTransform="uppercase" letterSpacing="0.08em">
                   Mesh nodes
                 </Text>
-                <Text color="white" fontSize="2xl" fontFamily="heading" fontWeight={ 700 }>
+                <Text color="heading" fontSize="2xl" fontFamily="heading" fontWeight={ 700 }>
                   { consensusTimeQuery.data?.mesh_node_count ?? '—' }
                 </Text>
               </Box>
-              <Box textAlign="center">
-                <Text color="whiteAlpha.600" fontSize="xs" textTransform="uppercase" letterSpacing="wider">
+              <Box textAlign="left">
+                <Text color="text.secondary" fontSize="xs" textTransform="uppercase" letterSpacing="0.08em">
                   Convergence
                 </Text>
-                <Flex alignItems="center" gap={ 1 } justifyContent="center">
+                <Flex alignItems="center" gap={ 2 } justifyContent="flex-start" minH={ 8 }>
                   <Box w={ 2 } h={ 2 } borderRadius="full" bg={ consensusTimeQuery.data?.is_converged ? 'green.400' : 'orange.400' }/>
-                  <Text color="white" fontSize="md" fontFamily="heading">
+                  <Text color="heading" fontSize="md" fontFamily="heading" fontWeight={ 600 }>
                     { consensusTimeQuery.data?.is_converged ? 'Converged' : 'Syncing' }
                   </Text>
                 </Flex>
@@ -121,8 +139,8 @@ const Home = () => {
         </Flex>
         <Box mt={ 6 }>
           <Flex alignItems="center" gap={ 2 } mb={ 3 }>
-            <Box w="3px" h="24px" bg="#0078D4" borderRadius="full"/>
-            <Heading as="h2" fontSize="lg" fontFamily="heading" letterSpacing="wide">
+            <Box w="2px" h="24px" bg="brand.accent" borderRadius="sm"/>
+            <Heading as="h2" textStyle="heading.lg">
               Temporal Ordering
             </Heading>
           </Flex>

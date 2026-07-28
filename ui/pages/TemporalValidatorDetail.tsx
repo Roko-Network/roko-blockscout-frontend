@@ -10,9 +10,9 @@ import {
   reputationColor,
   reputationToPercent,
 } from 'lib/api/services/general/temporalMeshRpc';
-import { SECOND } from 'toolkit/utils/consts';
-import { Skeleton } from 'toolkit/chakra/skeleton';
 import { Progress } from 'toolkit/chakra/progress';
+import { Skeleton } from 'toolkit/chakra/skeleton';
+import { SECOND } from 'toolkit/utils/consts';
 import PageTitle from 'ui/shared/Page/PageTitle';
 
 const REFETCH_INTERVAL_MS = 6 * SECOND;
@@ -33,7 +33,7 @@ const StatRow = ({ label, value, isLoading }: StatRowProps) => (
     alignItems="baseline"
     py={ 3 }
     borderBottomWidth="1px"
-    borderColor={{ _light: 'gray.100', _dark: 'whiteAlpha.100' }}
+    borderColor="border.divider"
     _last={{ borderBottomWidth: 0 }}
     gap={ 4 }
   >
@@ -49,21 +49,18 @@ const StatRow = ({ label, value, isLoading }: StatRowProps) => (
 );
 
 function TierBadge({ tier }: { tier: TemporalValidatorReport['tier'] }) {
-  const colorMap: Record<TemporalValidatorReport['tier'], string> = {
-    Anchor: '#0078D4',
-    Standard: 'green.500',
-    Minimal: 'orange.500',
-  };
   return (
     <Box
       as="span"
       px={ 2 }
       py={ 0.5 }
-      borderRadius="md"
+      borderRadius="sm"
+      borderWidth="1px"
+      borderColor="button.solid.bg"
       fontSize="xs"
       fontWeight={ 700 }
-      color="white"
-      bg={ colorMap[tier] }
+      color="button.solid.text"
+      bg="button.solid.bg"
       display="inline-block"
     >
       { tier }
@@ -76,6 +73,7 @@ function TierBadge({ tier }: { tier: TemporalValidatorReport['tier'] }) {
 // ---------------------------------------------------------------------------
 
 interface Props {
+
   /** Authority index of the validator (from the URL param). */
   index: number;
 }
@@ -104,9 +102,10 @@ const TemporalValidatorDetail = ({ index }: Props) => {
       />
 
       <Box
-        borderWidth="1px"
-        borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-        borderRadius="xl"
+        borderWidth="2px"
+        borderColor="border.divider"
+        borderRadius="base"
+        bg="bg.elevated"
         p={ 6 }
         maxW="640px"
       >
@@ -124,7 +123,7 @@ const TemporalValidatorDetail = ({ index }: Props) => {
             size="sm"
             color={ repColor }
             w="full"
-            borderRadius="full"
+            borderRadius="sm"
           />
         </Skeleton>
 

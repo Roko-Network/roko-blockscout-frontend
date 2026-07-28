@@ -11,7 +11,9 @@ const ChainIndicatorsContainer = ({ children }: Props) => {
       px={{ base: 3, lg: 4 }}
       py={ 3 }
       borderRadius="base"
-      bgColor={{ _light: 'theme.stats.bg._light', _dark: 'theme.stats.bg._dark' }}
+      bgColor="bg.elevated"
+      borderWidth="2px"
+      borderColor="border.divider"
       columnGap={{ base: 3, lg: 4 }}
       rowGap={ 0 }
       flexBasis="50%"

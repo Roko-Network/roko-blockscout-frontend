@@ -12,7 +12,6 @@ import useFetch from 'lib/hooks/useFetch';
 import { Link } from 'toolkit/chakra/link';
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import { copy } from 'toolkit/utils/htmlEntities';
-import IconSvg from 'ui/shared/IconSvg';
 import { CONTENT_MAX_WIDTH } from 'ui/shared/layout/utils';
 import NetworkAddToWallet from 'ui/shared/NetworkAddToWallet';
 
@@ -106,8 +105,6 @@ const Footer = () => {
   }, []);
 
   const renderProjectInfo = React.useCallback((gridArea?: GridProps['gridArea']) => {
-    const logoColor = { base: 'blue.600', _dark: 'white' };
-
     return (
       <Box gridArea={ gridArea }>
         <Flex columnGap={ 2 } textStyle="xs" alignItems="center">
@@ -142,7 +139,8 @@ const Footer = () => {
 
   const containerProps: HTMLChakraProps<'div'> = {
     as: 'footer',
-    borderTopWidth: '1px',
+    bg: 'bg.muted',
+    borderTopWidth: '2px',
     borderTopColor: 'border.divider',
   };
 

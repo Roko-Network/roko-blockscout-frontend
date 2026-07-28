@@ -10,7 +10,7 @@ export const recipe = defineRecipe({
     fontFamily: 'mono',
     alignItems: 'center',
     display: 'inline-flex',
-    borderRadius: 'l2',
+    borderRadius: 'sm',
   },
   variants,
   defaultVariants: {

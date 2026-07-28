@@ -6,7 +6,10 @@ export const recipe = defineRecipe({
     alignItems: 'center',
     borderRadius: 'sm',
     gap: '1',
-    fontWeight: '500',
+    fontFamily: 'heading',
+    fontWeight: '600',
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase',
     width: 'fit-content',
     maxWidth: '100%',
     whiteSpace: 'nowrap',
@@ -22,8 +25,8 @@ export const recipe = defineRecipe({
     },
     colorPalette: {
       gray: {
-        bg: 'badge.gray.bg',
-        color: 'badge.gray.fg',
+        bg: 'button.solid.bg',
+        color: 'button.solid.text',
       },
       green: {
         bg: 'badge.green.bg',

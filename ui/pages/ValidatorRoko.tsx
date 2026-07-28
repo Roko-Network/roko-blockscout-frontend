@@ -47,7 +47,7 @@ function StatRow({ label, value }: { label: string; value: React.ReactNode }) {
       alignItems="baseline"
       py={ 2 }
       borderBottomWidth="1px"
-      borderColor={{ _light: 'gray.100', _dark: 'whiteAlpha.100' }}
+      borderColor="border.divider"
       _last={{ borderBottomWidth: 0 }}
       gap={ 4 }
     >
@@ -88,9 +88,10 @@ function StatusBadge({ status }: { status: string | undefined }) {
 function HeaderCard({ validator, isLoading }: { validator: SubstrateValidator | null; isLoading: boolean }) {
   return (
     <Box
-      borderWidth="1px"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-      borderRadius="xl"
+      borderWidth="2px"
+      borderColor="border.divider"
+      borderRadius="base"
+      bg="bg.elevated"
       p={ 5 }
     >
       <Skeleton loading={ isLoading }>
@@ -122,9 +123,10 @@ function ClockHealthCard({ authorityIndex }: { authorityIndex: number | undefine
 
   return (
     <Box
-      borderWidth="1px"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-      borderRadius="xl"
+      borderWidth="2px"
+      borderColor="border.divider"
+      borderRadius="base"
+      bg="bg.elevated"
       p={ 5 }
     >
       <chakra.h3 fontSize="md" fontWeight={ 700 } mb={ 4 }>Live clock health</chakra.h3>
@@ -189,7 +191,7 @@ function TabBar({ active, onSelect }: { active: TabId; onSelect: (id: TabId) => 
     <Flex
       gap={ 2 }
       borderBottomWidth="1px"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
+      borderColor="border.divider"
       mb={ 4 }
     >
       { TABS.map((t) => (
@@ -317,10 +319,10 @@ function AttestationTab({ stash }: { stash: string }) {
     // Empty state — actionable: copy-pasteable command the operator can use.
     return (
       <Box
-        borderWidth="1px"
-        borderRadius="xl"
+        borderWidth="2px"
+        borderRadius="base"
         borderStyle="dashed"
-        borderColor={{ _light: 'gray.300', _dark: 'whiteAlpha.300' }}
+        borderColor="border"
         p={ 6 }
       >
         <chakra.h4 fontWeight={ 700 } mb={ 2 }>No attestation submitted</chakra.h4>
@@ -337,9 +339,10 @@ function AttestationTab({ stash }: { stash: string }) {
 
   return (
     <Box
-      borderWidth="1px"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-      borderRadius="xl"
+      borderWidth="2px"
+      borderColor="border.divider"
+      borderRadius="base"
+      bg="bg.elevated"
       p={ 5 }
     >
       <Flex alignItems="center" gap={ 3 } mb={ 4 }>

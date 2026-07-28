@@ -12,9 +12,9 @@ import SearchBarMobile from 'ui/snippets/searchBar/SearchBarMobile';
 import UserProfileDesktop from 'ui/snippets/user/UserProfileDesktop';
 
 export const BACKGROUND_DEFAULT =
-  'radial-gradient(103.03% 103.03% at 0% 0%, rgba(183, 148, 244, 0.8) 0%, rgba(0, 163, 196, 0.8) 100%), var(--chakra-colors-blue-400)';
-const TEXT_COLOR_DEFAULT = 'white';
-const BORDER_DEFAULT = 'none';
+  'var(--chakra-colors-bg-hero)';
+const TEXT_COLOR_DEFAULT = 'var(--chakra-colors-heading)';
+const BORDER_DEFAULT = '2px solid var(--chakra-colors-border)';
 
 const HeroBanner = () => {
 
@@ -54,7 +54,7 @@ const HeroBanner = () => {
       w="100%"
       background={ background }
       border={ border }
-      borderRadius="md"
+      borderRadius="base"
       p={{ base: 4, lg: 8 }}
       columnGap={ 8 }
       alignItems="center"
@@ -63,9 +63,7 @@ const HeroBanner = () => {
         <Flex mb={{ base: 2, lg: 3 }} justifyContent="space-between" alignItems="center" columnGap={ 2 }>
           <Heading
             as="h1"
-            fontSize={{ base: '18px', lg: '30px' }}
-            lineHeight={{ base: '24px', lg: '36px' }}
-            fontWeight={{ base: 500, lg: 700 }}
+            textStyle={{ base: 'heading.md', lg: 'heading.xl' }}
             color={ textColor }
           >
             {
