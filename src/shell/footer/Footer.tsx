@@ -275,7 +275,7 @@ const Footer = () => {
           justifyContent={{ lg: 'flex-end' }}
           mt={{ base: 8, lg: 0 }}
         >
-          { BLOCKSCOUT_LINKS.map(link => <FooterLinkItem { ...link } key={ link.text }/>) }
+          { ROKO_LINKS.map(link => <FooterLinkItem { ...link } key={ link.text }/>) }
         </Grid>
       </Grid>
     </Box>

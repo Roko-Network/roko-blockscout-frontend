@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 // Developer-console page — read-only metadata-driven UI. The `react/jsx-no-bind`
 // rule guards against re-renders from inline handlers; on dev-tool pages
 // (rendered rarely, no virtualized lists) the perf cost is negligible and the
@@ -7,12 +9,15 @@ import { Box, Code, Flex, Grid, Input, Text, chakra } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-import { usePolkadotApi } from 'src/features/substrate/hooks/usePolkadotApi';
 import PageTitle from 'src/shell/page/title/PageTitle';
-import { Button } from 'src/toolkit/chakra/button';
-import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 import DeveloperSubNav from 'src/features/developer/components/DeveloperSubNav';
+import { usePolkadotApi } from 'src/features/substrate/hooks/usePolkadotApi';
+
+import { collator } from 'src/shared/texts/collator';
+
+import { Button } from 'src/toolkit/chakra/button';
+import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 interface StorageItemInfo {
   name: string;
@@ -71,10 +76,10 @@ const DeveloperChainState = () => {
         });
       }
       if (items.length > 0) {
-        out.push({ name: palletName, storage: items.sort((a, b) => a.name.localeCompare(b.name)) });
+        out.push({ name: palletName, storage: items.sort((a, b) => collator.compare(a.name, b.name)) });
       }
     }
-    return out.sort((a, b) => a.name.localeCompare(b.name));
+    return out.sort((a, b) => collator.compare(a.name, b.name));
   }, [ apiQuery.data ]);
 
   // Restore from URL params on mount, and update them when the user changes selection.

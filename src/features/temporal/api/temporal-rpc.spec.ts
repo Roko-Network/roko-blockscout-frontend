@@ -14,11 +14,9 @@
  * URL construction via `buildUrl` and leaves network I/O to E2E tests.
  */
 
-import { describe, expect, test } from 'vitest';
+import { nanoToDatetime } from 'src/features/temporal/utils/formatNanoTimestamp';
 
-// ---------------------------------------------------------------------------
-// URL path construction
-// ---------------------------------------------------------------------------
+import { describe, expect, test } from 'vitest';
 
 describe('temporal API URL paths', () => {
   test('tx timestamp path includes the tx hash and "timestamp"', () => {
@@ -53,8 +51,6 @@ describe('temporal API URL paths', () => {
 // We test the pure data-shaping logic by importing the file after mocking
 // `lib/temporal/formatNanoTimestamp` so we can assert what the functions
 // return without actually making HTTP calls.
-
-import { nanoToDatetime } from 'src/features/temporal/utils/formatNanoTimestamp';
 
 describe('temporal RPC response shaping — fetchTemporalTxTimestamp', () => {
   test('maps timestamp_ns and derives timestamp_datetime', () => {

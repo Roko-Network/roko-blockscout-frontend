@@ -1,11 +1,14 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import { Box, Flex, Grid, chakra } from '@chakra-ui/react';
 import React from 'react';
 
-import { polkadotAppsLink, usePolkadotApi } from 'src/features/substrate/hooks/usePolkadotApi';
 import PageTitle from 'src/shell/page/title/PageTitle';
-import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 import DeveloperSubNav from 'src/features/developer/components/DeveloperSubNav';
+import { polkadotAppsLink, usePolkadotApi } from 'src/features/substrate/hooks/usePolkadotApi';
+
+import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 interface Card {
   title: string;

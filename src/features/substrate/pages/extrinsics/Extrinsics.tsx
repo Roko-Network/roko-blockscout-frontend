@@ -1,6 +1,10 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import { Box, Flex, Text, chakra } from '@chakra-ui/react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import React from 'react';
+
+import PageTitle from 'src/shell/page/title/PageTitle';
 
 import type {
   SubstrateExtrinsic,
@@ -11,7 +15,7 @@ import {
   fetchSubstrateStats,
 } from 'src/features/substrate/api/substrate-api';
 import SubstrateExtrinsicsTable from 'src/features/substrate/components/SubstrateExtrinsicsTable';
-import PageTitle from 'src/shared/components/Page/PageTitle';
+
 import { Button } from 'src/toolkit/chakra/button';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 

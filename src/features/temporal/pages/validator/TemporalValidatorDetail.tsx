@@ -1,8 +1,12 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import { Box, Flex, chakra } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 import type { TemporalValidatorReport } from 'src/features/temporal/types/mesh';
+
+import PageTitle from 'src/shell/page/title/PageTitle';
 
 import {
   fetchTemporalValidatorQuality,
@@ -10,7 +14,7 @@ import {
   reputationColor,
   reputationToPercent,
 } from 'src/features/temporal/api/temporal-mesh-rpc';
-import PageTitle from 'src/shell/page/title/PageTitle';
+
 import { Progress } from 'src/toolkit/chakra/progress';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 import { SECOND } from 'src/toolkit/utils/consts';
@@ -76,6 +80,7 @@ function TierBadge({ tier }: { tier: TemporalValidatorReport['tier'] }) {
 // ---------------------------------------------------------------------------
 
 interface Props {
+
   /** Authority index of the validator (from the URL param). */
   index: number;
 }

@@ -1,10 +1,13 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import { Box, Flex, Grid, chakra } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 import type { TemporalMeshState, TemporalValidatorReport } from 'src/features/temporal/types/mesh';
 
-import MeshNetworkGraph from 'src/features/temporal/components/MeshNetworkGraph';
+import PageTitle from 'src/shell/page/title/PageTitle';
+
 import {
   fetchTemporalMeshState,
   formatOffsetNs,
@@ -12,7 +15,8 @@ import {
   reputationColor,
   reputationToPercent,
 } from 'src/features/temporal/api/temporal-mesh-rpc';
-import PageTitle from 'src/shell/page/title/PageTitle';
+import MeshNetworkGraph from 'src/features/temporal/components/MeshNetworkGraph';
+
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 import {
   TableRoot,
@@ -92,6 +96,13 @@ function ConvergenceDot({ state, isLoading }: { state: string | undefined; isLoa
   );
 }
 
+function qualityAccent(quality: number | null | undefined): string | undefined {
+  if (quality === null || quality === undefined) return undefined;
+  if (quality >= 90) return 'green.500';
+  if (quality >= 70) return 'yellow.500';
+  return 'red.500';
+}
+
 function ValidatorRow({
   report,
   isLoading,
@@ -162,9 +173,9 @@ const TemporalMesh = () => {
     refetchInterval: REFETCH_INTERVAL_MS,
   });
 
-  const meshDiameter = data?.mesh_diameter_ns != null
-    ? formatOffsetNs(data.mesh_diameter_ns)
-    : '—';
+  const meshDiameter = data?.mesh_diameter_ns !== null && data?.mesh_diameter_ns !== undefined ?
+    formatOffsetNs(data.mesh_diameter_ns) :
+    '—';
 
   return (
     <>
@@ -217,12 +228,9 @@ const TemporalMesh = () => {
 
         <StatCard
           label="Mesh Quality"
-          value={ data?.quality_percent != null ? `${ data.quality_percent }%` : '—' }
+          value={ data?.quality_percent !== null && data?.quality_percent !== undefined ? `${ data.quality_percent }%` : '—' }
           isLoading={ isLoading }
-          accent={ data?.quality_percent != null ? (
-            data.quality_percent >= 90 ? 'green.500' :
-            data.quality_percent >= 70 ? 'yellow.500' : 'red.500'
-          ) : undefined }
+          accent={ qualityAccent(data?.quality_percent) }
         />
 
         <StatCard
@@ -284,7 +292,7 @@ const TemporalMesh = () => {
               // Skeleton rows while loading
               Array.from({ length: 3 }).map((_, i) => (
                 <TableRow key={ i }>
-                  { Array.from({ length: 6 }).map((__, j) => (
+                  { Array.from({ length: 6 }).map((_unusedCell, j) => (
                     <TableCell key={ j }>
                       <Skeleton loading h={ 4 } w={ j === 0 ? '60px' : '80px' }/>
                     </TableCell>

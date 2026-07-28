@@ -1,10 +1,12 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import { Box, Flex, Grid, chakra } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
+import { route } from 'nextjs-routes';
 import React from 'react';
 
-import { route } from 'nextjs-routes';
-
 import { fetchSubstrateStats, truncateHex } from 'src/features/substrate/api/substrate-api';
+
 import { Link } from 'src/toolkit/chakra/link';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 import { SECOND } from 'src/toolkit/utils/consts';
@@ -31,15 +33,26 @@ const Metric = ({ label, value, isLoading, href }: MetricProps) => {
       >
         { label }
       </chakra.span>
-      <Skeleton loading={ isLoading } w="fit-content" mt={ 0.5 }>
-        <chakra.span display="block" textStyle="lg" fontWeight={ 700 }>
+      <Skeleton loading={ isLoading } w="100%" mt={ 0.5 }>
+        <chakra.span
+          display="block"
+          textStyle="lg"
+          fontWeight={ 700 }
+          overflow="hidden"
+          textOverflow="ellipsis"
+          whiteSpace="nowrap"
+        >
           { value }
         </chakra.span>
       </Skeleton>
     </Flex>
   );
 
-  return href ? <Link href={ href } _hover={{ textDecoration: 'none' }}>{ body }</Link> : body;
+  return href ? (
+    <Link href={ href } display="block" minW="0" overflow="hidden" _hover={{ textDecoration: 'none' }}>
+      { body }
+    </Link>
+  ) : body;
 };
 
 /**

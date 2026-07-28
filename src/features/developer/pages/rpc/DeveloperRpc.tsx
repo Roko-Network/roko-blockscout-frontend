@@ -1,13 +1,16 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 /* eslint-disable react/jsx-no-bind */
 import { Box, Code, Flex, Grid, Input, Text, chakra } from '@chakra-ui/react';
 import React from 'react';
 
-import { usePolkadotApi } from 'src/features/substrate/hooks/usePolkadotApi';
 import PageTitle from 'src/shell/page/title/PageTitle';
-import { Button } from 'src/toolkit/chakra/button';
-import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 import DeveloperSubNav from 'src/features/developer/components/DeveloperSubNav';
+import { usePolkadotApi } from 'src/features/substrate/hooks/usePolkadotApi';
+
+import { Button } from 'src/toolkit/chakra/button';
+import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 interface RpcMethod {
   namespace: string;

@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { TEMPORAL_CONSENSUS_TIME } from 'src/features/temporal/stubs';
+
 import { describe, expect, it } from 'vitest';
 
 import TemporalConsensusCard from './TemporalConsensusCard';

@@ -1,10 +1,14 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import { Text, VStack, chakra } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 import { fetchTemporalBlockMetadata } from 'src/features/temporal/api/temporal-rpc';
 import { formatNanoTimestamp } from 'src/features/temporal/utils/formatNanoTimestamp';
+
 import * as DetailedInfo from 'src/shared/detailed-info/DetailedInfo';
+
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 interface Props {
@@ -52,7 +56,7 @@ const BlockTemporalTimestamp = ({ blockNumber }: Props) => {
           <Skeleton loading={ isLoading }>
             <Text>
               { formatted }
-              { validatorIndex != null && (
+              { validatorIndex !== null && validatorIndex !== undefined && (
                 <chakra.span ml={ 2 } color="text.secondary" fontSize="sm">
                   (Validator { validatorIndex })
                 </chakra.span>

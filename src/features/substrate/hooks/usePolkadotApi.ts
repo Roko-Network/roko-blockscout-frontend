@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 /**
  * @polkadot/api connection hook for the Developer Console (Sprint 5 / Phase 4).
  *
@@ -20,6 +22,8 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
+
+import buildCoreApiUrl from 'src/api/utils/build-core-api-url';
 
 import config from 'src/config';
 
@@ -48,7 +52,7 @@ function httpEndpoint(): string {
   const env = runtimeEnv();
   if (env.NEXT_PUBLIC_NETWORK_RPC_DIRECT_URL) return env.NEXT_PUBLIC_NETWORK_RPC_DIRECT_URL;
   if (typeof window !== 'undefined') {
-    return `${ window.location.origin }/api/v2/substrate/rpc`;
+    return buildCoreApiUrl('/api/v2/substrate/rpc');
   }
   return env.NEXT_PUBLIC_NETWORK_RPC_URL ?? config.chain.rpcUrls?.[0] ?? 'https://roko-testnetv2.ntfork.com';
 }

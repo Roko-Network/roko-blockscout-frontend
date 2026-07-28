@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 /**
  * Fetch helpers for the Temporal Mesh Dashboard and Validator Time Health pages.
  *
@@ -16,8 +18,10 @@ import type {
   ConvergenceState,
 } from 'src/features/temporal/types/mesh';
 
+import buildCoreApiUrl from 'src/api/utils/build-core-api-url';
+
 async function apiFetch<T>(path: string): Promise<T> {
-  const response = await fetch(`/api/v2/temporal${ path }`);
+  const response = await fetch(buildCoreApiUrl(`/api/v2/temporal${ path }`));
   if (!response.ok) {
     throw new Error(`API error: ${ response.status }`);
   }

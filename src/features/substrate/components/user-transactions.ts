@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import type { schemas } from '@blockscout/api-types';
 
 import type { SubstrateExtrinsic } from 'src/features/substrate/api/substrate-api';

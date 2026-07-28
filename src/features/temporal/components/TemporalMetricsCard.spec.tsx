@@ -11,9 +11,10 @@
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { describe, it, expect } from 'vitest';
 
 import { TEMPORAL_METRICS, TEMPORAL_METRICS_WITH_FAILURES } from 'src/features/temporal/stubs';
+
+import { describe, it, expect } from 'vitest';
 
 // Import after stubs are loaded.
 import TemporalMetricsCard from './TemporalMetricsCard';

@@ -12,13 +12,14 @@ import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import * as temporalMeshRpc from 'src/features/temporal/api/temporal-mesh-rpc';
 import {
   TEMPORAL_MESH_STATE,
   TEMPORAL_MESH_STATE_PARTIAL,
 } from 'src/features/temporal/mesh-stubs';
+
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import TemporalMesh from './TemporalMesh';
 
@@ -48,7 +49,7 @@ vi.mock('src/features/temporal/api/temporal-mesh-rpc', () => ({
 // PageTitle uses useIsMobile → useBreakpointValue → window.matchMedia.
 // Provide a stub so jsdom does not throw.
 vi.mock('src/shell/page/title/PageTitle', () => ({
-  default: ({ title, secondRow }: { title: string; secondRow?: React.ReactNode }) => (
+  'default': ({ title, secondRow }: { title: string; secondRow?: React.ReactNode }) => (
     <div>
       <h1>{ title }</h1>
       { secondRow }

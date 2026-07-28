@@ -1,11 +1,14 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
+import { route } from 'nextjs-routes';
 import React from 'react';
 
-import { route } from 'nextjs-routes';
-
 import { fetchRecentExtrinsics } from 'src/features/substrate/api/substrate-api';
+
 import useIsMobile from 'src/shared/hooks/useIsMobile';
+
 import { Link } from 'src/toolkit/chakra/link';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 

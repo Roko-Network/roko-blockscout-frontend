@@ -8,6 +8,7 @@ export interface FontFamily {
 }
 
 const misc = Object.freeze({
+  faucetUrl: getEnvValue('NEXT_PUBLIC_FAUCET_URL') || 'https://faucet.roko.network',
   fonts: {
     heading: parseEnvJson<FontFamily>(getEnvValue('NEXT_PUBLIC_FONT_FAMILY_HEADING')),
     body: parseEnvJson<FontFamily>(getEnvValue('NEXT_PUBLIC_FONT_FAMILY_BODY')),

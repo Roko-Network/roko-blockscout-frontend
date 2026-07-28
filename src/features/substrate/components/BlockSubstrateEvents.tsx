@@ -1,9 +1,12 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import { Box } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 import { fetchBlockEvents } from 'src/features/substrate/api/substrate-api';
 import SubstrateEventsTable from 'src/features/substrate/components/SubstrateEventsTable';
+
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 interface Props {

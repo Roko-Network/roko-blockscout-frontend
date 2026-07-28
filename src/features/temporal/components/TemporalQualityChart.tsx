@@ -1,7 +1,12 @@
-import { Box, Flex, Heading, Text, chakra } from '@chakra-ui/react';
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
+import { Box, Flex, Text, chakra } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
+import buildCoreApiUrl from 'src/api/utils/build-core-api-url';
+
+import { Heading } from 'src/toolkit/chakra/heading';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 import { SECOND } from 'src/toolkit/utils/consts';
 
@@ -18,9 +23,9 @@ interface ChartResponse {
 }
 
 async function fetchQualityChart(): Promise<ChartResponse> {
-  const response = await fetch('/api/v2/temporal/quality-chart');
+  const response = await fetch(buildCoreApiUrl('/api/v2/temporal/quality-chart'));
   if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+    throw new Error(`API error: ${ response.status }`);
   }
   return response.json() as Promise<ChartResponse>;
 }
@@ -58,7 +63,7 @@ const TemporalQualityChart: React.FC = () => {
       .map((s, i) => {
         const x = ((s.timestamp - minT) / tRange) * CHART_WIDTH;
         const y = CHART_HEIGHT - (s.quality / 10000) * CHART_HEIGHT;
-        return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+        return `${ i === 0 ? 'M' : 'L' }${ x.toFixed(1) },${ y.toFixed(1) }`;
       })
       .join(' ');
   };
@@ -73,21 +78,21 @@ const TemporalQualityChart: React.FC = () => {
     const tRange = maxT - minT || 1;
 
     const lastX = ((maxT - minT) / tRange) * CHART_WIDTH;
-    return `${linePath} L${lastX.toFixed(1)},${CHART_HEIGHT} L0,${CHART_HEIGHT} Z`;
+    return `${ linePath } L${ lastX.toFixed(1) },${ CHART_HEIGHT } L0,${ CHART_HEIGHT } Z`;
   };
 
-  const latestQuality = displaySamples.length > 0
-    ? (displaySamples[displaySamples.length - 1]?.quality ?? 0) / 100
-    : 0;
+  const latestQuality = displaySamples.length > 0 ?
+    (displaySamples[displaySamples.length - 1]?.quality ?? 0) / 100 :
+    0;
 
   const timeRangeLabel = (): string => {
     if (displaySamples.length < 2) return '';
     const firstMs = displaySamples[0]?.timestamp ?? 0;
     const lastMs = displaySamples[displaySamples.length - 1]?.timestamp ?? 0;
     const diffMin = Math.round((lastMs - firstMs) / 60000);
-    if (diffMin < 60) return `Last ${diffMin} min`;
+    if (diffMin < 60) return `Last ${ diffMin } min`;
     const diffH = (diffMin / 60).toFixed(1);
-    return `Last ${diffH} hours`;
+    return `Last ${ diffH } hours`;
   };
 
   return (
@@ -99,7 +104,7 @@ const TemporalQualityChart: React.FC = () => {
       bg="blackAlpha.900"
     >
       <Flex justifyContent="space-between" alignItems="center" mb={ 3 }>
-        <Heading as="h3" fontSize="md" fontFamily="heading" color="white">
+        <Heading level="3" fontSize="md" fontFamily="heading" color="white">
           Time Quality History
         </Heading>
         <Flex gap={ 3 } alignItems="center">
@@ -124,7 +129,7 @@ const TemporalQualityChart: React.FC = () => {
             <chakra.svg
               width="100%"
               height={ CHART_HEIGHT }
-              viewBox={ `0 0 ${CHART_WIDTH} ${CHART_HEIGHT}` }
+              viewBox={ `0 0 ${ CHART_WIDTH } ${ CHART_HEIGHT }` }
               preserveAspectRatio="none"
               color="link.primary"
             >

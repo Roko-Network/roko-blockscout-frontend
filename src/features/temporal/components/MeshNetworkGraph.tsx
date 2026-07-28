@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 /**
  * MeshNetworkGraph
  *
@@ -21,6 +23,7 @@ import type {
   TemporalValidatorReport,
   TemporalPairwiseOffset,
 } from 'src/features/temporal/types/mesh';
+
 import { formatOffsetNs } from 'src/features/temporal/api/temporal-mesh-rpc';
 
 // ---------------------------------------------------------------------------
@@ -49,7 +52,7 @@ const NODE_RADIUS_MIN = 12;
 const NODE_RADIUS_MAX = 22;
 
 /** Reputation basis-point threshold (0–10000) for colour transitions. */
-const REP_GREEN_THRESHOLD = 8000;  // >80%
+const REP_GREEN_THRESHOLD = 8000; // >80%
 const REP_YELLOW_THRESHOLD = 5000; // >50%
 
 const COLOR_GREEN = 'var(--chakra-colors-green-400)';
@@ -57,7 +60,7 @@ const COLOR_YELLOW = 'var(--chakra-colors-yellow-400)';
 const COLOR_RED = 'var(--chakra-colors-red-400)';
 
 // Edge colour thresholds (nanoseconds).
-const EDGE_GREEN_MAX_NS = 50_000;   // <50 µs
+const EDGE_GREEN_MAX_NS = 50_000; // <50 µs
 const EDGE_YELLOW_MAX_NS = 1_000_000; // <1 ms
 
 const BG_COLOR = 'var(--chakra-colors-black-alpha-900)';
@@ -220,9 +223,9 @@ function computeGraph(data: TemporalMeshState): {
 
   // The producer is the from_index that appears most often in pairwise_offsets,
   // defaulting to 0.
-  const producerIndex = data.pairwise_offsets.length > 0
-    ? data.pairwise_offsets[0]!.from_index
-    : 0;
+  const producerIndex = data.pairwise_offsets.length > 0 ?
+    data.pairwise_offsets[0]!.from_index :
+    0;
 
   // Build the full set of authority indices to display.
   const indicesSet = new Set<number>();
@@ -318,9 +321,9 @@ function convergenceHexColor(state: string): string {
 const MeshNetworkGraph: React.FC<Props> = ({ data, isLoading }) => {
   // Memoize the computed graph so positions are stable across renders.
   const graph = useMemo(
-    () => (data && data.validators.length > 0 || (data?.pairwise_offsets?.length ?? 0) > 0
-      ? computeGraph(data!)
-      : null),
+    () => ((data && data.validators.length > 0) || (data?.pairwise_offsets?.length ?? 0) > 0 ?
+      computeGraph(data!) :
+      null),
     [ data ],
   );
 

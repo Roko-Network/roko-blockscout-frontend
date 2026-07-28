@@ -1,6 +1,6 @@
-import { describe, expect, test } from 'vitest';
-
 import buildUrl from 'src/api/utils/build-url';
+
+import { describe, expect, test } from 'vitest';
 
 import { CORE_API_TEMPORAL_RESOURCES } from './temporal';
 
@@ -18,9 +18,9 @@ describe('CORE_API_TEMPORAL_RESOURCES', () => {
   });
 
   test('temporal resources do not have pathParams (no dynamic segments)', () => {
-    expect(CORE_API_TEMPORAL_RESOURCES.temporal_watermark.pathParams).toBeUndefined();
-    expect(CORE_API_TEMPORAL_RESOURCES.temporal_consensus_time.pathParams).toBeUndefined();
-    expect(CORE_API_TEMPORAL_RESOURCES.temporal_queue_stats.pathParams).toBeUndefined();
+    expect('pathParams' in CORE_API_TEMPORAL_RESOURCES.temporal_watermark).toBe(false);
+    expect('pathParams' in CORE_API_TEMPORAL_RESOURCES.temporal_consensus_time).toBe(false);
+    expect('pathParams' in CORE_API_TEMPORAL_RESOURCES.temporal_queue_stats).toBe(false);
   });
 });
 

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: LicenseRef-Blockscout
 
-import { Box, Flex, Grid, Heading, Text } from '@chakra-ui/react';
+import { Box, Flex, Grid, Text } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
@@ -23,6 +23,8 @@ import TemporalWatermarkCard from 'src/features/temporal/components/TemporalWate
 
 import config from 'src/config';
 import useIsMobile from 'src/shared/hooks/useIsMobile';
+
+import { Heading } from 'src/toolkit/chakra/heading';
 import { SECOND } from 'src/toolkit/utils/consts';
 
 import LatestBlocks from './blocks/LatestBlocks';
@@ -79,7 +81,7 @@ const Home = () => {
           <Box bg="blackAlpha.900" py={ 8 } px={ 6 } borderRadius="xl" mb={ 4 }>
             <Flex direction={{ base: 'column', lg: 'row' }} justifyContent="space-between" alignItems="center" gap={ 6 }>
               <Box>
-                <Heading as="h1" fontSize={{ base: '2xl', lg: '3xl' }} fontFamily="heading" color="white" mb={ 2 }>
+                <Heading level="1" fontSize={{ base: '2xl', lg: '3xl' }} fontFamily="heading" color="white" mb={ 2 }>
                   Roko Network Explorer
                 </Heading>
                 <Text color="whiteAlpha.700" fontSize="md">
@@ -129,7 +131,7 @@ const Home = () => {
           <Box mt={ 6 }>
             <Flex alignItems="center" gap={ 2 } mb={ 3 }>
               <Box w="3px" h="24px" bg="link.primary" borderRadius="full"/>
-              <Heading as="h2" fontSize="lg" fontFamily="heading" letterSpacing="wide">
+              <Heading level="2" fontSize="lg" fontFamily="heading" letterSpacing="wide">
                 Temporal Ordering
               </Heading>
             </Flex>

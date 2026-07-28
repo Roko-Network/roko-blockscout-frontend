@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 // Fetch temporal data from the Blockscout backend API.
 // The backend proxies calls to the Roko node's JSON-RPC endpoint.
 
@@ -9,10 +11,13 @@ import type {
   TemporalTxTimestamp,
   TemporalWatermark,
 } from 'src/features/temporal/types/api';
+
+import buildCoreApiUrl from 'src/api/utils/build-core-api-url';
+
 import { nanoToDatetime } from 'src/features/temporal/utils/formatNanoTimestamp';
 
 async function apiFetch<T>(path: string): Promise<T> {
-  const response = await fetch(`/api/v2/temporal${ path }`);
+  const response = await fetch(buildCoreApiUrl(`/api/v2/temporal${ path }`));
   if (!response.ok) {
     throw new Error(`API error: ${ response.status }`);
   }

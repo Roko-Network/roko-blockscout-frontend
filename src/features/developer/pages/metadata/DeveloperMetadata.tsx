@@ -1,12 +1,17 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 /* eslint-disable react/jsx-no-bind, max-len */
 import { Box, Code, Flex, Input, Text, chakra } from '@chakra-ui/react';
 import React from 'react';
 
-import { usePolkadotApi } from 'src/features/substrate/hooks/usePolkadotApi';
 import PageTitle from 'src/shell/page/title/PageTitle';
-import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 import DeveloperSubNav from 'src/features/developer/components/DeveloperSubNav';
+import { usePolkadotApi } from 'src/features/substrate/hooks/usePolkadotApi';
+
+import { collator } from 'src/shared/texts/collator';
+
+import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 interface PalletEntry {
   name: string;
@@ -78,7 +83,7 @@ const DeveloperMetadata = () => {
         constants,
       });
     }
-    return out.sort((a, b) => a.name.localeCompare(b.name));
+    return out.sort((a, b) => collator.compare(a.name, b.name));
   }, [ apiQuery.data ]);
 
   const filtered = React.useMemo(() => {

@@ -1,8 +1,9 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import { Flex, chakra } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React from 'react';
-
 import { route } from 'nextjs-routes';
+import React from 'react';
 
 import { Link } from 'src/toolkit/chakra/link';
 

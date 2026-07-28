@@ -1,6 +1,7 @@
 import type { schemas } from '@blockscout/api-types';
 
 import type { SubstrateExtrinsic } from 'src/features/substrate/api/substrate-api';
+
 import { describe, expect, it } from 'vitest';
 
 import { mergeUserTransactions } from './user-transactions';

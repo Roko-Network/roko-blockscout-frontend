@@ -4,10 +4,11 @@ import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import * as temporalRpc from 'src/features/temporal/api/temporal-rpc';
 import { TEMPORAL_WATERMARK, TEMPORAL_CONSENSUS_TIME, TEMPORAL_QUEUE_STATS } from 'src/features/temporal/stubs';
+
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import TemporalStatsHome from './TemporalStatsHome';
 

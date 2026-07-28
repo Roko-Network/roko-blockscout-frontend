@@ -12,9 +12,10 @@ import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within, waitFor } from '@testing-library/react';
 import React from 'react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import * as temporalRpc from 'src/features/temporal/api/temporal-rpc';
+
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import TxTemporalTimestamp from './TxTemporalTimestamp';
 

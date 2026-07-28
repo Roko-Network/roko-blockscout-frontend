@@ -1,8 +1,11 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import { Box, Flex, Text, Input, VStack, HStack } from '@chakra-ui/react';
 import React from 'react';
 import { formatUnits } from 'viem';
 
 import config from 'src/config';
+
 import { Button } from 'src/toolkit/chakra/button';
 import { Heading } from 'src/toolkit/chakra/heading';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';

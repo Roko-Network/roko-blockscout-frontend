@@ -11,16 +11,18 @@
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { describe, it, expect, vi } from 'vitest';
 
 import type { TemporalMeshState } from 'src/features/temporal/types/mesh';
+
 import {
   TEMPORAL_MESH_STATE,
   TEMPORAL_MESH_STATE_PARTIAL,
 } from 'src/features/temporal/mesh-stubs';
 
+import { describe, it, expect, vi } from 'vitest';
+
 // Mock formatOffsetNs so tests are not coupled to its internal formatting logic.
-vi.mock('lib/api/services/general/temporalMeshRpc', () => ({
+vi.mock('src/features/temporal/api/temporal-mesh-rpc', () => ({
   formatOffsetNs: (ns: number) => {
     const sign = ns >= 0 ? '+' : '-';
     const abs = Math.abs(ns);

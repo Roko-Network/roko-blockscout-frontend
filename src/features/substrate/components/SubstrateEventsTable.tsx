@@ -1,9 +1,11 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import { Box, chakra } from '@chakra-ui/react';
+import { route } from 'nextjs-routes';
 import React from 'react';
 
-import { route } from 'nextjs-routes';
-
 import type { SubstrateEvent } from 'src/features/substrate/api/substrate-api';
+
 import { Link } from 'src/toolkit/chakra/link';
 import { TableRoot, TableHeader, TableBody, TableRow, TableColumnHeader, TableCell } from 'src/toolkit/chakra/table';
 

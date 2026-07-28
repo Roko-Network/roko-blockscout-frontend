@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 /**
  * Fetch helpers for the substrate-native endpoints exposed by the backend at
  * `/api/v2/substrate/*`. These are read-only views of data indexed by
@@ -8,10 +10,12 @@
  * data set introduced in Sprint 2/4.
  */
 
+import buildCoreApiUrl from 'src/api/utils/build-core-api-url';
+
 const SUBSTRATE_API = '/api/v2/substrate';
 
 async function fetchJson<T>(path: string): Promise<T> {
-  const res = await fetch(`${ SUBSTRATE_API }${ path }`);
+  const res = await fetch(buildCoreApiUrl(`${ SUBSTRATE_API }${ path }`));
   if (!res.ok) {
     throw new Error(`API error: ${ res.status }`);
   }
@@ -19,7 +23,7 @@ async function fetchJson<T>(path: string): Promise<T> {
 }
 
 async function fetchJsonOrNull<T>(path: string): Promise<T | null> {
-  const res = await fetch(`${ SUBSTRATE_API }${ path }`);
+  const res = await fetch(buildCoreApiUrl(`${ SUBSTRATE_API }${ path }`));
   if (res.status === 404) {
     return null;
   }

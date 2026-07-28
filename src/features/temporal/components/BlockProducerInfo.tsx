@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 /**
  * BlockProducerInfo
  *
@@ -19,7 +21,9 @@ import {
   formatRootDistanceNs,
   qualityColor,
 } from 'src/features/temporal/api/temporal-mesh-rpc';
+
 import * as DetailedInfo from 'src/shared/detailed-info/DetailedInfo';
+
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 interface Props {
@@ -41,9 +45,9 @@ const BlockProducerInfo = ({ blockNumber }: Props) => {
     return null;
   }
 
-  const rootDistanceLabel = data
-    ? formatRootDistanceNs(data.producerRootDistanceNs)
-    : '';
+  const rootDistanceLabel = data ?
+    formatRootDistanceNs(data.producerRootDistanceNs) :
+    '';
 
   const qColor = data ? qualityColor(data.qualityPercent) : 'text.secondary';
 

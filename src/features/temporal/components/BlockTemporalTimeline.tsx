@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 /**
  * BlockTemporalTimeline
  *
@@ -16,7 +18,9 @@ import React from 'react';
 
 import { fetchBlockTransactionTimestamps } from 'src/features/temporal/api/temporal-rpc';
 import type { BlockTxTimestampEntry } from 'src/features/temporal/api/temporal-rpc';
+
 import * as DetailedInfo from 'src/shared/detailed-info/DetailedInfo';
+
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 // ---------------------------------------------------------------------------
@@ -217,6 +221,8 @@ const TimelineSvg: React.FC<TimelineProps> = ({ entries, blockNumber }) => {
           <g
             key={ `dot-${ entry.substrateHash }-${ i }` }
             style={ clickable ? { cursor: 'pointer' } : undefined }
+            // Each handler closes over its corresponding timeline entry.
+            // eslint-disable-next-line react/jsx-no-bind
             onClick={ clickable ? () => handleDotClick(entry) : undefined }
             role={ clickable ? 'link' : undefined }
             aria-label={ clickable ? `Navigate to transaction ${ hash }` : undefined }

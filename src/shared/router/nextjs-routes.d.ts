@@ -60,13 +60,19 @@ declare module "nextjs-routes" {
     | StaticRoute<"/contract-verification">
     | DynamicRoute<"/cross-chain-tx/[id]", { "id": string }>
     | StaticRoute<"/deposits">
+    | StaticRoute<"/developer">
+    | StaticRoute<"/developer/chain-state">
+    | StaticRoute<"/developer/constants">
+    | StaticRoute<"/developer/metadata">
+    | StaticRoute<"/developer/rpc">
     | StaticRoute<"/dispute-games">
     | StaticRoute<"/ecosystems">
     | StaticRoute<"/epochs">
     | DynamicRoute<"/epochs/[number]", { "number": string }>
     | DynamicRoute<"/essential-dapps/[id]", { "id": string }>
+    | DynamicRoute<"/extrinsic/[block]/[index]", { "block": string; "index": string }>
+    | StaticRoute<"/extrinsics">
     | StaticRoute<"/faucet">
-    | StaticRoute<"/pwroko">
     | StaticRoute<"/gas-tracker">
     | StaticRoute<"/hot-contracts">
     | StaticRoute<"/ictt-users">
@@ -84,23 +90,17 @@ declare module "nextjs-routes" {
     | StaticRoute<"/pools">
     | DynamicRoute<"/pools/[hash]", { "hash": string }>
     | StaticRoute<"/public-tags/submit">
+    | StaticRoute<"/pwroko">
     | StaticRoute<"/search-results">
     | StaticRoute<"/sprite">
-    | StaticRoute<"/stats">
     | StaticRoute<"/staking/eras">
     | DynamicRoute<"/staking/eras/[n]", { "n": string }>
-    | DynamicRoute<"/extrinsic/[block]/[index]", { "block": string; "index": string }>
-    | StaticRoute<"/extrinsics">
-    | StaticRoute<"/developer">
-    | StaticRoute<"/developer/chain-state">
-    | StaticRoute<"/developer/constants">
-    | StaticRoute<"/developer/rpc">
-    | StaticRoute<"/developer/metadata">
+    | StaticRoute<"/stats">
     | DynamicRoute<"/stats/[id]", { "id": string }>
-    | StaticRoute<"/token-transfers">
     | StaticRoute<"/temporal">
     | StaticRoute<"/temporal/mesh">
     | DynamicRoute<"/temporal/validators/[index]", { "index": string }>
+    | StaticRoute<"/token-transfers">
     | DynamicRoute<"/token/[hash]", { "hash": string }>
     | DynamicRoute<"/token/[hash]/instance/[id]", { "hash": string; "id": string }>
     | StaticRoute<"/tokens">

@@ -1,12 +1,17 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 /* eslint-disable react/jsx-no-bind */
 import { Box, Code, Flex, Input, Text, chakra } from '@chakra-ui/react';
 import React from 'react';
 
-import { usePolkadotApi } from 'src/features/substrate/hooks/usePolkadotApi';
 import PageTitle from 'src/shell/page/title/PageTitle';
-import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 import DeveloperSubNav from 'src/features/developer/components/DeveloperSubNav';
+import { usePolkadotApi } from 'src/features/substrate/hooks/usePolkadotApi';
+
+import { collator } from 'src/shared/texts/collator';
+
+import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 interface ConstantInfo {
   pallet: string;
@@ -47,7 +52,7 @@ const DeveloperConstants = () => {
         });
       }
     }
-    return out.sort((a, b) => a.pallet === b.pallet ? a.name.localeCompare(b.name) : a.pallet.localeCompare(b.pallet));
+    return out.sort((a, b) => a.pallet === b.pallet ? collator.compare(a.name, b.name) : collator.compare(a.pallet, b.pallet));
   }, [ apiQuery.data ]);
 
   const filtered = React.useMemo(() => {

@@ -1,9 +1,12 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import { Box, Code, Flex, Grid, chakra } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
+import { route } from 'nextjs-routes';
 import React from 'react';
 
-import { route } from 'nextjs-routes';
+import PageTitle from 'src/shell/page/title/PageTitle';
 
 import type { SubstrateExtrinsicWithEvents } from 'src/features/substrate/api/substrate-api';
 import {
@@ -14,8 +17,9 @@ import {
   truncateHex,
 } from 'src/features/substrate/api/substrate-api';
 import SubstrateEventsTable from 'src/features/substrate/components/SubstrateEventsTable';
-import PageTitle from 'src/shell/page/title/PageTitle';
+
 import getQueryParamString from 'src/shared/router/get-query-param-string';
+
 import { Link } from 'src/toolkit/chakra/link';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 

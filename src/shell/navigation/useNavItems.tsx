@@ -346,9 +346,7 @@ export default function useNavItems(): ReturnType {
     const developerNavItems: Array<NavItem> = [
       {
         text: 'Faucet',
-        nextRoute: { pathname: '/faucet' as const },
-        icon: 'navigation/tokens',
-        isActive: pathname === '/faucet',
+        url: config.misc.faucetUrl,
       },
       {
         text: 'pwROKO',

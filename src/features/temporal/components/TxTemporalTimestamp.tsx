@@ -1,10 +1,14 @@
+// SPDX-License-Identifier: LicenseRef-Blockscout
+
 import { Flex, Text, VStack } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 import { fetchTemporalConsensusTime, fetchTemporalTxTimestamp } from 'src/features/temporal/api/temporal-rpc';
 import { formatNanoTimestamp } from 'src/features/temporal/utils/formatNanoTimestamp';
+
 import * as DetailedInfo from 'src/shared/detailed-info/DetailedInfo';
+
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 interface Props {
@@ -53,15 +57,11 @@ const TxTemporalTimestamp = ({ txHash, blockTimestamp }: Props) => {
       return formatWaitTime(data.wait_ns);
     }
     if (data?.timestamp_ns && blockTimestamp) {
-      try {
-        const stampMs = Number(data.timestamp_ns) / 1000000;
-        const blockMs = new Date(blockTimestamp).getTime();
-        if (blockMs > stampMs) {
-          const diffNs = Math.round((blockMs - stampMs) * 1000000);
-          return formatWaitTime(String(diffNs));
-        }
-      } catch {
-        // ignore
+      const stampMs = Number(data.timestamp_ns) / 1000000;
+      const blockMs = new Date(blockTimestamp).getTime();
+      if (blockMs > stampMs) {
+        const diffNs = Math.round((blockMs - stampMs) * 1000000);
+        return formatWaitTime(String(diffNs));
       }
     }
     return null;
