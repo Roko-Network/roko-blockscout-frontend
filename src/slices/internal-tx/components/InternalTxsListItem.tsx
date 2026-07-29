@@ -7,13 +7,12 @@ import type { schemas } from '@blockscout/api-types';
 import type { ClusterChainConfig } from 'src/features/multichain/types/client';
 
 import AddressFromTo from 'src/slices/address/components/from-to/AddressFromTo';
-import BlockEntity from 'src/slices/block/components/entity/BlockEntity';
+import BlockWithTimestamp from 'src/slices/block/components/BlockWithTimestamp';
 import { currencyUnits } from 'src/slices/chain/units';
 import { TX_INTERNALS_ITEMS } from 'src/slices/internal-tx/utils/utils';
 import TxEntity from 'src/slices/tx/components/entity/TxEntity';
 import TxStatus from 'src/slices/tx/components/TxStatus';
 
-import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import ListItemMobile from 'src/shared/lists/ListItemMobile';
 import NativeCoinValue from 'src/shared/values/entity/NativeCoinValue';
 
@@ -44,7 +43,7 @@ const InternalTxsListItem = ({
         { typeTitle && <Badge colorPalette="cyan" loading={ isLoading }>{ typeTitle }</Badge> }
         { !data.success && <TxStatus status="error" errorText={ data.error } isLoading={ isLoading }/> }
       </Flex>
-      <Flex justifyContent="space-between" width="100%">
+      <Flex width="100%">
         <TxEntity
           hash={ data.transaction_hash }
           isLoading={ isLoading }
@@ -52,22 +51,16 @@ const InternalTxsListItem = ({
           truncation="constant_long"
           chain={ chainData }
         />
-        <TimeWithTooltip
-          timestamp={ data.timestamp }
-          isLoading={ isLoading }
-          color="text.secondary"
-          fontWeight="400"
-          fontSize="sm"
-        />
       </Flex>
       { showBlockInfo && (
         <HStack gap={ 1 }>
           <Skeleton loading={ isLoading } fontSize="sm" fontWeight={ 500 }>Block</Skeleton>
-          <BlockEntity
+          <BlockWithTimestamp
             isLoading={ isLoading }
             number={ data.block_number }
-            noIcon
-            textStyle="sm"
+            timestamp={ data.timestamp }
+            enableTimeIncrement
+            layout="horizontal"
           />
         </HStack>
       ) }

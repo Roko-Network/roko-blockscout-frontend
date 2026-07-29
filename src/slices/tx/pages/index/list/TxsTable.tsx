@@ -83,10 +83,7 @@ const TxsTable = ({
           <TableRow>
             <TableColumnHeader width="48px"></TableColumnHeader>
             { chainData && <TableColumnHeader width="32px"></TableColumnHeader> }
-            <TableColumnHeader width="180px">
-              Txn hash
-              <TimeFormatToggle/>
-            </TableColumnHeader>
+            <TableColumnHeader width="180px">Txn hash</TableColumnHeader>
             <TableColumnHeader width="160px">Type</TableColumnHeader>
             <TableColumnHeader width={ baseWidth }>Method</TableColumnHeader>
             { showBlockInfo && (
@@ -98,9 +95,13 @@ const TxsTable = ({
                   onSortToggle={ onSortToggle }
                 >
                   Block
+                  <TimeFormatToggle/>
                 </TableColumnHeaderSortable>
               ) : (
-                <TableColumnHeader width={ baseWidth }>Block</TableColumnHeader>
+                <TableColumnHeader width={ baseWidth }>
+                  Block
+                  <TimeFormatToggle/>
+                </TableColumnHeader>
               )
             ) }
             <TableColumnHeader width={ columnNum <= 2 ? baseWidth : '224px' }>From/To</TableColumnHeader>

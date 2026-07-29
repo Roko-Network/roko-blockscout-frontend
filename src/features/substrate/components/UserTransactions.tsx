@@ -7,7 +7,11 @@ import React from 'react';
 
 import useApiQuery from 'src/api/hooks/useApiQuery';
 
+import BlockWithTimestamp from 'src/slices/block/components/BlockWithTimestamp';
+
 import { fetchRecentExtrinsics, formatRoko, truncateHex } from 'src/features/substrate/api/substrate-api';
+
+import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 
 import { Badge } from 'src/toolkit/chakra/badge';
 import { Link } from 'src/toolkit/chakra/link';
@@ -54,7 +58,10 @@ function UserTransactionsTable({ items }: { items: Array<UserTransactionActivity
             <TableColumnHeader>Type</TableColumnHeader>
             <TableColumnHeader>Transaction</TableColumnHeader>
             <TableColumnHeader>Action</TableColumnHeader>
-            <TableColumnHeader>Block</TableColumnHeader>
+            <TableColumnHeader>
+              Block / Time
+              <TimeFormatToggle/>
+            </TableColumnHeader>
             <TableColumnHeader>From / signer</TableColumnHeader>
             <TableColumnHeader>Result</TableColumnHeader>
             <TableColumnHeader isNumeric>Value / fee</TableColumnHeader>
@@ -64,6 +71,7 @@ function UserTransactionsTable({ items }: { items: Array<UserTransactionActivity
           { items.map((activity) => {
             const isEvm = activity.kind === 'evm';
             const blockNumber = isEvm ? activity.tx.block_number : activity.extrinsic.block_number;
+            const blockTimestamp = isEvm ? activity.tx.timestamp : activity.extrinsic.block_timestamp;
             const actor = isEvm ? activity.tx.from.hash : activity.extrinsic.signer;
             const succeeded = isEvm ? activity.tx.status !== 'error' : activity.extrinsic.success;
             const action = isEvm ?
@@ -83,11 +91,13 @@ function UserTransactionsTable({ items }: { items: Array<UserTransactionActivity
                 </TableCell>
                 <TableCell fontFamily="mono"><ActivityLink activity={ activity }/></TableCell>
                 <TableCell fontFamily="mono">{ action }</TableCell>
-                <TableCell fontFamily="mono">
+                <TableCell>
                   { blockNumber !== null ? (
-                    <Link href={ route({ pathname: '/block/[height_or_hash]', query: { height_or_hash: String(blockNumber) } }) }>
-                      { blockNumber.toLocaleString() }
-                    </Link>
+                    <BlockWithTimestamp
+                      number={ blockNumber }
+                      timestamp={ blockTimestamp }
+                      enableTimeIncrement
+                    />
                   ) : 'Pending' }
                 </TableCell>
                 <TableCell fontFamily="mono">

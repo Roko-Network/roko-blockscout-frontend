@@ -36,12 +36,14 @@ const InternalTxsTable = ({ data, currentAddress, isLoading, top, showBlockInfo 
         <TableHeaderSticky top={ top ?? 68 }>
           <TableRow>
             { chainData && <TableColumnHeader width="38px"></TableColumnHeader> }
-            <TableColumnHeader width="280px">
-              Parent txn hash
-              <TimeFormatToggle/>
-            </TableColumnHeader>
+            <TableColumnHeader width="280px">Parent txn hash</TableColumnHeader>
             <TableColumnHeader width="15%">Type</TableColumnHeader>
-            { showBlockInfo && <TableColumnHeader width="15%">Block</TableColumnHeader> }
+            { showBlockInfo && (
+              <TableColumnHeader width="15%">
+                Block
+                <TimeFormatToggle/>
+              </TableColumnHeader>
+            ) }
             <TableColumnHeader width="50%">From/To</TableColumnHeader>
             <TableColumnHeader width="20%" isNumeric>
               Value { currencyUnits.ether }

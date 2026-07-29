@@ -7,12 +7,11 @@ import type { schemas } from '@blockscout/api-types';
 import type { ClusterChainConfig } from 'src/features/multichain/types/client';
 
 import AddressFromTo from 'src/slices/address/components/from-to/AddressFromTo';
-import BlockEntity from 'src/slices/block/components/entity/BlockEntity';
+import BlockWithTimestamp from 'src/slices/block/components/BlockWithTimestamp';
 import { TX_INTERNALS_ITEMS } from 'src/slices/internal-tx/utils/utils';
 import TxEntity from 'src/slices/tx/components/entity/TxEntity';
 import TxStatus from 'src/slices/tx/components/TxStatus';
 
-import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import ChainIcon from 'src/shared/external-chains/ChainIcon';
 import NativeCoinValue from 'src/shared/values/entity/NativeCoinValue';
 
@@ -53,15 +52,6 @@ const InternalTxsTableItem = ({
             noIcon
             truncation="constant_long"
           />
-          <TimeWithTooltip
-            timestamp={ data.timestamp }
-            enableIncrement
-            isLoading={ isLoading }
-            color="text.secondary"
-            fontWeight="400"
-            fontSize="sm"
-            w="fit-content"
-          />
         </Flex>
       </TableCell>
       <TableCell>
@@ -74,13 +64,11 @@ const InternalTxsTableItem = ({
       </TableCell>
       { showBlockInfo && (
         <TableCell>
-          <BlockEntity
+          <BlockWithTimestamp
             isLoading={ isLoading }
             number={ data.block_number }
-            noIcon
-            textStyle="sm"
-            fontWeight={ 500 }
-            my="2px"
+            timestamp={ data.timestamp }
+            enableTimeIncrement
           />
         </TableCell>
       ) }

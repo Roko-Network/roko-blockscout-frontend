@@ -9,7 +9,7 @@ import type { NovesDescribeTxsResponse } from 'src/features/tx-interpretation/no
 
 import AddressFromTo from 'src/slices/address/components/from-to/AddressFromTo';
 import BlockPendingUpdateHint from 'src/slices/block/components/BlockPendingUpdateHint';
-import BlockEntity from 'src/slices/block/components/entity/BlockEntity';
+import BlockWithTimestamp from 'src/slices/block/components/BlockWithTimestamp';
 import TxEntity from 'src/slices/tx/components/entity/TxEntity';
 import TxAdditionalInfo from 'src/slices/tx/components/TxAdditionalInfo';
 import TxFee from 'src/slices/tx/components/TxFee';
@@ -21,7 +21,6 @@ import MetadataTag from 'src/features/address-metadata/components/tag/MetadataTa
 import TxTranslationType from 'src/features/tx-interpretation/noves/components/TxTranslationType';
 
 import config from 'src/config';
-import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import ChainIcon from 'src/shared/external-chains/ChainIcon';
 import NativeCoinValue from 'src/shared/values/entity/NativeCoinValue';
 
@@ -77,12 +76,6 @@ const TxsTableItem = ({
             maxW="100%"
             truncation="constant"
           />
-          <TimeWithTooltip
-            timestamp={ tx.timestamp }
-            enableIncrement={ enableTimeIncrement }
-            isLoading={ isLoading }
-            color="text.secondary"
-          />
         </VStack>
       </TableCell>
       <TableCell>
@@ -112,14 +105,14 @@ const TxsTableItem = ({
       </TableCell>
       { showBlockInfo && (
         <TableCell>
-          <Flex alignItems="center" gap={ 2 }>
+          <Flex alignItems="flex-start" gap={ 2 }>
             { tx.block_number && (
-              <BlockEntity
+              <BlockWithTimestamp
                 isLoading={ isLoading }
                 number={ tx.block_number }
-                noIcon
-                textStyle="sm"
-                fontWeight={ 500 }
+                timestamp={ tx.timestamp }
+                enableTimeIncrement={ enableTimeIncrement }
+                isPendingUpdate={ tx.is_pending_update ?? undefined }
               />
             ) }
             { tx.is_pending_update && <BlockPendingUpdateHint view="tx"/> }

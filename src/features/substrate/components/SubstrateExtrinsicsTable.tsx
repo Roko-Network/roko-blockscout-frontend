@@ -4,6 +4,8 @@ import { Box, chakra } from '@chakra-ui/react';
 import { route } from 'nextjs-routes';
 import React from 'react';
 
+import BlockWithTimestamp from 'src/slices/block/components/BlockWithTimestamp';
+
 import type { SubstrateExtrinsic } from 'src/features/substrate/api/substrate-api';
 import {
   formatRoko,
@@ -11,6 +13,8 @@ import {
   summarizeArgs,
   truncateHex,
 } from 'src/features/substrate/api/substrate-api';
+
+import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 
 import { Link } from 'src/toolkit/chakra/link';
 import { TableRoot, TableHeader, TableBody, TableRow, TableColumnHeader, TableCell } from 'src/toolkit/chakra/table';
@@ -54,7 +58,12 @@ const SubstrateExtrinsicsTable = ({ items, hideBlockColumn }: Props) => {
     <TableRoot variant="line">
       <TableHeader>
         <TableRow>
-          { !hideBlockColumn && <TableColumnHeader>Block</TableColumnHeader> }
+          { !hideBlockColumn && (
+            <TableColumnHeader>
+              Block / Time
+              <TimeFormatToggle/>
+            </TableColumnHeader>
+          ) }
           <TableColumnHeader>Index</TableColumnHeader>
           <TableColumnHeader>Pallet.Method</TableColumnHeader>
           <TableColumnHeader>Signer</TableColumnHeader>
@@ -67,10 +76,12 @@ const SubstrateExtrinsicsTable = ({ items, hideBlockColumn }: Props) => {
         { items.map((ext) => (
           <TableRow key={ ext.id }>
             { !hideBlockColumn && (
-              <TableCell fontFamily="mono">
-                <Link href={ route({ pathname: '/block/[height_or_hash]', query: { height_or_hash: String(ext.block_number) } }) }>
-                  { ext.block_number.toLocaleString() }
-                </Link>
+              <TableCell>
+                <BlockWithTimestamp
+                  number={ ext.block_number }
+                  timestamp={ ext.block_timestamp }
+                  enableTimeIncrement
+                />
               </TableCell>
             ) }
             <TableCell fontFamily="mono">{ ext.index_in_block }</TableCell>

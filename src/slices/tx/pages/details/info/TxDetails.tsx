@@ -219,10 +219,10 @@ const TxDetails = ({ data, isLoading, socketStatus, noTxActions }: Props) => {
       ) }
 
       <DetailedInfo.ItemLabel
-        hint="Block number containing the transaction"
+        hint="Block number and canonical time at which the transaction was included"
         isLoading={ isLoading }
       >
-        Block
+        Block / inclusion time
       </DetailedInfo.ItemLabel>
       <DetailedInfo.ItemValue multiRow={ Boolean(data.scroll?.l2_block_status) }>
         { data.block_number === null ?
@@ -233,6 +233,12 @@ const TxDetails = ({ data, isLoading, socketStatus, noTxActions }: Props) => {
               noIcon
             />
           ) }
+        { data.timestamp && (
+          <>
+            <TextSeparator/>
+            <DetailedInfoTimestamp timestamp={ data.timestamp } isLoading={ isLoading }/>
+          </>
+        ) }
         { Boolean(data.confirmations) && (
           <>
             <TextSeparator/>
@@ -246,6 +252,14 @@ const TxDetails = ({ data, isLoading, socketStatus, noTxActions }: Props) => {
             <TextSeparator/>
             <VerificationSteps steps={ SCROLL_L2_BLOCK_STATUSES } currentStep={ data.scroll.l2_block_status } isLoading={ isLoading }/>
           </>
+        ) }
+        { data.confirmation_duration && (
+          <Flex alignItems="center">
+            <TextSeparator hideBelow="lg"/>
+            <Skeleton loading={ isLoading } color="text.secondary">
+              <span>{ getConfirmationDuration(data.confirmation_duration) }</span>
+            </Skeleton>
+          </Flex>
         ) }
       </DetailedInfo.ItemValue>
 
@@ -280,28 +294,6 @@ const TxDetails = ({ data, isLoading, socketStatus, noTxActions }: Props) => {
             { data.arbitrum.batch_number ?
               <BatchEntityL2 isLoading={ isLoading } number={ data.arbitrum.batch_number }/> :
               <Skeleton loading={ isLoading }>Pending</Skeleton> }
-          </DetailedInfo.ItemValue>
-        </>
-      ) }
-
-      { data.timestamp && (
-        <>
-          <DetailedInfo.ItemLabel
-            hint="Date & time when this transaction was included in a block by the block producer"
-            isLoading={ isLoading }
-          >
-            Inclusion time
-          </DetailedInfo.ItemLabel>
-          <DetailedInfo.ItemValue multiRow>
-            <DetailedInfoTimestamp timestamp={ data.timestamp } isLoading={ isLoading }/>
-            { data.confirmation_duration && (
-              <Flex alignItems="center">
-                <TextSeparator hideBelow="lg"/>
-                <Skeleton loading={ isLoading } color="text.secondary">
-                  <span>{ getConfirmationDuration(data.confirmation_duration) }</span>
-                </Skeleton>
-              </Flex>
-            ) }
           </DetailedInfo.ItemValue>
         </>
       ) }

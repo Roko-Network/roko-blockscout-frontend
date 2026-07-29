@@ -11,7 +11,7 @@ import type { ClusterChainConfig } from 'src/features/multichain/types/client';
 import type { NovesDescribeTxsResponse } from 'src/features/tx-interpretation/noves/types/api';
 
 import AddressFromTo from 'src/slices/address/components/from-to/AddressFromTo';
-import BlockEntity from 'src/slices/block/components/entity/BlockEntity';
+import BlockWithTimestamp from 'src/slices/block/components/BlockWithTimestamp';
 import TxEntity from 'src/slices/tx/components/entity/TxEntity';
 import TxAdditionalInfo from 'src/slices/tx/components/TxAdditionalInfo';
 import TxFee from 'src/slices/tx/components/TxFee';
@@ -23,7 +23,6 @@ import MetadataTag from 'src/features/address-metadata/components/tag/MetadataTa
 import TxTranslationType from 'src/features/tx-interpretation/noves/components/TxTranslationType';
 
 import config from 'src/config';
-import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import ListItemMobile from 'src/shared/lists/ListItemMobile';
 import NativeCoinValue from 'src/shared/values/entity/NativeCoinValue';
 
@@ -75,7 +74,7 @@ const TxsListItem = ({
         </HStack>
         <TxAdditionalInfo tx={ tx } isMobile isLoading={ isLoading }/>
       </Flex>
-      <Flex justifyContent="space-between" lineHeight="24px" mt={ 3 } alignItems="center">
+      <Flex lineHeight="24px" mt={ 3 } alignItems="center">
         <TxEntity
           isLoading={ isLoading }
           hash={ tx.hash }
@@ -84,14 +83,6 @@ const TxsListItem = ({
           icon={ !tx.is_pending_update && tx.transaction_types.includes('blob_transaction') ? { name: 'blob' } : undefined }
           chain={ chainData }
           isPendingUpdate={ tx.is_pending_update ?? undefined }
-        />
-        <TimeWithTooltip
-          timestamp={ tx.timestamp }
-          enableIncrement={ enableTimeIncrement }
-          isLoading={ isLoading }
-          color="text.secondary"
-          fontWeight="400"
-          fontSize="sm"
         />
       </Flex>
       { tx.method && (
@@ -109,12 +100,15 @@ const TxsListItem = ({
         </Flex>
       ) }
       { showBlockInfo && tx.block_number !== null && (
-        <Flex mt={ 2 }>
+        <Flex mt={ 2 } alignItems="center" columnGap={ 2 }>
           <Skeleton loading={ isLoading } display="inline-block" whiteSpace="pre">Block </Skeleton>
-          <BlockEntity
+          <BlockWithTimestamp
             isLoading={ isLoading }
             number={ tx.block_number }
-            noIcon
+            timestamp={ tx.timestamp }
+            enableTimeIncrement={ enableTimeIncrement }
+            isPendingUpdate={ tx.is_pending_update ?? undefined }
+            layout="horizontal"
           />
         </Flex>
       ) }

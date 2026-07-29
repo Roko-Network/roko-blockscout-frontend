@@ -12,6 +12,7 @@ import React from 'react';
 import type { schemas } from '@blockscout/api-types';
 
 import AddressFromTo from 'src/slices/address/components/from-to/AddressFromTo';
+import BlockWithTimestamp from 'src/slices/block/components/BlockWithTimestamp';
 import TxEntity from 'src/slices/tx/components/entity/TxEntity';
 import TxAdditionalInfo from 'src/slices/tx/components/TxAdditionalInfo';
 import TxFee from 'src/slices/tx/components/TxFee';
@@ -22,7 +23,6 @@ import TxWatchListTags from 'src/features/account/components/TxWatchListTags';
 import MetadataTag from 'src/features/address-metadata/components/tag/MetadataTag';
 
 import config from 'src/config';
-import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import NativeCoinValue from 'src/shared/values/entity/NativeCoinValue';
 
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
@@ -73,21 +73,23 @@ const LatestTxsItem = ({ tx, isLoading }: Props) => {
             alignItems="center"
             mt="7px"
             mb="3px"
+            columnGap={ 3 }
           >
             <TxEntity
               isLoading={ isLoading }
               hash={ tx.hash }
               fontWeight="700"
             />
-            <TimeWithTooltip
-              timestamp={ tx.timestamp }
-              enableIncrement
-              timeFormat="relative"
-              isLoading={ isLoading }
-              color="text.secondary"
-              flexShrink={ 0 }
-              ml={ 2 }
-            />
+            { tx.block_number !== null && (
+              <BlockWithTimestamp
+                number={ tx.block_number }
+                timestamp={ tx.timestamp }
+                isLoading={ isLoading }
+                enableTimeIncrement
+                timeFormat="relative"
+                layout="horizontal"
+              />
+            ) }
           </Flex>
         </Box>
       </Flex>

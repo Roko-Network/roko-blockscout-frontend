@@ -19,6 +19,7 @@ const extrinsic = (
 ): SubstrateExtrinsic => ({
   id: blockNumber,
   block_number: blockNumber,
+  block_timestamp: '2026-07-29T12:00:00.000000Z',
   block_hash: null,
   index_in_block: 3,
   pallet: 'Staking',

@@ -41,6 +41,7 @@ import { route, routeParams } from 'src/shared/router/routes';
 import StatusTag from 'src/shared/tags/status-tag/StatusTag';
 import CopyToClipboard from 'src/shared/texts/CopyToClipboard';
 import HashStringShortenDynamic from 'src/shared/texts/HashStringShortenDynamic';
+import TextSeparator from 'src/shared/texts/TextSeparator';
 import GasPriceValue from 'src/shared/values/entity/GasPriceValue';
 import NativeCoinValue from 'src/shared/values/entity/NativeCoinValue';
 import { WEI } from 'src/shared/values/entity/utils';
@@ -161,10 +162,10 @@ const BlockDetails = ({ query }: Props) => {
   return (
     <DetailedInfo.Container templateColumns={{ base: 'minmax(0, 1fr)', lg: 'minmax(min-content, 200px) minmax(0, 1fr)' }} >
       <DetailedInfo.ItemLabel
-        hint="The block height of a particular block is defined as the number of blocks preceding it in the blockchain"
+        hint="The block height and canonical time at which the block was produced"
         isLoading={ isPlaceholderData }
       >
-        { blockTypeLabel } height
+        { blockTypeLabel } height / timestamp
       </DetailedInfo.ItemLabel>
       <DetailedInfo.ItemValue>
         <Skeleton loading={ isPlaceholderData }>
@@ -179,6 +180,8 @@ const BlockDetails = ({ query }: Props) => {
           isPrevDisabled={ data.height === 0 }
           isLoading={ isPlaceholderData }
         />
+        <TextSeparator/>
+        <DetailedInfoTimestamp timestamp={ data.timestamp } isLoading={ isPlaceholderData }/>
       </DetailedInfo.ItemValue>
 
       { rollupFeature.isEnabled && rollupFeature.type === 'arbitrum' && data.arbitrum && data.arbitrum.l1_block_number && (
@@ -248,16 +251,6 @@ const BlockDetails = ({ query }: Props) => {
           </DetailedInfo.ItemValue>
         </>
       ) }
-
-      <DetailedInfo.ItemLabel
-        hint="Date & time at which block was produced."
-        isLoading={ isPlaceholderData }
-      >
-        Timestamp
-      </DetailedInfo.ItemLabel>
-      <DetailedInfo.ItemValue>
-        <DetailedInfoTimestamp timestamp={ data.timestamp } isLoading={ isPlaceholderData }/>
-      </DetailedInfo.ItemValue>
 
       <BlockTemporalTimestamp blockNumber={ data.height }/>
 

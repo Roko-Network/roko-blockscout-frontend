@@ -178,6 +178,7 @@ export function fetchRecentSlashes(limit = 50): Promise<{ items: Array<Substrate
 export interface SubstrateExtrinsic {
   id: number;
   block_number: number;
+  block_timestamp: string | null;
   block_hash: string | null;
   index_in_block: number;
   pallet: string;

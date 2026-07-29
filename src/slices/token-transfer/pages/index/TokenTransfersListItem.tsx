@@ -7,11 +7,10 @@ import type { ClusterChainConfig } from 'src/features/multichain/types/client';
 import { hasTokenTransferValue, isConfidentialTokenType, NFT_TOKEN_TYPE_IDS } from 'src/slices/token/utils/token-types';
 
 import AddressEntity from 'src/slices/address/components/entity/AddressEntity';
-import BlockEntity from 'src/slices/block/components/entity/BlockEntity';
+import BlockWithTimestamp from 'src/slices/block/components/BlockWithTimestamp';
 import NftEntity from 'src/slices/token/components/entity/NftEntity';
 import TxEntity from 'src/slices/tx/components/entity/TxEntity';
 
-import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import ListItemMobileGrid from 'src/shared/lists/ListItemMobileGrid';
 import ConfidentialTokenValue from 'src/shared/values/entity/ConfidentialTokenValue';
 import TokenValue from 'src/shared/values/entity/TokenValue';
@@ -38,15 +37,6 @@ const TokenTransfersListItem = ({ item, isLoading, chainData }: Props) => {
         </>
       ) }
 
-      <ListItemMobileGrid.Label isLoading={ isLoading }>Age</ListItemMobileGrid.Label>
-      <ListItemMobileGrid.Value>
-        <TimeWithTooltip
-          timestamp={ item.timestamp }
-          enableIncrement
-          isLoading={ isLoading }
-        />
-      </ListItemMobileGrid.Value>
-
       { item.method && (
         <>
           <ListItemMobileGrid.Label isLoading={ isLoading }>Method</ListItemMobileGrid.Label><ListItemMobileGrid.Value>
@@ -55,9 +45,15 @@ const TokenTransfersListItem = ({ item, isLoading, chainData }: Props) => {
         </>
       ) }
 
-      <ListItemMobileGrid.Label isLoading={ isLoading }>Block</ListItemMobileGrid.Label>
+      <ListItemMobileGrid.Label isLoading={ isLoading }>Block / Time</ListItemMobileGrid.Label>
       <ListItemMobileGrid.Value>
-        <BlockEntity number={ item.block_number } isLoading={ isLoading } noIcon/>
+        <BlockWithTimestamp
+          number={ item.block_number }
+          timestamp={ item.timestamp }
+          isLoading={ isLoading }
+          enableTimeIncrement
+          layout="horizontal"
+        />
       </ListItemMobileGrid.Value>
 
       <ListItemMobileGrid.Label isLoading={ isLoading }>From</ListItemMobileGrid.Label>

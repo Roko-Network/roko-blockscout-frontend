@@ -8,6 +8,8 @@ import React from 'react';
 
 import PageTitle from 'src/shell/page/title/PageTitle';
 
+import BlockWithTimestamp from 'src/slices/block/components/BlockWithTimestamp';
+
 import type { SubstrateExtrinsicWithEvents } from 'src/features/substrate/api/substrate-api';
 import {
   fetchExtrinsicByHash,
@@ -107,18 +109,15 @@ const Extrinsic = () => {
       <PageTitle
         title={ `${ ext.pallet }.${ ext.method }` }
         secondRow={ (
-          <chakra.span fontSize="sm" color="text.secondary" fontFamily="mono">
-            Block{ ' ' }
-            <Link
-              href={ route({
-                pathname: '/block/[height_or_hash]',
-                query: { height_or_hash: String(block) },
-              }) }
-            >
-              { block.toLocaleString() }
-            </Link>
-            { ' · Index ' }{ index }
-          </chakra.span>
+          <Flex alignItems="center" gap={ 2 } fontSize="sm" color="text.secondary">
+            <BlockWithTimestamp
+              number={ block }
+              timestamp={ ext.block_timestamp }
+              enableTimeIncrement
+              layout="horizontal"
+            />
+            <chakra.span fontFamily="mono">· Index { index }</chakra.span>
+          </Flex>
         ) }
       />
 

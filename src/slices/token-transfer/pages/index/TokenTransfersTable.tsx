@@ -31,12 +31,12 @@ const TokenTransferTable = ({ items, top, isLoading, chainData, resetKey }: Prop
         <TableHeaderSticky top={ top }>
           <TableRow>
             { chainData && <TableColumnHeader width="38px"/> }
+            <TableColumnHeader>Txn hash</TableColumnHeader>
+            <TableColumnHeader>Method</TableColumnHeader>
             <TableColumnHeader>
-              Txn hash
+              Block
               <TimeFormatToggle/>
             </TableColumnHeader>
-            <TableColumnHeader>Method</TableColumnHeader>
-            <TableColumnHeader>Block</TableColumnHeader>
             <TableColumnHeader>From/To</TableColumnHeader>
             <TableColumnHeader>Token ID</TableColumnHeader>
             <TableColumnHeader isNumeric>Amount</TableColumnHeader>

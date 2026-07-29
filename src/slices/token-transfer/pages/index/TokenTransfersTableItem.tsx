@@ -7,11 +7,10 @@ import type { ClusterChainConfig } from 'src/features/multichain/types/client';
 import { isConfidentialTokenType, NFT_TOKEN_TYPE_IDS } from 'src/slices/token/utils/token-types';
 
 import AddressFromTo from 'src/slices/address/components/from-to/AddressFromTo';
-import BlockEntity from 'src/slices/block/components/entity/BlockEntity';
+import BlockWithTimestamp from 'src/slices/block/components/BlockWithTimestamp';
 import NftEntity from 'src/slices/token/components/entity/NftEntity';
 import TxEntity from 'src/slices/tx/components/entity/TxEntity';
 
-import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import ChainIcon from 'src/shared/external-chains/ChainIcon';
 import ConfidentialTokenValue from 'src/shared/values/entity/ConfidentialTokenValue';
 import TokenValue from 'src/shared/values/entity/TokenValue';
@@ -73,20 +72,17 @@ const TokenTransferTableItem = ({ item, isLoading, chainData }: Props) => {
         ) : (
           <Skeleton loading={ isLoading }>-</Skeleton>
         ) }
-        <TimeWithTooltip
-          timestamp={ item.timestamp }
-          enableIncrement
-          isLoading={ isLoading }
-          color="text.secondary"
-          fontWeight="400"
-          display="inline-block"
-        />
       </TableCell>
       <TableCell maxW="120px">
         { item.method && <Badge loading={ isLoading }>{ item.method }</Badge> }
       </TableCell>
       <TableCell>
-        <BlockEntity number={ item.block_number } isLoading={ isLoading } noIcon/>
+        <BlockWithTimestamp
+          number={ item.block_number }
+          timestamp={ item.timestamp }
+          isLoading={ isLoading }
+          enableTimeIncrement
+        />
       </TableCell>
       <TableCell>
         <AddressFromTo
