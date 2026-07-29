@@ -6,7 +6,8 @@ Blockscout's `TOKEN_LIST_URL` fetcher.
 
 - Native ROKO continues to use `/assets/configs/network_icon.png`.
 - pwROKO uses `pwroko.svg`.
-- CATBOT and its legacy test deployment share `catbot.svg`.
+- CATBOT and its legacy test deployment use the canonical supplied
+  `catbot.jpg` brand image.
 - Clowder CATBOT/ROKO liquidity-token deployments share
   `clowder-cat-roko-lp.svg`.
 
