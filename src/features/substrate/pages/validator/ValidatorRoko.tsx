@@ -8,6 +8,7 @@ import React from 'react';
 
 import PageTitle from 'src/shell/page/title/PageTitle';
 
+import PwRokoIcon from 'src/features/pwroko/components/PwRokoIcon';
 import type {
   SubstrateValidator,
   SubstrateViolation,
@@ -269,7 +270,12 @@ function PwrokoTab({ stash }: { stash: string }) {
         <TableRow>
           <TableColumnHeader>Block</TableColumnHeader>
           <TableColumnHeader>Event</TableColumnHeader>
-          <TableColumnHeader>Amount</TableColumnHeader>
+          <TableColumnHeader>
+            <chakra.span display="inline-flex" alignItems="center" gap={ 1.5 }>
+              <PwRokoIcon boxSize={ 5 }/>
+              Amount
+            </chakra.span>
+          </TableColumnHeader>
           <TableColumnHeader>Counterparty</TableColumnHeader>
         </TableRow>
       </TableHeader>

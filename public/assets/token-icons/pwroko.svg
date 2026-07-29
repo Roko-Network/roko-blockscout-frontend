@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" aria-labelledby="title desc">
+  <defs>
+    <linearGradient id="pwroko_svg__a" x1="14" y1="10" x2="114" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1c2442"/>
+      <stop offset="1" stop-color="#090d18"/>
+    </linearGradient>
+    <linearGradient id="pwroko_svg__b" x1="38" y1="28" x2="91" y2="100" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff"/>
+      <stop offset=".5" stop-color="#aeb8c3"/>
+      <stop offset="1" stop-color="#515e6b"/>
+    </linearGradient>
+    <linearGradient id="pwroko_svg__c" x1="24" y1="36" x2="104" y2="95" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#56efc2"/>
+      <stop offset="1" stop-color="#9f86ff"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="60" fill="url(#pwroko_svg__a)" stroke="#9f86ff" stroke-width="4"/>
+  <circle cx="64" cy="64" r="38" fill="url(#pwroko_svg__b)" stroke="#f1f5f9" stroke-width="3"/>
+  <circle cx="64" cy="64" r="30" fill="none" stroke="#465361" stroke-width="2"/>
+  <path d="M51 43v42m0-21 26-21M51 64l27 21" fill="none" stroke="#313c48" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M24 55c4-18 20-32 39-34 14-1 27 4 36 13" fill="none" stroke="url(#pwroko_svg__c)" stroke-width="6" stroke-linecap="round"/>
+  <path d="m101 24 2 15-15-2" fill="none" stroke="#9f86ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M104 73c-4 19-20 32-39 34-14 1-27-4-36-13" fill="none" stroke="url(#pwroko_svg__c)" stroke-width="6" stroke-linecap="round"/>
+  <path d="m27 104-2-15 15 2" fill="none" stroke="#56efc2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="75" y="79" width="38" height="24" rx="12" fill="#111827" stroke="#56efc2" stroke-width="2"/>
+  <text x="94" y="96" fill="#eafff8" font-family="ui-monospace, monospace" font-size="13" font-weight="700" text-anchor="middle">pw</text>
+</svg>

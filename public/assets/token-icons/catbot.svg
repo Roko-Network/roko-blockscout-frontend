@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" aria-labelledby="title desc">
+  <defs>
+    <linearGradient id="catbot_svg__a" x1="18" y1="12" x2="108" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#183c38"/>
+      <stop offset="1" stop-color="#071412"/>
+    </linearGradient>
+    <linearGradient id="catbot_svg__b" x1="38" y1="34" x2="92" y2="96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f3fffb"/>
+      <stop offset=".48" stop-color="#9db7b0"/>
+      <stop offset="1" stop-color="#4d6963"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="60" fill="url(#catbot_svg__a)" stroke="#56efc2" stroke-width="4"/>
+  <circle cx="64" cy="64" r="51" fill="none" stroke="#56efc2" stroke-opacity=".28" stroke-width="2"/>
+  <path d="m33 51 5-24 19 15h14l19-15 5 24v34c0 12-14 22-31 22S33 97 33 85V51Z" fill="url(#catbot_svg__b)" stroke="#d8fff4" stroke-width="3" stroke-linejoin="round"/>
+  <path d="m38 29 6 18-11 4m57-22-6 18 11 4" fill="none" stroke="#56efc2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M45 63h14v12H45zm24 0h14v12H69z" fill="#071412" stroke="#56efc2" stroke-width="3"/>
+  <circle cx="52" cy="69" r="2.5" fill="#eafff8"/>
+  <circle cx="76" cy="69" r="2.5" fill="#eafff8"/>
+  <path d="m60 81 4-3 4 3-4 4-4-4ZM48 92h32m-38-8-15-4m59 4 15-4" fill="none" stroke="#244d45" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M57 99h14" stroke="#56efc2" stroke-width="3" stroke-linecap="round"/>
+</svg>

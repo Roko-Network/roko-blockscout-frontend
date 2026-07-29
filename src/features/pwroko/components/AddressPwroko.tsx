@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { route } from 'nextjs-routes';
 import React from 'react';
 
+import PwRokoIcon from 'src/features/pwroko/components/PwRokoIcon';
 import type { SubstratePwrokoEvent } from 'src/features/substrate/api/substrate-api';
 import { fetchAccountPwrokoHistory, formatRoko, truncateHex } from 'src/features/substrate/api/substrate-api';
 
@@ -51,7 +52,12 @@ const AddressPwroko = ({ addressHash }: Props) => {
         <TableRow>
           <TableColumnHeader>Block</TableColumnHeader>
           <TableColumnHeader>Event</TableColumnHeader>
-          <TableColumnHeader>Amount</TableColumnHeader>
+          <TableColumnHeader>
+            <chakra.span display="inline-flex" alignItems="center" gap={ 1.5 }>
+              <PwRokoIcon boxSize={ 5 }/>
+              Amount
+            </chakra.span>
+          </TableColumnHeader>
           <TableColumnHeader>Backing</TableColumnHeader>
           <TableColumnHeader>Counterparty</TableColumnHeader>
         </TableRow>

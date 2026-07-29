@@ -1,0 +1,63 @@
+{
+  "name": "ROKO Network Testnet Token List",
+  "timestamp": "2026-07-29T00:00:00.000Z",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "keywords": [
+    "roko",
+    "testnet"
+  ],
+  "tokens": [
+    {
+      "chainId": 52370,
+      "address": "0x0000000000000000000000000000000000000500",
+      "name": "Pre-wrapped ROKO",
+      "symbol": "pwROKO",
+      "decimals": 18,
+      "logoURI": "https://explorer.roko.network/assets/token-icons/pwroko.svg"
+    },
+    {
+      "chainId": 52370,
+      "address": "0xbbFD2d053C2460a57c2591F55f2dB0595e3336f9",
+      "name": "CatBot",
+      "symbol": "CATBOT",
+      "decimals": 18,
+      "logoURI": "https://explorer.roko.network/assets/token-icons/catbot.svg"
+    },
+    {
+      "chainId": 52370,
+      "address": "0x9954349cECb9e64cDbe4E87e1f6fD079e5E75bd6",
+      "name": "CatBot Legacy Test Token",
+      "symbol": "CATBOT-LEGACY",
+      "decimals": 18,
+      "logoURI": "https://explorer.roko.network/assets/token-icons/catbot.svg"
+    },
+    {
+      "chainId": 52370,
+      "address": "0xa8b6127c32f18a62A167c9030113d6F0a3183874",
+      "name": "Clowder CATBOT/ROKO LP",
+      "symbol": "clowderCATROKO",
+      "decimals": 18,
+      "logoURI": "https://explorer.roko.network/assets/token-icons/clowder-cat-roko-lp.svg"
+    },
+    {
+      "chainId": 52370,
+      "address": "0x7781548cFfaAB1632203ba1A8532F1A7afd33079",
+      "name": "Clowder CATBOT/ROKO LP",
+      "symbol": "clowderCATROKO",
+      "decimals": 18,
+      "logoURI": "https://explorer.roko.network/assets/token-icons/clowder-cat-roko-lp.svg"
+    },
+    {
+      "chainId": 52370,
+      "address": "0x042D839D1af8b9D6bAbbDeB6C9806C64f76B380a",
+      "name": "Clowder CATBOT/ROKO LP Legacy Test Token",
+      "symbol": "clowderCATROKO-L",
+      "decimals": 18,
+      "logoURI": "https://explorer.roko.network/assets/token-icons/clowder-cat-roko-lp.svg"
+    }
+  ]
+}

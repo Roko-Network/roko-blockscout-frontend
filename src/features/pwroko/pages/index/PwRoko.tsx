@@ -4,6 +4,8 @@ import { Box, Flex, Text, Input, VStack, HStack } from '@chakra-ui/react';
 import React from 'react';
 import { formatUnits } from 'viem';
 
+import PwRokoIcon from 'src/features/pwroko/components/PwRokoIcon';
+
 import config from 'src/config';
 
 import { Button } from 'src/toolkit/chakra/button';
@@ -303,7 +305,10 @@ const PwRoko = () => {
 
   return (
     <Box>
-      <Heading as="h1" fontSize="2xl" mb={ 2 }>pwROKO Token</Heading>
+      <Flex alignItems="center" gap={ 3 } mb={ 2 }>
+        <PwRokoIcon boxSize={ 10 } flexShrink={ 0 }/>
+        <Heading as="h1" fontSize="2xl">pwROKO Token</Heading>
+      </Flex>
       <Text color="text.secondary" mb={ 6 }>
         Wrap native { config.chain.currency.symbol } into pwROKO for validator bonding. Unwrap with a two-phase cooldown process.
       </Text>
@@ -466,7 +471,10 @@ const PwRoko = () => {
               </Box>
 
               <Box bg="dialog.bg" borderWidth="1px" borderColor="divider" borderRadius="xl" p={ 6 }>
-                <Text fontSize="sm" fontWeight={ 600 } mb={ 3 }>Token Info</Text>
+                <Flex alignItems="center" gap={ 2 } mb={ 3 }>
+                  <PwRokoIcon boxSize={ 6 } flexShrink={ 0 }/>
+                  <Text fontSize="sm" fontWeight={ 600 }>Token Info</Text>
+                </Flex>
                 <VStack gap={ 2 } alignItems="stretch" fontSize="sm">
                   <Flex justifyContent="space-between">
                     <Text color="text.secondary">Name</Text>
