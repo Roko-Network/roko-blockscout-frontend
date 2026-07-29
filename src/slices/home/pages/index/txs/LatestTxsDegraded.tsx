@@ -10,6 +10,7 @@ import { useHomeRpcDataContext } from 'src/slices/home/contexts/rpc-data-context
 import { TX } from 'src/slices/tx/stubs/tx';
 
 import { isPublicClientAvailable } from 'src/features/connect-wallet/utils/public-client';
+import useTemporalTxTimestamps from 'src/features/temporal/hooks/useTemporalTxTimestamps';
 
 import config from 'src/config';
 
@@ -36,11 +37,12 @@ const LatestTxsDegraded = ({ maxNum }: Props) => {
     };
   }, [ enable ]);
 
+  const items = isLoading ? Array(maxNum).fill(TX) : txs.slice(0, maxNum);
+  const { data: temporalTimestamps } = useTemporalTxTimestamps(items.map(tx => tx.hash));
+
   if (isError || !isPublicClientAvailable) {
     return <LatestTxsFallback/>;
   }
-
-  const items = isLoading ? Array(maxNum).fill(TX) : txs.slice(0, maxNum);
 
   if (items.length === 0) {
     return <Box textStyle="sm">No latest transactions found.</Box>;
@@ -57,6 +59,7 @@ const LatestTxsDegraded = ({ maxNum }: Props) => {
           <LatestTxsItemMobile
             key={ tx.hash + (isLoading ? index : '') }
             tx={ tx }
+            timestampNs={ temporalTimestamps?.[tx.hash.toLowerCase()] }
             isLoading={ isLoading }
           />
         ))) }
@@ -67,6 +70,7 @@ const LatestTxsDegraded = ({ maxNum }: Props) => {
             <LatestTxsItem
               key={ tx.hash + (isLoading ? index : '') }
               tx={ tx }
+              timestampNs={ temporalTimestamps?.[tx.hash.toLowerCase()] }
               isLoading={ isLoading }
             />
           ))) }

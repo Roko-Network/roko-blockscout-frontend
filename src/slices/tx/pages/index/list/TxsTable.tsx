@@ -10,6 +10,8 @@ import { AddressHighlightProvider } from 'src/slices/address/contexts/address-hi
 import { currencyUnits } from 'src/slices/chain/units';
 
 import { useMultichainContext } from 'src/features/multichain/context';
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import useTemporalTxTimestamps from 'src/features/temporal/hooks/useTemporalTxTimestamps';
 import type { TxsTranslationQuery } from 'src/features/tx-interpretation/noves/hooks/useDescribeTxs';
 
 import config from 'src/config';
@@ -61,6 +63,7 @@ const TxsTable = ({
   const multichainContext = useMultichainContext();
   const chainData = multichainContext?.chain;
   const isMobile = useIsMobile();
+  const { data: temporalTimestamps } = useTemporalTxTimestamps(txs.map(tx => tx.hash));
 
   const feeCurrency = config.slices.tx.hiddenFields?.fee_currency || config.chain.hasMultipleGasCurrencies ?
     '' :
@@ -96,11 +99,13 @@ const TxsTable = ({
                 >
                   Block
                   <TimeFormatToggle/>
+                  <TemporalPrecisionToggle/>
                 </TableColumnHeaderSortable>
               ) : (
                 <TableColumnHeader width={ baseWidth }>
                   Block
                   <TimeFormatToggle/>
+                  <TemporalPrecisionToggle/>
                 </TableColumnHeader>
               )
             ) }
@@ -145,6 +150,7 @@ const TxsTable = ({
               <TxsTableItem
                 key={ item.hash + (isLoading ? index : '') }
                 tx={ item }
+                timestampNs={ temporalTimestamps?.[item.hash.toLowerCase()] }
                 showBlockInfo={ showBlockInfo }
                 currentAddress={ currentAddress }
                 enableTimeIncrement={ enableTimeIncrement }

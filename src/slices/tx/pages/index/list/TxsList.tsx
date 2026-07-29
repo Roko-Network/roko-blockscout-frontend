@@ -7,6 +7,7 @@ import type { schemas } from '@blockscout/api-types';
 import type { TxsSocketType } from 'src/slices/tx/types/socket';
 
 import { useMultichainContext } from 'src/features/multichain/context';
+import useTemporalTxTimestamps from 'src/features/temporal/hooks/useTemporalTxTimestamps';
 import type { TxsTranslationQuery } from 'src/features/tx-interpretation/noves/hooks/useDescribeTxs';
 
 import useInitialList from 'src/shared/lists/useInitialList';
@@ -35,6 +36,7 @@ const TxsList = (props: Props) => {
   });
   const multichainContext = useMultichainContext();
   const chainData = multichainContext?.chain;
+  const { data: temporalTimestamps } = useTemporalTxTimestamps(props.items.map(tx => tx.hash));
 
   return (
     <Box>
@@ -44,6 +46,7 @@ const TxsList = (props: Props) => {
           <TxsListItem
             key={ tx.hash + (props.isLoading ? index : '') }
             tx={ tx }
+            timestampNs={ temporalTimestamps?.[tx.hash.toLowerCase()] }
             showBlockInfo={ props.showBlockInfo }
             currentAddress={ props.currentAddress }
             enableTimeIncrement={ props.enableTimeIncrement }

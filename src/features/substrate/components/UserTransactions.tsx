@@ -10,6 +10,8 @@ import useApiQuery from 'src/api/hooks/useApiQuery';
 import BlockWithTimestamp from 'src/slices/block/components/BlockWithTimestamp';
 
 import { fetchRecentExtrinsics, formatRoko, truncateHex } from 'src/features/substrate/api/substrate-api';
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import useTemporalTxTimestamps from 'src/features/temporal/hooks/useTemporalTxTimestamps';
 
 import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 
@@ -50,6 +52,9 @@ function ActivityLink({ activity }: { activity: UserTransactionActivity }) {
 }
 
 function UserTransactionsTable({ items }: { items: Array<UserTransactionActivity> }) {
+  const hashes = items.map(activity => activity.kind === 'evm' ? activity.tx.hash : activity.extrinsic.hash);
+  const { data: temporalTimestamps } = useTemporalTxTimestamps(hashes);
+
   return (
     <Box overflowX="auto">
       <TableRoot minWidth="850px" variant="line">
@@ -61,6 +66,7 @@ function UserTransactionsTable({ items }: { items: Array<UserTransactionActivity
             <TableColumnHeader>
               Block / Time
               <TimeFormatToggle/>
+              <TemporalPrecisionToggle/>
             </TableColumnHeader>
             <TableColumnHeader>From / signer</TableColumnHeader>
             <TableColumnHeader>Result</TableColumnHeader>
@@ -78,6 +84,8 @@ function UserTransactionsTable({ items }: { items: Array<UserTransactionActivity
               (activity.tx.method || (activity.tx.to ? 'Transfer' : 'Contract creation')) :
               `${ activity.extrinsic.pallet }.${ activity.extrinsic.method }`;
             const amount = isEvm ? activity.tx.value : activity.extrinsic.fee_paid;
+            const txHash = isEvm ? activity.tx.hash : activity.extrinsic.hash;
+            const timestampNs = txHash ? temporalTimestamps?.[txHash.toLowerCase()] : null;
             const key = isEvm ?
               `evm-${ activity.tx.hash }` :
               `substrate-${ activity.extrinsic.block_number }-${ activity.extrinsic.index_in_block }`;
@@ -96,6 +104,7 @@ function UserTransactionsTable({ items }: { items: Array<UserTransactionActivity
                     <BlockWithTimestamp
                       number={ blockNumber }
                       timestamp={ blockTimestamp }
+                      timestampNs={ timestampNs }
                       enableTimeIncrement
                     />
                   ) : 'Pending' }

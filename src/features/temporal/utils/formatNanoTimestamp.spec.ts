@@ -44,6 +44,12 @@ describe('formatNanoTimestamp', () => {
     expect(result).toContain('123456');
   });
 
+  test('can hide fractional nanoseconds without changing the second', () => {
+    const result = formatNanoTimestamp('1711234567890123456', { includeFraction: false });
+    expect(result).toBe('2024-03-23 22:56:07 UTC');
+    expect(result).not.toContain('.890123456');
+  });
+
   test('handles zero gracefully', () => {
     const result = formatNanoTimestamp('0');
     expect(typeof result).toBe('string');

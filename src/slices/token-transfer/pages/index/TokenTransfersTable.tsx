@@ -7,6 +7,8 @@ import type { ClusterChainConfig } from 'src/features/multichain/types/client';
 
 import { AddressHighlightProvider } from 'src/slices/address/contexts/address-highlight';
 
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+
 import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 import useLazyRenderedList from 'src/shared/lists/useLazyRenderedList';
 
@@ -36,6 +38,7 @@ const TokenTransferTable = ({ items, top, isLoading, chainData, resetKey }: Prop
             <TableColumnHeader>
               Block
               <TimeFormatToggle/>
+              <TemporalPrecisionToggle/>
             </TableColumnHeader>
             <TableColumnHeader>From/To</TableColumnHeader>
             <TableColumnHeader>Token ID</TableColumnHeader>

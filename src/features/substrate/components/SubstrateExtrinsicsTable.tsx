@@ -13,6 +13,8 @@ import {
   summarizeArgs,
   truncateHex,
 } from 'src/features/substrate/api/substrate-api';
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import useTemporalTxTimestamps from 'src/features/temporal/hooks/useTemporalTxTimestamps';
 
 import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 
@@ -50,6 +52,8 @@ function ExtrinsicLink({ ext, children }: { ext: SubstrateExtrinsic; children: R
 }
 
 const SubstrateExtrinsicsTable = ({ items, hideBlockColumn }: Props) => {
+  const { data: temporalTimestamps } = useTemporalTxTimestamps(items.map(ext => ext.hash));
+
   if (items.length === 0) {
     return <Box p={ 4 } color="text.secondary" fontSize="sm">No substrate extrinsics.</Box>;
   }
@@ -62,6 +66,7 @@ const SubstrateExtrinsicsTable = ({ items, hideBlockColumn }: Props) => {
             <TableColumnHeader>
               Block / Time
               <TimeFormatToggle/>
+              <TemporalPrecisionToggle/>
             </TableColumnHeader>
           ) }
           <TableColumnHeader>Index</TableColumnHeader>
@@ -80,6 +85,7 @@ const SubstrateExtrinsicsTable = ({ items, hideBlockColumn }: Props) => {
                 <BlockWithTimestamp
                   number={ ext.block_number }
                   timestamp={ ext.block_timestamp }
+                  timestampNs={ ext.hash ? temporalTimestamps?.[ext.hash.toLowerCase()] : null }
                   enableTimeIncrement
                 />
               </TableCell>

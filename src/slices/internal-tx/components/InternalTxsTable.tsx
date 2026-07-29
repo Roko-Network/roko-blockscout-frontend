@@ -8,6 +8,7 @@ import { AddressHighlightProvider } from 'src/slices/address/contexts/address-hi
 import { currencyUnits } from 'src/slices/chain/units';
 
 import { useMultichainContext } from 'src/features/multichain/context';
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
 
 import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 import useLazyRenderedList from 'src/shared/lists/useLazyRenderedList';
@@ -42,6 +43,7 @@ const InternalTxsTable = ({ data, currentAddress, isLoading, top, showBlockInfo 
               <TableColumnHeader width="15%">
                 Block
                 <TimeFormatToggle/>
+                <TemporalPrecisionToggle/>
               </TableColumnHeader>
             ) }
             <TableColumnHeader width="50%">From/To</TableColumnHeader>

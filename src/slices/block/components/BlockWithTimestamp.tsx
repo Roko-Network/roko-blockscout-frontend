@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: LicenseRef-Blockscout
 
 import { Flex } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 import type { TimeFormat } from 'src/shell/top-bar/settings/time-format/utils';
+
+import { fetchTemporalTxTimestamp } from 'src/features/temporal/api/temporal-rpc';
+import NanoTimeWithTooltip from 'src/features/temporal/components/NanoTimeWithTooltip';
 
 import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 
@@ -12,6 +16,8 @@ import BlockEntity from './entity/BlockEntity';
 interface Props {
   number: number | string;
   timestamp?: string | number | null;
+  timestampNs?: string | null;
+  txHash?: string | null;
   isLoading?: boolean;
   enableTimeIncrement?: boolean;
   timeFormat?: TimeFormat;
@@ -23,6 +29,8 @@ interface Props {
 const BlockWithTimestamp = ({
   number,
   timestamp,
+  timestampNs,
+  txHash,
   isLoading,
   enableTimeIncrement,
   timeFormat,
@@ -31,6 +39,14 @@ const BlockWithTimestamp = ({
   isPendingUpdate,
 }: Props) => {
   const horizontal = layout === 'horizontal';
+  const { data: temporalTimestamp } = useQuery({
+    queryKey: [ 'temporal_tx_timestamp', txHash ],
+    queryFn: () => fetchTemporalTxTimestamp(txHash as string),
+    enabled: Boolean(txHash) && timestampNs === undefined,
+    retry: false,
+    staleTime: Infinity,
+  });
+  const resolvedTimestampNs = timestampNs ?? temporalTimestamp?.timestamp_ns;
 
   return (
     <Flex
@@ -48,15 +64,26 @@ const BlockWithTimestamp = ({
         textStyle="sm"
         fontWeight={ fontWeight }
       />
-      <TimeWithTooltip
-        timestamp={ timestamp }
-        enableIncrement={ enableTimeIncrement }
-        timeFormat={ timeFormat }
-        isLoading={ isLoading }
-        color="text.secondary"
-        fontSize="sm"
-        whiteSpace="nowrap"
-      />
+      { resolvedTimestampNs ? (
+        <NanoTimeWithTooltip
+          timestampNs={ resolvedTimestampNs }
+          enableIncrement={ enableTimeIncrement }
+          timeFormat={ timeFormat }
+          color="text.secondary"
+          fontSize="sm"
+          whiteSpace="nowrap"
+        />
+      ) : (
+        <TimeWithTooltip
+          timestamp={ timestamp }
+          enableIncrement={ enableTimeIncrement }
+          timeFormat={ timeFormat }
+          isLoading={ isLoading }
+          color="text.secondary"
+          fontSize="sm"
+          whiteSpace="nowrap"
+        />
+      ) }
     </Flex>
   );
 };

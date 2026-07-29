@@ -24,7 +24,15 @@ export function nanoToDatetime(nsStr: string): string {
  * Format: "YYYY-MM-DD HH:mm:ss.nnnnnnnnn UTC"
  * The nanosecond fractional part (9 digits) is derived from the raw ns value.
  */
-export function formatNanoTimestamp(nsStr: string): string {
+interface FormatNanoTimestampOptions {
+  includeFraction?: boolean;
+  isLocalTime?: boolean;
+}
+
+export function formatNanoTimestamp(
+  nsStr: string,
+  { includeFraction = true, isLocalTime = false }: FormatNanoTimestampOptions = {},
+): string {
   const ns = BigInt(nsStr);
   const ms = ns / BigInt(1_000_000);
   const date = new Date(Number(ms));
@@ -33,12 +41,14 @@ export function formatNanoTimestamp(nsStr: string): string {
   const nsInSecond = ns % BigInt(1_000_000_000);
   const nsFraction = nsInSecond.toString().padStart(9, '0');
 
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  const hours = String(date.getUTCHours()).padStart(2, '0');
-  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+  const year = isLocalTime ? date.getFullYear() : date.getUTCFullYear();
+  const month = String((isLocalTime ? date.getMonth() : date.getUTCMonth()) + 1).padStart(2, '0');
+  const day = String(isLocalTime ? date.getDate() : date.getUTCDate()).padStart(2, '0');
+  const hours = String(isLocalTime ? date.getHours() : date.getUTCHours()).padStart(2, '0');
+  const minutes = String(isLocalTime ? date.getMinutes() : date.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(isLocalTime ? date.getSeconds() : date.getUTCSeconds()).padStart(2, '0');
+  const fraction = includeFraction ? `.${ nsFraction }` : '';
+  const zone = isLocalTime ? 'local' : 'UTC';
 
-  return `${ year }-${ month }-${ day } ${ hours }:${ minutes }:${ seconds }.${ nsFraction } UTC`;
+  return `${ year }-${ month }-${ day } ${ hours }:${ minutes }:${ seconds }${ fraction } ${ zone }`;
 }

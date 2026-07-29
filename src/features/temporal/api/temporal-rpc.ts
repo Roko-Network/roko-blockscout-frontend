@@ -115,6 +115,24 @@ export async function fetchTemporalTxTimestamp(txHash: string): Promise<Temporal
   };
 }
 
+interface BatchTxTimestampResponse {
+  timestamps: Record<string, { timestamp_ns?: string | null; error?: string }>;
+}
+
+export async function fetchTemporalTxTimestamps(txHashes: Array<string>): Promise<Record<string, string | null>> {
+  const uniqueHashes = Array.from(new Set(txHashes.filter(Boolean))).slice(0, 100);
+  if (uniqueHashes.length === 0) {
+    return {};
+  }
+
+  const params = new URLSearchParams({ hashes: uniqueHashes.join(',') });
+  const result = await apiFetch<BatchTxTimestampResponse>(`/transactions/batch-timestamps?${ params.toString() }`);
+
+  return Object.fromEntries(
+    Object.entries(result.timestamps).map(([ hash, data ]) => [ hash.toLowerCase(), data.timestamp_ns ?? null ]),
+  );
+}
+
 // Backend returns: { block_nano_timestamp: string, block_number: number, miner_key_id?: number }
 interface BlockMetadataResponse {
   block_nano_timestamp: string;

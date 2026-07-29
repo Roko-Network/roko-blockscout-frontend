@@ -19,6 +19,7 @@ export enum NAMES {
   ADDRESS_IDENTICON_TYPE = 'address_identicon_type',
   ADDRESS_FORMAT = 'address_format',
   TIME_FORMAT = 'time_format',
+  TIME_NANOSECONDS = 'time_nanoseconds',
   LOCAL_TIME = 'local_time',
   INDEXING_ALERT = 'indexing_alert',
   ADBLOCK_DETECTED = 'adblock_detected',

@@ -80,6 +80,7 @@ const TokenTransferTableItem = ({ item, isLoading, chainData }: Props) => {
         <BlockWithTimestamp
           number={ item.block_number }
           timestamp={ item.timestamp }
+          txHash={ item.transaction_hash }
           isLoading={ isLoading }
           enableTimeIncrement
         />

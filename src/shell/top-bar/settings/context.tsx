@@ -19,6 +19,8 @@ interface TSettingsContext {
   toggleAddressFormat: () => void;
   timeFormat: TimeFormat;
   toggleTimeFormat: () => void;
+  showNanoseconds: boolean;
+  toggleShowNanoseconds: () => void;
   isLocalTime: boolean;
   toggleIsLocalTime: () => void;
 }
@@ -35,6 +37,10 @@ export function SettingsContextProvider({ children }: SettingsProviderProps) {
 
   const [ timeFormat, setTimeFormat ] = React.useState<TimeFormat>(
     cookies.get(cookies.NAMES.TIME_FORMAT, appCookies) as TimeFormat || 'relative',
+  );
+
+  const [ showNanoseconds, setShowNanoseconds ] = React.useState<boolean>(
+    (cookies.get(cookies.NAMES.TIME_NANOSECONDS, appCookies) ?? 'true') === 'true',
   );
 
   const [ isLocalTime, setIsLocalTime ] = React.useState<boolean>(
@@ -57,6 +63,14 @@ export function SettingsContextProvider({ children }: SettingsProviderProps) {
     });
   }, []);
 
+  const toggleShowNanoseconds = React.useCallback(() => {
+    setShowNanoseconds(prev => {
+      const nextValue = !prev;
+      cookies.set(cookies.NAMES.TIME_NANOSECONDS, nextValue ? 'true' : 'false');
+      return nextValue;
+    });
+  }, []);
+
   const toggleIsLocalTime = React.useCallback(() => {
     setIsLocalTime(prev => {
       const nextValue = !prev;
@@ -71,10 +85,21 @@ export function SettingsContextProvider({ children }: SettingsProviderProps) {
       toggleAddressFormat,
       timeFormat,
       toggleTimeFormat,
+      showNanoseconds,
+      toggleShowNanoseconds,
       isLocalTime,
       toggleIsLocalTime,
     };
-  }, [ addressFormat, toggleAddressFormat, timeFormat, toggleTimeFormat, isLocalTime, toggleIsLocalTime ]);
+  }, [
+    addressFormat,
+    toggleAddressFormat,
+    timeFormat,
+    toggleTimeFormat,
+    showNanoseconds,
+    toggleShowNanoseconds,
+    isLocalTime,
+    toggleIsLocalTime,
+  ]);
 
   return (
     <SettingsContext.Provider value={ value }>

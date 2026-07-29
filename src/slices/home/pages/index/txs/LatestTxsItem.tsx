@@ -29,10 +29,11 @@ import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 interface Props {
   tx: schemas['Transaction'];
+  timestampNs?: string | null;
   isLoading?: boolean;
 };
 
-const LatestTxsItem = ({ tx, isLoading }: Props) => {
+const LatestTxsItem = ({ tx, timestampNs, isLoading }: Props) => {
   const dataTo = tx.to ? tx.to : tx.created_contract;
   const columnNum = config.slices.tx.hiddenFields?.value && config.slices.tx.hiddenFields?.tx_fee ? 2 : 3;
 
@@ -84,6 +85,7 @@ const LatestTxsItem = ({ tx, isLoading }: Props) => {
               <BlockWithTimestamp
                 number={ tx.block_number }
                 timestamp={ tx.timestamp }
+                timestampNs={ timestampNs }
                 isLoading={ isLoading }
                 enableTimeIncrement
                 timeFormat="relative"

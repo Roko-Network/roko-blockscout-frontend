@@ -30,6 +30,7 @@ import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 interface Props {
   tx: schemas['Transaction'];
+  timestampNs?: string | null;
   showBlockInfo: boolean;
   currentAddress?: string;
   enableTimeIncrement?: boolean;
@@ -42,6 +43,7 @@ interface Props {
 
 const TxsListItem = ({
   tx,
+  timestampNs,
   isLoading,
   showBlockInfo,
   currentAddress,
@@ -106,6 +108,7 @@ const TxsListItem = ({
             isLoading={ isLoading }
             number={ tx.block_number }
             timestamp={ tx.timestamp }
+            timestampNs={ timestampNs }
             enableTimeIncrement={ enableTimeIncrement }
             isPendingUpdate={ tx.is_pending_update ?? undefined }
             layout="horizontal"

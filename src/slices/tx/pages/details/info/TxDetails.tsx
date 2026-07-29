@@ -8,6 +8,7 @@ import {
   chakra,
   VStack,
 } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
 import { route } from 'nextjs-routes';
 import React from 'react';
@@ -39,6 +40,8 @@ import TxDetailsWithdrawalStatusOptimistic from 'src/features/rollup/optimism/pa
 import TxInfoScrollFees from 'src/features/rollup/scroll/pages/tx/TxInfoScrollFees';
 import ZkSyncL2TxnBatchHashesInfo from 'src/features/rollup/zk-sync/pages/batch-details/ZkSyncL2TxnBatchHashesInfo';
 import { formatZkSyncL2TxnBatchStatus } from 'src/features/rollup/zk-sync/utils/format-txn-batch-status';
+import { fetchTemporalTxTimestamp } from 'src/features/temporal/api/temporal-rpc';
+import NanoTimeWithTooltip from 'src/features/temporal/components/NanoTimeWithTooltip';
 import TxTemporalTimestamp from 'src/features/temporal/components/TxTemporalTimestamp';
 import TxDetailsActions from 'src/features/tx-actions/pages/tx/TxDetailsActions';
 
@@ -84,6 +87,13 @@ const rollupFeature = config.features.rollup;
 // REFACTOR: Put feature related parts under the feature folder
 const TxDetails = ({ data, isLoading, socketStatus, noTxActions }: Props) => {
   const [ isExpanded, setIsExpanded ] = React.useState(false);
+  const { data: temporalTimestamp } = useQuery({
+    queryKey: [ 'temporal_tx_timestamp', data?.hash ],
+    queryFn: () => fetchTemporalTxTimestamp(data!.hash),
+    enabled: Boolean(data?.hash),
+    retry: false,
+    staleTime: Infinity,
+  });
 
   const handleCutLinkClick = React.useCallback(() => {
     setIsExpanded((flag) => !flag);
@@ -233,10 +243,14 @@ const TxDetails = ({ data, isLoading, socketStatus, noTxActions }: Props) => {
               noIcon
             />
           ) }
-        { data.timestamp && (
+        { (temporalTimestamp?.timestamp_ns || data.timestamp) && (
           <>
             <TextSeparator/>
-            <DetailedInfoTimestamp timestamp={ data.timestamp } isLoading={ isLoading }/>
+            { temporalTimestamp?.timestamp_ns ? (
+              <NanoTimeWithTooltip timestampNs={ temporalTimestamp.timestamp_ns } enableIncrement/>
+            ) : (
+              <DetailedInfoTimestamp timestamp={ data.timestamp! } isLoading={ isLoading }/>
+            ) }
           </>
         ) }
         { Boolean(data.confirmations) && (

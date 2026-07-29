@@ -68,6 +68,7 @@ const InternalTxsTableItem = ({
             isLoading={ isLoading }
             number={ data.block_number }
             timestamp={ data.timestamp }
+            txHash={ data.transaction_hash }
             enableTimeIncrement
           />
         </TableCell>

@@ -19,6 +19,7 @@ import {
   truncateHex,
 } from 'src/features/substrate/api/substrate-api';
 import SubstrateEventsTable from 'src/features/substrate/components/SubstrateEventsTable';
+import { fetchTemporalTxTimestamp } from 'src/features/temporal/api/temporal-rpc';
 
 import getQueryParamString from 'src/shared/router/get-query-param-string';
 
@@ -72,6 +73,13 @@ const Extrinsic = () => {
     queryFn: () => fetchExtrinsicByHash(ext!.hash as string),
     enabled: Boolean(ext?.hash),
   });
+  const { data: temporalTimestamp } = useQuery({
+    queryKey: [ 'temporal_tx_timestamp', ext?.hash ],
+    queryFn: () => fetchTemporalTxTimestamp(ext!.hash as string),
+    enabled: Boolean(ext?.hash),
+    retry: false,
+    staleTime: Infinity,
+  });
 
   // Sprint-5 design: ethereum.transact extrinsics redirect to the existing
   // EVM tx page after a short banner so we don't duplicate the EVM rendering.
@@ -113,6 +121,7 @@ const Extrinsic = () => {
             <BlockWithTimestamp
               number={ block }
               timestamp={ ext.block_timestamp }
+              timestampNs={ temporalTimestamp?.timestamp_ns }
               enableTimeIncrement
               layout="horizontal"
             />

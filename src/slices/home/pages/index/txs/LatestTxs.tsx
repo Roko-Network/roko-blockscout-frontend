@@ -11,6 +11,8 @@ import { AddressHighlightProvider } from 'src/slices/address/contexts/address-hi
 import useNewTxsSocket from 'src/slices/tx/hooks/useTxsSocketTypeAll';
 import { TX } from 'src/slices/tx/stubs/tx';
 
+import useTemporalTxTimestamps from 'src/features/temporal/hooks/useTemporalTxTimestamps';
+
 import config from 'src/config';
 import useIsMobile from 'src/shared/hooks/useIsMobile';
 
@@ -30,6 +32,7 @@ const LatestTxs = () => {
       placeholderData: Array(txsCount).fill(TX),
     },
   });
+  const { data: temporalTimestamps } = useTemporalTxTimestamps(data?.map(tx => tx.hash) ?? []);
 
   const { num, showErrorAlert } = useNewTxsSocket({ type: 'txs_home', isLoading: isPlaceholderData });
 
@@ -47,6 +50,7 @@ const LatestTxs = () => {
             <LatestTxsItemMobile
               key={ tx.hash + (isPlaceholderData ? index : '') }
               tx={ tx }
+              timestampNs={ temporalTimestamps?.[tx.hash.toLowerCase()] }
               isLoading={ isPlaceholderData }
             />
           ))) }
@@ -57,6 +61,7 @@ const LatestTxs = () => {
               <LatestTxsItem
                 key={ tx.hash + (isPlaceholderData ? index : '') }
                 tx={ tx }
+                timestampNs={ temporalTimestamps?.[tx.hash.toLowerCase()] }
                 isLoading={ isPlaceholderData }
               />
             ))) }
