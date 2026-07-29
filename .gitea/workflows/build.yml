@@ -1,3 +1,4 @@
+# cspell:ignore GITEA Gitea gitea integrolabs roctinam
 # ROKO Blockscout frontend — Gitea Actions build (roctinam/devops#49 Part A)
 #
 # Builds the Next.js frontend image on build01 (host mode) and pushes it to the
@@ -31,6 +32,9 @@ on:
       - '.github/**'
       - 'docs/**'
       - '**.md'
+      # Token metadata/artwork is served from persistent explorer storage and
+      # published with the backend repo's deploy/publish-token-assets.sh.
+      - 'public/assets/token-icons/**'
   workflow_dispatch:
 
 permissions:
