@@ -9,6 +9,8 @@ import type { SearchResultBlock } from 'src/slices/search/types/client';
 
 import * as BlockEntity from 'src/slices/block/components/entity/BlockEntity';
 
+import BlockTimeWithTooltip from 'src/features/temporal/components/BlockTimeWithTooltip';
+
 import Time from 'src/shared/date-and-time/Time';
 import HashStringShortenDynamic from 'src/shared/texts/HashStringShortenDynamic';
 import highlightText from 'src/shared/texts/highlight-text';
@@ -61,7 +63,22 @@ const SearchBarSuggestBlock = ({ data, isMobile, searchTerm, chainInfo }: ItemsP
       <HashStringShortenDynamic hash={ data.block_hash } noTooltip/>
     </Text>
   ) : null;
-  const date = 'timestamp' in data && data.timestamp && !isFutureBlock ? <Time timestamp={ data.timestamp } color="text.secondary" format="lll_s"/> : undefined;
+  const date = (() => {
+    if (!('timestamp' in data) || !data.timestamp || isFutureBlock) {
+      return undefined;
+    }
+    if (chainInfo) {
+      return <Time timestamp={ data.timestamp } color="text.secondary" format="lll_s"/>;
+    }
+    return (
+      <BlockTimeWithTooltip
+        blockNumber={ Number(data.block_number) }
+        timestamp={ data.timestamp }
+        timeFormat="absolute"
+        color="text.secondary"
+      />
+    );
+  })();
   const futureBlockText = <Text color="text.secondary">Learn estimated time for this block to be created.</Text>;
   const blockType = 'block_type' in data ? data.block_type : undefined;
 

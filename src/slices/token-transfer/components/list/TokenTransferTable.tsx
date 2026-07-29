@@ -9,6 +9,8 @@ import * as SocketNewItemsNotice from 'src/api/socket/SocketNewItemsNotice';
 import { AddressHighlightProvider } from 'src/slices/address/contexts/address-highlight';
 
 import { useMultichainContext } from 'src/features/multichain/context';
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import useTemporalTxTimestamps from 'src/features/temporal/hooks/useTemporalTxTimestamps';
 
 import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 import useLazyRenderedList from 'src/shared/lists/useLazyRenderedList';
@@ -44,6 +46,7 @@ const TokenTransferTable = ({
 }: Props) => {
   const multichainContext = useMultichainContext();
   const chainData = multichainContext?.chain;
+  const { data: temporalTimestamps } = useTemporalTxTimestamps(data.map(item => item.transaction_hash));
 
   const { cutRef, renderedItemsNum } = useLazyRenderedList({
     list: data,
@@ -64,6 +67,7 @@ const TokenTransferTable = ({
               <TableColumnHeader width="200px">
                 Txn hash
                 <TimeFormatToggle/>
+                <TemporalPrecisionToggle/>
               </TableColumnHeader>
             ) }
             <TableColumnHeader width="60%">From/To</TableColumnHeader>
@@ -86,6 +90,7 @@ const TokenTransferTable = ({
               baseAddress={ baseAddress }
               showTxInfo={ showTxInfo }
               enableTimeIncrement={ enableTimeIncrement }
+              timestampNs={ item.transaction_hash ? temporalTimestamps?.[item.transaction_hash.toLowerCase()] : null }
               isLoading={ isLoading }
               chainData={ chainData }
             />

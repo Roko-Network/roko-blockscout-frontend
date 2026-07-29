@@ -5,6 +5,11 @@ import React from 'react';
 
 import type { TemporalWatermark } from 'src/features/temporal/types/api';
 
+import { useSettingsContext } from 'src/shell/top-bar/settings/context';
+
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import { formatNanoTimestamp } from 'src/features/temporal/utils/formatNanoTimestamp';
+
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 interface Props {
@@ -13,6 +18,7 @@ interface Props {
 }
 
 const TemporalWatermarkCard = ({ data, isLoading }: Props) => {
+  const settings = useSettingsContext();
   const isEstablished = Boolean(data && data.watermark_ns !== '0');
   let statusColor = 'orange.300';
   if (isLoading) {
@@ -50,17 +56,15 @@ const TemporalWatermarkCard = ({ data, isLoading }: Props) => {
       </Skeleton>
 
       <Skeleton loading={ isLoading } w="fit-content">
-        <chakra.span fontSize="sm" color="text.secondary">
-          { isEstablished && data?.watermark_datetime ? new Date(data.watermark_datetime).toLocaleString(undefined, {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZoneName: 'short',
-          }) : 'Awaiting first stamped transaction' }
-        </chakra.span>
+        <Flex alignItems="center" fontSize="sm" color="text.secondary">
+          <chakra.span>
+            { isEstablished && data?.watermark_ns ? formatNanoTimestamp(data.watermark_ns, {
+              includeFraction: settings?.showNanoseconds ?? true,
+              isLocalTime: settings?.isLocalTime,
+            }) : 'Awaiting first stamped transaction' }
+          </chakra.span>
+          { isEstablished && <TemporalPrecisionToggle ml={ 2 }/> }
+        </Flex>
       </Skeleton>
 
       <Flex mt={ 3 } gap={ 1 } alignItems="center">

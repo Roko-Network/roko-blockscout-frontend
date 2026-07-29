@@ -150,6 +150,24 @@ export async function fetchTemporalBlockMetadata(blockNumber: number): Promise<T
   };
 }
 
+interface BatchBlockMetadataResponse {
+  blocks: Record<string, BlockMetadataResponse & { error?: string }>;
+}
+
+export async function fetchTemporalBlockTimestamps(blockNumbers: Array<number>): Promise<Record<string, string | null>> {
+  const uniqueNumbers = Array.from(new Set(blockNumbers.filter(number => Number.isInteger(number) && number >= 0))).slice(0, 100);
+  if (uniqueNumbers.length === 0) {
+    return {};
+  }
+
+  const params = new URLSearchParams({ numbers: uniqueNumbers.join(',') });
+  const result = await apiFetch<BatchBlockMetadataResponse>(`/blocks/batch-metadata?${ params.toString() }`);
+
+  return Object.fromEntries(
+    Object.entries(result.blocks).map(([ number, data ]) => [ number, data.block_nano_timestamp ? String(data.block_nano_timestamp) : null ]),
+  );
+}
+
 // One entry per extrinsic/transaction in the block.
 // ethHash is null for Substrate-only (non-EVM) transactions such as inherents.
 // timestampNs is null for transactions that were not temporally stamped.

@@ -11,9 +11,10 @@ import type { ClusterChainConfig } from 'src/features/multichain/types/client';
 import AddressEntity from 'src/slices/address/components/entity/AddressEntity';
 import TxEntity from 'src/slices/tx/components/entity/TxEntity';
 
+import TransactionTimeWithTooltip from 'src/features/temporal/components/TransactionTimeWithTooltip';
+
 import type { DataType } from 'src/shared/data/RawInputData';
 import RawInputData from 'src/shared/data/RawInputData';
-import DetailedInfoTimestamp from 'src/shared/detailed-info/DetailedInfoTimestamp';
 
 import { Alert } from 'src/toolkit/chakra/alert';
 import { Link } from 'src/toolkit/chakra/link';
@@ -107,7 +108,12 @@ const LogItem = ({
         <>
           <RowHeader isLoading={ isLoading }>Timestamp</RowHeader>
           <GridItem>
-            <DetailedInfoTimestamp timestamp={ data.block_timestamp } isLoading={ isLoading }/>
+            <TransactionTimeWithTooltip
+              txHash={ data.transaction_hash }
+              timestamp={ data.block_timestamp }
+              isLoading={ isLoading }
+              timeFormat="absolute"
+            />
           </GridItem>
         </>
       ) : null }

@@ -5,6 +5,11 @@ import React from 'react';
 
 import type { TemporalConsensusTime } from 'src/features/temporal/types/api';
 
+import { useSettingsContext } from 'src/shell/top-bar/settings/context';
+
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import { formatNanoTimestamp } from 'src/features/temporal/utils/formatNanoTimestamp';
+
 import { Progress } from 'src/toolkit/chakra/progress';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
@@ -24,6 +29,7 @@ function getQualityColor(quality: number): string {
 }
 
 const TemporalConsensusCard = ({ data, isLoading }: Props) => {
+  const settings = useSettingsContext();
   const quality = data?.quality_percent ?? 0;
   const qualityColor = getQualityColor(quality);
 
@@ -49,17 +55,15 @@ const TemporalConsensusCard = ({ data, isLoading }: Props) => {
       </Skeleton>
 
       <Skeleton loading={ isLoading } w="fit-content" mb={ 4 }>
-        <chakra.span fontSize="sm" color="text.secondary">
-          { data?.consensus_time_datetime ? new Date(data.consensus_time_datetime).toLocaleString(undefined, {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZoneName: 'short',
-          }) : '-' }
-        </chakra.span>
+        <Flex alignItems="center" fontSize="sm" color="text.secondary">
+          <chakra.span>
+            { data?.consensus_time_ns ? formatNanoTimestamp(data.consensus_time_ns, {
+              includeFraction: settings?.showNanoseconds ?? true,
+              isLocalTime: settings?.isLocalTime,
+            }) : '-' }
+          </chakra.span>
+          { data?.consensus_time_ns && <TemporalPrecisionToggle ml={ 2 }/> }
+        </Flex>
       </Skeleton>
 
       <Skeleton loading={ isLoading } w="fit-content" mb={ 1 }>

@@ -13,6 +13,8 @@ import AddressFromToIcon from 'src/slices/address/components/from-to/AddressFrom
 import TokenEntity from 'src/slices/token/components/entity/TokenEntity';
 import TxEntity from 'src/slices/tx/components/entity/TxEntity';
 
+import NanoTimeWithTooltip from 'src/features/temporal/components/NanoTimeWithTooltip';
+
 import config from 'src/config';
 import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import AssetValue from 'src/shared/values/entity/AssetValue';
@@ -29,9 +31,10 @@ type Props = {
   column: ColumnsIds;
   isLoading?: boolean;
   chainConfig?: ClusterChainConfig['app_config'];
+  timestampNs?: string | null;
 };
 
-const ItemByColumn = ({ item, column, isLoading, chainConfig }: Props) => {
+const ItemByColumn = ({ item, column, isLoading, chainConfig, timestampNs }: Props) => {
   switch (column) {
     case 'tx_hash':
       return <TxEntity truncation="constant" hash={ item.hash } isLoading={ isLoading } noIcon fontWeight={ 700 }/>;
@@ -45,7 +48,11 @@ const ItemByColumn = ({ item, column, isLoading, chainConfig }: Props) => {
     case 'method':
       return item.method ? <Badge loading={ isLoading } truncated>{ item.method }</Badge> : null;
     case 'age':
-      return <TimeWithTooltip timestamp={ item.timestamp } isLoading={ isLoading } color="text.secondary" fontWeight={ 400 }/>;
+      return timestampNs ? (
+        <NanoTimeWithTooltip timestampNs={ timestampNs } color="text.secondary" fontWeight={ 400 }/>
+      ) : (
+        <TimeWithTooltip timestamp={ item.timestamp } isLoading={ isLoading } color="text.secondary" fontWeight={ 400 }/>
+      );
     case 'from':
       return item.from ? (
         <Flex w="100%">

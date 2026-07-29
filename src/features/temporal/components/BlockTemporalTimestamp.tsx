@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: LicenseRef-Blockscout
 
-import { Text, VStack, chakra } from '@chakra-ui/react';
+import { Flex, Text, VStack } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
+import { useSettingsContext } from 'src/shell/top-bar/settings/context';
+
 import { fetchTemporalBlockMetadata } from 'src/features/temporal/api/temporal-rpc';
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
 import { formatNanoTimestamp } from 'src/features/temporal/utils/formatNanoTimestamp';
 
 import * as DetailedInfo from 'src/shared/detailed-info/DetailedInfo';
@@ -16,6 +19,7 @@ interface Props {
 }
 
 const BlockTemporalTimestamp = ({ blockNumber }: Props) => {
+  const settings = useSettingsContext();
   const { data, isLoading, isError } = useQuery({
     queryKey: [ 'temporal_block_metadata', blockNumber ],
     queryFn: () => fetchTemporalBlockMetadata(blockNumber),
@@ -39,7 +43,10 @@ const BlockTemporalTimestamp = ({ blockNumber }: Props) => {
     );
   }
 
-  const formatted = data ? formatNanoTimestamp(data.block_nano_timestamp) : '';
+  const formatted = data ? formatNanoTimestamp(data.block_nano_timestamp, {
+    includeFraction: settings?.showNanoseconds ?? true,
+    isLocalTime: settings?.isLocalTime,
+  }) : '';
   const raw = data?.block_nano_timestamp ?? '';
   const validatorIndex = data?.miner_key_id;
 
@@ -54,14 +61,15 @@ const BlockTemporalTimestamp = ({ blockNumber }: Props) => {
       <DetailedInfo.ItemValue>
         <VStack alignItems="flex-start" gap={ 0 }>
           <Skeleton loading={ isLoading }>
-            <Text>
-              { formatted }
+            <Flex alignItems="center">
+              <Text>{ formatted }</Text>
+              <TemporalPrecisionToggle ml={ 2 }/>
               { validatorIndex !== null && validatorIndex !== undefined && (
-                <chakra.span ml={ 2 } color="text.secondary" fontSize="sm">
+                <Text ml={ 2 } color="text.secondary" fontSize="sm">
                   (Validator { validatorIndex })
-                </chakra.span>
+                </Text>
               ) }
-            </Text>
+            </Flex>
           </Skeleton>
           <Skeleton loading={ isLoading }>
             <Text fontSize="xs" color="text.secondary" fontFamily="mono">

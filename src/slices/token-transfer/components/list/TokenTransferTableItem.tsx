@@ -13,6 +13,8 @@ import TokenEntity from 'src/slices/token/components/entity/TokenEntity';
 import TxEntity from 'src/slices/tx/components/entity/TxEntity';
 import TxAdditionalInfo from 'src/slices/tx/components/TxAdditionalInfo';
 
+import NanoTimeWithTooltip from 'src/features/temporal/components/NanoTimeWithTooltip';
+
 import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import ChainIcon from 'src/shared/external-chains/ChainIcon';
 import AssetValue from 'src/shared/values/entity/AssetValue';
@@ -29,6 +31,7 @@ interface Props {
   baseAddress?: string;
   showTxInfo?: boolean;
   enableTimeIncrement?: boolean;
+  timestampNs?: string | null;
   isLoading?: boolean;
   chainData?: ClusterChainConfig;
 };
@@ -38,6 +41,7 @@ const TokenTransferTableItem = ({
   baseAddress,
   showTxInfo,
   enableTimeIncrement,
+  timestampNs,
   isLoading,
   chainData,
 }: Props) => {
@@ -108,15 +112,26 @@ const TokenTransferTableItem = ({
           ) : (
             <Skeleton loading={ isLoading } mt={ 1 }>-</Skeleton>
           ) }
-          <TimeWithTooltip
-            timestamp={ data.timestamp }
-            enableIncrement={ enableTimeIncrement }
-            isLoading={ isLoading }
-            color="text.secondary"
-            fontWeight="400"
-            mt="10px"
-            display="inline-block"
-          />
+          { timestampNs ? (
+            <NanoTimeWithTooltip
+              timestampNs={ timestampNs }
+              enableIncrement={ enableTimeIncrement }
+              color="text.secondary"
+              fontWeight="400"
+              mt="10px"
+              display="inline-block"
+            />
+          ) : (
+            <TimeWithTooltip
+              timestamp={ data.timestamp }
+              enableIncrement={ enableTimeIncrement }
+              isLoading={ isLoading }
+              color="text.secondary"
+              fontWeight="400"
+              mt="10px"
+              display="inline-block"
+            />
+          ) }
         </TableCell>
       ) }
       <TableCell>

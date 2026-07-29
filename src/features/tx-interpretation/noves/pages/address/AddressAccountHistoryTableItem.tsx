@@ -5,9 +5,9 @@ import React, { useMemo } from 'react';
 
 import type { NovesResponseData } from 'src/features/tx-interpretation/noves/types/api';
 
+import TransactionTimeWithTooltip from 'src/features/temporal/components/TransactionTimeWithTooltip';
 import NovesFromTo from 'src/features/tx-interpretation/noves/components/NovesFromTo';
 
-import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import SpriteIcon from 'src/sprite/SpriteIcon';
 
 import { Link } from 'src/toolkit/chakra/link';
@@ -19,6 +19,7 @@ type Props = {
   isPlaceholderData: boolean;
   tx: NovesResponseData;
   currentAddress: string;
+  timestampNs?: string | null;
 };
 
 const AddressAccountHistoryTableItem = (props: Props) => {
@@ -32,8 +33,10 @@ const AddressAccountHistoryTableItem = (props: Props) => {
   return (
     <TableRow>
       <TableCell px={ 3 } py="18px" fontSize="sm" >
-        <TimeWithTooltip
+        <TransactionTimeWithTooltip
+          txHash={ props.tx.rawTransactionData.transactionHash }
           timestamp={ props.tx.rawTransactionData.timestamp * SECOND }
+          timestampNs={ props.timestampNs }
           isLoading={ props.isPlaceholderData }
           color="text.secondary"
           borderRadius="sm"

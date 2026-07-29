@@ -10,7 +10,8 @@ import type { ClusterChainConfig } from 'src/features/multichain/types/client';
 import BlockEntity from 'src/slices/block/components/entity/BlockEntity';
 import TxEntity from 'src/slices/tx/components/entity/TxEntity';
 
-import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
+import BlockTimeWithTooltip from 'src/features/temporal/components/BlockTimeWithTooltip';
+
 import ListItemMobile from 'src/shared/lists/ListItemMobile';
 import NativeCoinValue from 'src/shared/values/entity/NativeCoinValue';
 import SimpleValue from 'src/shared/values/entity/SimpleValue';
@@ -24,9 +25,10 @@ interface Props {
   page: number;
   isLoading: boolean;
   chainData?: ClusterChainConfig;
+  timestampNs?: string | null;
 };
 
-const AddressCoinBalanceListItem = ({ data, page, isLoading, chainData }: Props) => {
+const AddressCoinBalanceListItem = ({ data, page, isLoading, chainData, timestampNs }: Props) => {
   const deltaBn = BigNumber(data.delta).div(WEI);
   const isPositiveDelta = deltaBn.gte(ZERO);
 
@@ -74,8 +76,10 @@ const AddressCoinBalanceListItem = ({ data, page, isLoading, chainData }: Props)
       ) }
       <Flex columnGap={ 2 } w="100%">
         <Skeleton loading={ isLoading } fontWeight={ 500 } flexShrink={ 0 }>Age</Skeleton>
-        <TimeWithTooltip
+        <BlockTimeWithTooltip
+          blockNumber={ data.block_number }
           timestamp={ data.block_timestamp }
+          timestampNs={ timestampNs }
           enableIncrement={ page === 1 }
           isLoading={ isLoading }
           color="text.secondary"

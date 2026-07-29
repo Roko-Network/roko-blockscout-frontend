@@ -14,6 +14,8 @@ import ActionBar, { ACTION_BAR_HEIGHT_DESKTOP } from 'src/shell/page/action-bar/
 import { currencyUnits } from 'src/slices/chain/units';
 
 import { useMultichainContext } from 'src/features/multichain/context';
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import useTemporalBlockTimestamps from 'src/features/temporal/hooks/useTemporalBlockTimestamps';
 
 import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 import DataList from 'src/shared/lists/DataList';
@@ -38,6 +40,7 @@ const AddressCoinBalanceHistory = ({ query, resetKey }: Props) => {
   const multichainContext = useMultichainContext();
   const chainData = multichainContext?.chain;
   const items = query.data?.items ?? [];
+  const { data: temporalTimestamps } = useTemporalBlockTimestamps(items.map(item => item.block_number));
   const { cutRef, renderedItemsNum } = useLazyRenderedList({
     list: items,
     isEnabled: !query.isPlaceholderData,
@@ -56,6 +59,7 @@ const AddressCoinBalanceHistory = ({ query, resetKey }: Props) => {
               <TableColumnHeader width="20%">
                 Timestamp
                 <TimeFormatToggle/>
+                <TemporalPrecisionToggle/>
               </TableColumnHeader>
               <TableColumnHeader width="20%" isNumeric pr={ 1 }>Balance { currencyUnits.ether }</TableColumnHeader>
               <TableColumnHeader width="20%" isNumeric>Delta</TableColumnHeader>
@@ -69,6 +73,7 @@ const AddressCoinBalanceHistory = ({ query, resetKey }: Props) => {
                 page={ query.pagination.page }
                 isLoading={ query.isPlaceholderData }
                 chainData={ chainData }
+                timestampNs={ temporalTimestamps?.[String(item.block_number)] ?? null }
               />
             )) }
           </TableBody>

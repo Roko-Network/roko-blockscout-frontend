@@ -9,6 +9,8 @@ import type * as multichain from 'src/features/multichain/types/client';
 
 import * as TxEntity from 'src/slices/tx/components/entity/TxEntity';
 
+import TransactionTimeWithTooltip from 'src/features/temporal/components/TransactionTimeWithTooltip';
+
 import Time from 'src/shared/date-and-time/Time';
 import HashStringShortenDynamic from 'src/shared/texts/HashStringShortenDynamic';
 
@@ -19,7 +21,21 @@ const SearchBarSuggestTx = ({ data, isMobile, chainInfo }: ItemsProps<schemas['S
       <HashStringShortenDynamic hash={ data.transaction_hash } noTooltip/>
     </chakra.mark>
   );
-  const date = 'timestamp' in data && data.timestamp ? <Time timestamp={ data.timestamp } format="lll_s"/> : undefined;
+  const date = (() => {
+    if (!('timestamp' in data) || !data.timestamp) {
+      return undefined;
+    }
+    if (chainInfo) {
+      return <Time timestamp={ data.timestamp } format="lll_s"/>;
+    }
+    return (
+      <TransactionTimeWithTooltip
+        txHash={ data.transaction_hash }
+        timestamp={ data.timestamp }
+        timeFormat="absolute"
+      />
+    );
+  })();
 
   if (isMobile) {
     return (

@@ -11,6 +11,8 @@ import AddressFromTo from 'src/slices/address/components/from-to/AddressFromTo';
 import NftEntity from 'src/slices/token/components/entity/NftEntity';
 import TxEntity from 'src/slices/tx/components/entity/TxEntity';
 
+import NanoTimeWithTooltip from 'src/features/temporal/components/NanoTimeWithTooltip';
+
 import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import ListItemMobile from 'src/shared/lists/ListItemMobile';
 import AssetValue from 'src/shared/values/entity/AssetValue';
@@ -26,6 +28,7 @@ interface Props {
   instance?: schemas['TokenInstance'];
   isLoading?: boolean;
   chainData?: ClusterChainConfig;
+  timestampNs?: string | null;
 }
 
 const TokenTransferListItem = ({
@@ -34,6 +37,7 @@ const TokenTransferListItem = ({
   isLoading,
   instance,
   chainData,
+  timestampNs,
 }: Props) => {
   return (
     <ListItemMobile rowGap={ 3 }>
@@ -47,15 +51,26 @@ const TokenTransferListItem = ({
             chain={ chainData }
           />
         ) }
-        <TimeWithTooltip
-          timestamp={ data.timestamp }
-          enableIncrement
-          isLoading={ isLoading }
-          color="text.secondary"
-          fontWeight="400"
-          fontSize="sm"
-          display="inline-block"
-        />
+        { timestampNs ? (
+          <NanoTimeWithTooltip
+            timestampNs={ timestampNs }
+            enableIncrement
+            color="text.secondary"
+            fontWeight="400"
+            fontSize="sm"
+            display="inline-block"
+          />
+        ) : (
+          <TimeWithTooltip
+            timestamp={ data.timestamp }
+            enableIncrement
+            isLoading={ isLoading }
+            color="text.secondary"
+            fontWeight="400"
+            fontSize="sm"
+            display="inline-block"
+          />
+        ) }
       </Flex>
       { data.method && <Badge loading={ isLoading }>{ data.method }</Badge> }
       <AddressFromTo

@@ -23,9 +23,10 @@ type Props = {
   item: schemas['TokenTransfer'];
   isLoading?: boolean;
   chainData?: ClusterChainConfig;
+  timestampNs?: string | null;
 };
 
-const TokenTransferTableItem = ({ item, isLoading, chainData }: Props) => {
+const TokenTransferTableItem = ({ item, isLoading, chainData, timestampNs }: Props) => {
   const isConfidential = item.token ? isConfidentialTokenType(item.token.type) : false;
 
   const renderValue = () => {
@@ -80,6 +81,7 @@ const TokenTransferTableItem = ({ item, isLoading, chainData }: Props) => {
         <BlockWithTimestamp
           number={ item.block_number }
           timestamp={ item.timestamp }
+          timestampNs={ timestampNs }
           txHash={ item.transaction_hash }
           isLoading={ isLoading }
           enableTimeIncrement

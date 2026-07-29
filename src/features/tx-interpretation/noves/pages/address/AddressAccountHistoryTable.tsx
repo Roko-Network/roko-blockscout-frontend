@@ -4,6 +4,10 @@ import React from 'react';
 
 import type { NovesResponseData } from 'src/features/tx-interpretation/noves/types/api';
 
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import useTemporalTxTimestamps from 'src/features/temporal/hooks/useTemporalTxTimestamps';
+
+import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 import useLazyRenderedList from 'src/shared/lists/useLazyRenderedList';
 
 import { TableBody, TableColumnHeader, TableHeaderSticky, TableRoot, TableRow } from 'src/toolkit/chakra/table';
@@ -19,6 +23,7 @@ interface Props {
 
 const AddressAccountHistoryTable = ({ items, currentAddress, isPlaceholderData, resetKey }: Props) => {
   const { cutRef, renderedItemsNum } = useLazyRenderedList({ list: items, isEnabled: !isPlaceholderData, resetKey });
+  const { data: temporalTimestamps } = useTemporalTxTimestamps(items.map(item => item.rawTransactionData.transactionHash));
 
   return (
     <TableRoot minW="900px">
@@ -26,6 +31,8 @@ const AddressAccountHistoryTable = ({ items, currentAddress, isPlaceholderData, 
         <TableRow>
           <TableColumnHeader width="120px">
             Age
+            <TimeFormatToggle/>
+            <TemporalPrecisionToggle/>
           </TableColumnHeader>
           <TableColumnHeader>
             Action
@@ -42,6 +49,7 @@ const AddressAccountHistoryTable = ({ items, currentAddress, isPlaceholderData, 
             tx={ item }
             currentAddress={ currentAddress }
             isPlaceholderData={ Boolean(isPlaceholderData) }
+            timestampNs={ temporalTimestamps?.[item.rawTransactionData.transactionHash.toLowerCase()] }
           />
         )) }
         <TableRow ref={ cutRef }/>

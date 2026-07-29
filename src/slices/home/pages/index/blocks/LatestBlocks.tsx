@@ -12,6 +12,8 @@ import useStatsQuery from 'src/slices/chain/stats/useStatsQuery';
 import { useHomeDataContext } from 'src/slices/home/contexts/home-data-context';
 import { useHomeRpcDataContext } from 'src/slices/home/contexts/rpc-data-context';
 
+import useTemporalBlockTimestamps from 'src/features/temporal/hooks/useTemporalBlockTimestamps';
+
 import config from 'src/config';
 import ApiDegradationRpcIcon from 'src/shared/api-degradation/ApiDegradationRpcIcon';
 import useIsMobile from 'src/shared/hooks/useIsMobile';
@@ -41,6 +43,7 @@ const LatestBlocks = () => {
     idFn: (block) => block.height,
     enabled: Boolean(blocksQuery && !blocksQuery.isPlaceholderData),
   });
+  const { data: temporalTimestamps } = useTemporalBlockTimestamps(blocksQuery?.data?.map(block => block.height) ?? []);
 
   const statsQueryResult = useStatsQuery();
 
@@ -63,6 +66,7 @@ const LatestBlocks = () => {
                 block={ block }
                 isLoading={ blocksQuery.isPlaceholderData }
                 animation={ initialList.getAnimationProp(block) }
+                timestampNs={ temporalTimestamps?.[String(block.height)] ?? null }
               />
             ))) }
           </VStack>

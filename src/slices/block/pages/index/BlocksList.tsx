@@ -8,6 +8,8 @@ import type { ClusterChainConfig } from 'src/features/multichain/types/client';
 
 import BlocksListItem from 'src/slices/block/pages/index/BlocksListItem';
 
+import useTemporalBlockTimestamps from 'src/features/temporal/hooks/useTemporalBlockTimestamps';
+
 import useInitialList from 'src/shared/lists/useInitialList';
 import useLazyRenderedList from 'src/shared/lists/useLazyRenderedList';
 
@@ -27,6 +29,7 @@ const BlocksList = ({ data, isLoading, page, chainData, resetKey, substrateCount
     enabled: !isLoading,
   });
   const { cutRef, renderedItemsNum } = useLazyRenderedList({ list: data, isEnabled: !isLoading, resetKey });
+  const { data: temporalTimestamps } = useTemporalBlockTimestamps(data.map(item => item.height));
 
   return (
     <>
@@ -40,6 +43,7 @@ const BlocksList = ({ data, isLoading, page, chainData, resetKey, substrateCount
             animation={ initialList.getAnimationProp(item) }
             chainData={ chainData }
             substrateCount={ substrateCounts?.[String(item.height)] }
+            timestampNs={ temporalTimestamps?.[String(item.height)] ?? null }
           />
         )) }
       </Box>

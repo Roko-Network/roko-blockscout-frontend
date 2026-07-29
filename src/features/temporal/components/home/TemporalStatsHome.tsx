@@ -4,12 +4,15 @@ import { Box, Flex, chakra } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
+import { useSettingsContext } from 'src/shell/top-bar/settings/context';
+
 import {
   fetchTemporalConsensusTime,
   fetchTemporalQueueStats,
   fetchTemporalWatermark,
 } from 'src/features/temporal/api/temporal-rpc';
 import { TEMPORAL_CONSENSUS_TIME, TEMPORAL_QUEUE_STATS, TEMPORAL_WATERMARK } from 'src/features/temporal/stubs';
+import { formatNanoTimestamp } from 'src/features/temporal/utils/formatNanoTimestamp';
 
 import { Link } from 'src/toolkit/chakra/link';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
@@ -29,30 +32,6 @@ function qualityDotColor(quality: number, isLoading: boolean): string {
     return 'yellow.400';
   }
   return 'red.400';
-}
-
-// Format a ISO 8601 datetime string as "Mar 24, 2026 18:45:32.123"
-function formatWatermark(datetime: string | undefined): string {
-  if (!datetime) {
-    return '\u2014';
-  }
-  const date = new Date(datetime);
-  if (isNaN(date.getTime())) {
-    return '\u2014';
-  }
-  const datePart = date.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-  const timePart = date.toLocaleTimeString(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  });
-  const ms = String(date.getMilliseconds()).padStart(3, '0');
-  return `${ datePart } ${ timePart }.${ ms }`;
 }
 
 interface MetricProps {
@@ -92,6 +71,7 @@ const Metric = ({ label, value, isLoading }: MetricProps) => (
 );
 
 const TemporalStatsHome = () => {
+  const settings = useSettingsContext();
   const watermarkQuery = useQuery({
     queryKey: [ 'temporal_watermark_home' ],
     queryFn: fetchTemporalWatermark,
@@ -126,7 +106,10 @@ const TemporalStatsHome = () => {
     if (watermarkQuery.data?.watermark_ns === '0') {
       return 'Not established';
     }
-    return formatWatermark(watermarkQuery.data?.watermark_datetime);
+    return watermarkQuery.data?.watermark_ns ? formatNanoTimestamp(watermarkQuery.data.watermark_ns, {
+      includeFraction: settings?.showNanoseconds ?? true,
+      isLocalTime: settings?.isLocalTime,
+    }) : '\u2014';
   })();
 
   // Quality: percentage with colored dot

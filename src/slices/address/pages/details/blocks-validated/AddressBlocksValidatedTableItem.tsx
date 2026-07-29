@@ -10,8 +10,9 @@ import BlockEntity from 'src/slices/block/components/entity/BlockEntity';
 import getBlockTotalReward from 'src/slices/block/utils/get-block-total-reward';
 import GasUsed from 'src/slices/gas/components/GasUsed';
 
+import BlockTimeWithTooltip from 'src/features/temporal/components/BlockTimeWithTooltip';
+
 import config from 'src/config';
-import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import SimpleValue from 'src/shared/values/entity/SimpleValue';
 
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
@@ -21,9 +22,10 @@ interface Props {
   data: schemas['Block'];
   page: number;
   isLoading: boolean;
+  timestampNs?: string | null;
 }
 
-const AddressBlocksValidatedTableItem = ({ data, page, isLoading }: Props) => {
+const AddressBlocksValidatedTableItem = ({ data, page, isLoading, timestampNs }: Props) => {
   const totalReward = getBlockTotalReward(data);
 
   return (
@@ -38,8 +40,10 @@ const AddressBlocksValidatedTableItem = ({ data, page, isLoading }: Props) => {
         />
       </TableCell>
       <TableCell>
-        <TimeWithTooltip
+        <BlockTimeWithTooltip
+          blockNumber={ data.height }
           timestamp={ data.timestamp }
+          timestampNs={ timestampNs }
           enableIncrement={ page === 1 }
           isLoading={ isLoading }
           color="text.secondary"

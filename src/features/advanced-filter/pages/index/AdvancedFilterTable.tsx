@@ -13,6 +13,8 @@ import type { schemas } from '@blockscout/api-types';
 import { AddressHighlightProvider } from 'src/slices/address/contexts/address-highlight';
 
 import { useMultichainContext } from 'src/features/multichain/context';
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import useTemporalTxTimestamps from 'src/features/temporal/hooks/useTemporalTxTimestamps';
 
 import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 import ChainIcon from 'src/shared/external-chains/ChainIcon';
@@ -44,6 +46,7 @@ const AdvancedFilterTable = ({
 }: Props) => {
   const multichainContext = useMultichainContext();
   const { cutRef, renderedItemsNum } = useLazyRenderedList({ list: items, isEnabled: !isLoading, resetKey });
+  const { data: temporalTimestamps } = useTemporalTxTimestamps(items.map(item => item.hash));
 
   return (
     <AddressHighlightProvider>
@@ -75,7 +78,12 @@ const AdvancedFilterTable = ({
                       searchParams={ searchParams }
                       isLoading={ isLoading }
                     />
-                    { column.id === 'age' && <TimeFormatToggle ml={ 1 } verticalAlign="middle"/> }
+                    { column.id === 'age' && (
+                      <>
+                        <TimeFormatToggle ml={ 1 } verticalAlign="middle"/>
+                        <TemporalPrecisionToggle ml={ 1 } verticalAlign="middle"/>
+                      </>
+                    ) }
                   </TableColumnHeader>
                 );
               }) }
@@ -117,6 +125,7 @@ const AdvancedFilterTable = ({
                         column={ column.id }
                         isLoading={ isLoading }
                         chainConfig={ multichainContext?.chain?.app_config }
+                        timestampNs={ temporalTimestamps?.[item.hash.toLowerCase()] }
                       />
                     </TableCell>
                   );

@@ -11,8 +11,9 @@ import getBlockTotalReward from 'src/slices/block/utils/get-block-total-reward';
 import { currencyUnits } from 'src/slices/chain/units';
 import GasUsed from 'src/slices/gas/components/GasUsed';
 
+import BlockTimeWithTooltip from 'src/features/temporal/components/BlockTimeWithTooltip';
+
 import config from 'src/config';
-import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import ListItemMobile from 'src/shared/lists/ListItemMobile';
 import SimpleValue from 'src/shared/values/entity/SimpleValue';
 
@@ -21,6 +22,7 @@ import { Skeleton } from 'src/toolkit/chakra/skeleton';
 type Props = schemas['Block'] & {
   page: number;
   isLoading: boolean;
+  timestampNs?: string | null;
 };
 
 const AddressBlocksValidatedListItem = (props: Props) => {
@@ -35,8 +37,10 @@ const AddressBlocksValidatedListItem = (props: Props) => {
           noIcon
           fontWeight={ 700 }
         />
-        <TimeWithTooltip
+        <BlockTimeWithTooltip
+          blockNumber={ props.height }
           timestamp={ props.timestamp }
+          timestampNs={ props.timestampNs }
           enableIncrement={ props.page === 1 }
           isLoading={ props.isLoading }
           color="text.secondary"

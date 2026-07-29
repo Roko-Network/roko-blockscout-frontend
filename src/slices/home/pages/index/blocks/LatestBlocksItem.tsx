@@ -12,8 +12,9 @@ import getBlockTotalReward from 'src/slices/block/utils/get-block-total-reward';
 import { currencyUnits } from 'src/slices/chain/units';
 import getChainValidatorTitle from 'src/slices/chain/verification-type/utils/get-chain-validator-title';
 
+import BlockTimeWithTooltip from 'src/features/temporal/components/BlockTimeWithTooltip';
+
 import config from 'src/config';
-import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import SimpleValue from 'src/shared/values/entity/SimpleValue';
 import SpriteIcon from 'src/sprite/SpriteIcon';
 
@@ -25,9 +26,10 @@ type Props = {
   block: schemas['Block'];
   isLoading?: boolean;
   animation?: string;
+  timestampNs?: string | null;
 };
 
-const LatestBlocksItem = ({ block, isLoading, animation }: Props) => {
+const LatestBlocksItem = ({ block, isLoading, animation, timestampNs }: Props) => {
   const totalReward = getBlockTotalReward(block);
   return (
     <Box
@@ -51,8 +53,10 @@ const LatestBlocksItem = ({ block, isLoading, animation }: Props) => {
             <SpriteIcon name="checkered_flag" boxSize={ 5 } p="1px" ml={ 2 } isLoading={ isLoading } flexShrink={ 0 }/>
           </Tooltip>
         ) }
-        <TimeWithTooltip
+        <BlockTimeWithTooltip
+          blockNumber={ block.height }
           timestamp={ block.timestamp }
+          timestampNs={ timestampNs }
           enableIncrement={ !isLoading }
           timeFormat="relative"
           isLoading={ isLoading }

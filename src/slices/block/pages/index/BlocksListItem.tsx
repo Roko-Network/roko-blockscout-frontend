@@ -16,8 +16,9 @@ import { currencyUnits } from 'src/slices/chain/units';
 import getChainValidatorTitle from 'src/slices/chain/verification-type/utils/get-chain-validator-title';
 import GasUsed from 'src/slices/gas/components/GasUsed';
 
+import BlockTimeWithTooltip from 'src/features/temporal/components/BlockTimeWithTooltip';
+
 import config from 'src/config';
-import TimeWithTooltip from 'src/shared/date-and-time/TimeWithTooltip';
 import ListItemMobile from 'src/shared/lists/ListItemMobile';
 import NativeCoinValue from 'src/shared/values/entity/NativeCoinValue';
 import SimpleValue from 'src/shared/values/entity/SimpleValue';
@@ -35,11 +36,12 @@ interface Props {
   animation?: string;
   chainData?: ClusterChainConfig;
   substrateCount?: number;
+  timestampNs?: string | null;
 }
 
 const isRollup = config.features.rollup.isEnabled;
 
-const BlocksListItem = ({ data, isLoading, enableTimeIncrement, animation, chainData, substrateCount }: Props) => {
+const BlocksListItem = ({ data, isLoading, enableTimeIncrement, animation, chainData, substrateCount, timestampNs }: Props) => {
   const totalReward = getBlockTotalReward(data);
   const burntFees = BigNumber(data.burnt_fees || 0);
   const txFees = BigNumber(data.transaction_fees || 0);
@@ -62,8 +64,10 @@ const BlocksListItem = ({ data, isLoading, enableTimeIncrement, animation, chain
             </Tooltip>
           ) }
         </Flex>
-        <TimeWithTooltip
+        <BlockTimeWithTooltip
+          blockNumber={ data.height }
           timestamp={ data.timestamp }
+          timestampNs={ timestampNs }
           enableIncrement={ enableTimeIncrement }
           isLoading={ isLoading }
           color="text.secondary"

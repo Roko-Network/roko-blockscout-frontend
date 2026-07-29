@@ -4,7 +4,10 @@ import { Flex, Text, VStack } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
+import { useSettingsContext } from 'src/shell/top-bar/settings/context';
+
 import { fetchTemporalConsensusTime, fetchTemporalTxTimestamp } from 'src/features/temporal/api/temporal-rpc';
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
 import { formatNanoTimestamp } from 'src/features/temporal/utils/formatNanoTimestamp';
 
 import * as DetailedInfo from 'src/shared/detailed-info/DetailedInfo';
@@ -30,6 +33,7 @@ function formatWaitTime(waitNs: string): string {
 }
 
 const TxTemporalTimestamp = ({ txHash, blockTimestamp }: Props) => {
+  const settings = useSettingsContext();
   const { data, isLoading, isError } = useQuery({
     queryKey: [ 'temporal_tx_timestamp', txHash ],
     queryFn: () => fetchTemporalTxTimestamp(txHash),
@@ -48,7 +52,10 @@ const TxTemporalTimestamp = ({ txHash, blockTimestamp }: Props) => {
     return null;
   }
 
-  const formatted = data ? formatNanoTimestamp(data.timestamp_ns) : '';
+  const formatted = data ? formatNanoTimestamp(data.timestamp_ns, {
+    includeFraction: settings?.showNanoseconds ?? true,
+    isLocalTime: settings?.isLocalTime,
+  }) : '';
   const raw = data?.timestamp_ns ?? '';
 
   // Compute wait time: difference between timestamping and block inclusion
@@ -81,7 +88,10 @@ const TxTemporalTimestamp = ({ txHash, blockTimestamp }: Props) => {
       <DetailedInfo.ItemValue>
         <VStack alignItems="flex-start" gap={ 0 }>
           <Skeleton loading={ isLoading }>
-            <Text>{ formatted }</Text>
+            <Flex alignItems="center">
+              <Text>{ formatted }</Text>
+              <TemporalPrecisionToggle ml={ 2 }/>
+            </Flex>
           </Skeleton>
           <Skeleton loading={ isLoading }>
             <Flex gap={ 2 } alignItems="center">

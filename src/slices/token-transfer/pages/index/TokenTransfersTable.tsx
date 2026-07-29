@@ -8,6 +8,7 @@ import type { ClusterChainConfig } from 'src/features/multichain/types/client';
 import { AddressHighlightProvider } from 'src/slices/address/contexts/address-highlight';
 
 import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import useTemporalTxTimestamps from 'src/features/temporal/hooks/useTemporalTxTimestamps';
 
 import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 import useLazyRenderedList from 'src/shared/lists/useLazyRenderedList';
@@ -26,6 +27,7 @@ interface Props {
 
 const TokenTransferTable = ({ items, top, isLoading, chainData, resetKey }: Props) => {
   const { cutRef, renderedItemsNum } = useLazyRenderedList({ list: items, isEnabled: !isLoading, resetKey });
+  const { data: temporalTimestamps } = useTemporalTxTimestamps(items?.map(item => item.transaction_hash) ?? []);
 
   return (
     <AddressHighlightProvider>
@@ -52,6 +54,7 @@ const TokenTransferTable = ({ items, top, isLoading, chainData, resetKey }: Prop
               item={ item }
               isLoading={ isLoading }
               chainData={ chainData }
+              timestampNs={ item.transaction_hash ? temporalTimestamps?.[item.transaction_hash.toLowerCase()] : null }
             />
           )) }
         </TableBody>

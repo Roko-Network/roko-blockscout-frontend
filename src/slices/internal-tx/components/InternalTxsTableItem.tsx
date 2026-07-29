@@ -24,6 +24,7 @@ interface Props {
   isLoading?: boolean;
   showBlockInfo?: boolean;
   chainData?: ClusterChainConfig;
+  timestampNs?: string | null;
 }
 
 const InternalTxsTableItem = ({
@@ -32,6 +33,7 @@ const InternalTxsTableItem = ({
   isLoading,
   showBlockInfo = true,
   chainData,
+  timestampNs,
 }: Props) => {
   const typeTitle = TX_INTERNALS_ITEMS.find(({ id }) => id === data.type)?.title;
   const toData = data.to ? data.to : data.created_contract;
@@ -68,6 +70,7 @@ const InternalTxsTableItem = ({
             isLoading={ isLoading }
             number={ data.block_number }
             timestamp={ data.timestamp }
+            timestampNs={ timestampNs }
             txHash={ data.transaction_hash }
             enableTimeIncrement
           />

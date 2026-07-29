@@ -23,6 +23,8 @@ import * as TacOperationEntity from 'src/features/chain-variants/tac/components/
 import TacOperationStatus from 'src/features/chain-variants/tac/components/TacOperationStatus';
 import * as BlobEntity from 'src/features/data-availability/components/entity/BlobEntity';
 import * as EnsEntity from 'src/features/name-services/domains/components/EnsEntity';
+import BlockTimeWithTooltip from 'src/features/temporal/components/BlockTimeWithTooltip';
+import TransactionTimeWithTooltip from 'src/features/temporal/components/TransactionTimeWithTooltip';
 import * as UserOpEntity from 'src/features/user-ops/components/entity/UserOpEntity';
 
 import * as mixpanel from 'src/services/mixpanel';
@@ -295,7 +297,11 @@ const SearchResultTableItem = ({ data, searchTerm, isLoading, addressFormat }: P
             { !isFutureBlock && data.timestamp && (
               <TableCell fontSize="sm" verticalAlign="middle" isNumeric>
                 <Skeleton loading={ isLoading } color="text.secondary">
-                  <Time timestamp={ data.timestamp } format="lll_s"/>
+                  <BlockTimeWithTooltip
+                    blockNumber={ Number(data.block_number) }
+                    timestamp={ data.timestamp }
+                    timeFormat="absolute"
+                  />
                 </Skeleton>
               </TableCell>
             ) }
@@ -324,7 +330,14 @@ const SearchResultTableItem = ({ data, searchTerm, isLoading, addressFormat }: P
               </TxEntity.Container>
             </TableCell>
             <TableCell fontSize="sm" verticalAlign="middle" isNumeric>
-              { data.timestamp && <Time timestamp={ data.timestamp } color="text.secondary" format="lll_s"/> }
+              { data.timestamp && (
+                <TransactionTimeWithTooltip
+                  txHash={ data.transaction_hash }
+                  timestamp={ data.timestamp }
+                  timeFormat="absolute"
+                  color="text.secondary"
+                />
+              ) }
             </TableCell>
           </>
         );

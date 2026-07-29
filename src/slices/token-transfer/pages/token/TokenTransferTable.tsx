@@ -11,6 +11,8 @@ import { AddressHighlightProvider } from 'src/slices/address/contexts/address-hi
 import TokenTransferTableItem from 'src/slices/token-transfer/pages/token/TokenTransferTableItem';
 
 import { useMultichainContext } from 'src/features/multichain/context';
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import useTemporalTxTimestamps from 'src/features/temporal/hooks/useTemporalTxTimestamps';
 
 import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 import useLazyRenderedList from 'src/shared/lists/useLazyRenderedList';
@@ -35,6 +37,7 @@ const TokenTransferTable = ({ data, top, showSocketInfo, showSocketErrorAlert, s
   const multichainContext = useMultichainContext();
   const chainData = multichainContext?.chain;
   const tokenType = token.type;
+  const { data: temporalTimestamps } = useTemporalTxTimestamps(data.map(item => item.transaction_hash));
   const { cutRef, renderedItemsNum } = useLazyRenderedList({ list: data, isEnabled: !isLoading, resetKey });
 
   return (
@@ -46,6 +49,7 @@ const TokenTransferTable = ({ data, top, showSocketInfo, showSocketErrorAlert, s
             <TableColumnHeader width="280px">
               Txn hash
               <TimeFormatToggle/>
+              <TemporalPrecisionToggle/>
             </TableColumnHeader>
             <TableColumnHeader width="200px">Method</TableColumnHeader>
             <TableColumnHeader width={{ lg: '224px', xl: '380px' }}>From/To</TableColumnHeader>
@@ -79,6 +83,7 @@ const TokenTransferTable = ({ data, top, showSocketInfo, showSocketErrorAlert, s
               instance={ instance }
               isLoading={ isLoading }
               chainData={ chainData }
+              timestampNs={ item.transaction_hash ? temporalTimestamps?.[item.transaction_hash.toLowerCase()] : null }
             />
           )) }
         </TableBody>

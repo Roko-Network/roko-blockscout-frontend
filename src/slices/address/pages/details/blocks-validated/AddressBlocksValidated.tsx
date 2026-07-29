@@ -17,6 +17,9 @@ import ActionBar, { ACTION_BAR_HEIGHT_DESKTOP } from 'src/shell/page/action-bar/
 import { BLOCK_ITEM } from 'src/slices/block/stubs/list';
 import { currencyUnits } from 'src/slices/chain/units';
 
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import useTemporalBlockTimestamps from 'src/features/temporal/hooks/useTemporalBlockTimestamps';
+
 import config from 'src/config';
 import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 import useIsMounted from 'src/shared/hooks/useIsMounted';
@@ -108,6 +111,7 @@ const AddressBlocksValidated = ({ shouldRender = true, isQueryEnabled = true }: 
     isEnabled: !query.isPlaceholderData,
     resetKey: query.queryHash,
   });
+  const { data: temporalTimestamps } = useTemporalBlockTimestamps(query.data?.items.map(item => item.height) ?? []);
 
   if (!isMounted || !shouldRender) {
     return null;
@@ -122,6 +126,7 @@ const AddressBlocksValidated = ({ shouldRender = true, isQueryEnabled = true }: 
             <TableColumnHeader>
               Timestamp
               <TimeFormatToggle/>
+              <TemporalPrecisionToggle/>
             </TableColumnHeader>
             <TableColumnHeader>Txn</TableColumnHeader>
             <TableColumnHeader>Gas used</TableColumnHeader>
@@ -142,6 +147,7 @@ const AddressBlocksValidated = ({ shouldRender = true, isQueryEnabled = true }: 
               data={ item }
               page={ query.pagination.page }
               isLoading={ query.isPlaceholderData }
+              timestampNs={ temporalTimestamps?.[String(item.height)] ?? null }
             />
           )) }
         </TableBody>

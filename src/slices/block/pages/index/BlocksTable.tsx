@@ -13,6 +13,9 @@ import BlocksTableItem from 'src/slices/block/pages/index/BlocksTableItem';
 import { currencyUnits } from 'src/slices/chain/units';
 import getChainValidatorTitle from 'src/slices/chain/verification-type/utils/get-chain-validator-title';
 
+import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import useTemporalBlockTimestamps from 'src/features/temporal/hooks/useTemporalBlockTimestamps';
+
 import config from 'src/config';
 import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 import useInitialList from 'src/shared/lists/useInitialList';
@@ -58,6 +61,7 @@ const BlocksTable = ({
     enabled: !isLoading,
   });
   const { cutRef, renderedItemsNum } = useLazyRenderedList({ list: data, isEnabled: !isLoading, resetKey });
+  const { data: temporalTimestamps } = useTemporalBlockTimestamps(data.map(item => item.height));
 
   const widthBase =
     (!config.slices.block.hiddenFields?.miner ? VALIDATOR_COL_WEIGHT : 0) +
@@ -74,6 +78,7 @@ const BlocksTable = ({
             <TableColumnHeader width="180px">
               Block
               <TimeFormatToggle/>
+              <TemporalPrecisionToggle/>
             </TableColumnHeader>
             <TableColumnHeader width="120px">Size, bytes</TableColumnHeader>
             { !config.slices.block.hiddenFields?.miner && (
@@ -110,6 +115,7 @@ const BlocksTable = ({
               animation={ initialList.getAnimationProp(item) }
               chainData={ chainData }
               substrateCount={ substrateCounts?.[String(item.height)] }
+              timestampNs={ temporalTimestamps?.[String(item.height)] ?? null }
             />
           )) }
         </TableBody>

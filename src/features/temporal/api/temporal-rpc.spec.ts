@@ -41,6 +41,12 @@ describe('temporal API URL paths', () => {
     expect(path).toBe('/api/v2/temporal/blocks/42/metadata');
   });
 
+  test('batch block metadata path uses the browser-safe GET endpoint', () => {
+    const params = new URLSearchParams({ numbers: [ 42, 43 ].join(',') });
+    const path = `/api/v2/temporal/blocks/batch-metadata?${ params.toString() }`;
+    expect(path).toBe('/api/v2/temporal/blocks/batch-metadata?numbers=42%2C43');
+  });
+
   test('block transaction timestamps path includes the block number and "timestamps"', () => {
     const blockNumber = 99;
     const path = `/api/v2/temporal/blocks/${ blockNumber }/timestamps`;

@@ -8,6 +8,7 @@ import type { schemas } from '@blockscout/api-types';
 import TokenTransferListItem from 'src/slices/token-transfer/pages/token/TokenTransferListItem';
 
 import { useMultichainContext } from 'src/features/multichain/context';
+import useTemporalTxTimestamps from 'src/features/temporal/hooks/useTemporalTxTimestamps';
 
 import useLazyRenderedList from 'src/shared/lists/useLazyRenderedList';
 
@@ -22,6 +23,7 @@ interface Props {
 const TokenTransferList = ({ data, tokenId, instance, isLoading, resetKey }: Props) => {
   const multichainContext = useMultichainContext();
   const chainData = multichainContext?.chain;
+  const { data: temporalTimestamps } = useTemporalTxTimestamps(data.map(item => item.transaction_hash));
   const { cutRef, renderedItemsNum } = useLazyRenderedList({ list: data, isEnabled: !isLoading, resetKey });
 
   return (
@@ -35,6 +37,7 @@ const TokenTransferList = ({ data, tokenId, instance, isLoading, resetKey }: Pro
             instance={ instance }
             isLoading={ isLoading }
             chainData={ chainData }
+            timestampNs={ item.transaction_hash ? temporalTimestamps?.[item.transaction_hash.toLowerCase()] : null }
           />
         )) }
       </Box>

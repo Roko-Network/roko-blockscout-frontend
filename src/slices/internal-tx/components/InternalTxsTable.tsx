@@ -9,6 +9,7 @@ import { currencyUnits } from 'src/slices/chain/units';
 
 import { useMultichainContext } from 'src/features/multichain/context';
 import TemporalPrecisionToggle from 'src/features/temporal/components/TemporalPrecisionToggle';
+import useTemporalTxTimestamps from 'src/features/temporal/hooks/useTemporalTxTimestamps';
 
 import TimeFormatToggle from 'src/shared/date-and-time/TimeFormatToggle';
 import useLazyRenderedList from 'src/shared/lists/useLazyRenderedList';
@@ -30,6 +31,7 @@ const InternalTxsTable = ({ data, currentAddress, isLoading, top, showBlockInfo 
   const multichainContext = useMultichainContext();
   const chainData = multichainContext?.chain;
   const { cutRef, renderedItemsNum } = useLazyRenderedList({ list: data, isEnabled: !isLoading, resetKey });
+  const { data: temporalTimestamps } = useTemporalTxTimestamps(data.map(item => item.transaction_hash));
 
   return (
     <AddressHighlightProvider>
@@ -61,6 +63,7 @@ const InternalTxsTable = ({ data, currentAddress, isLoading, top, showBlockInfo 
               isLoading={ isLoading }
               showBlockInfo={ showBlockInfo }
               chainData={ chainData }
+              timestampNs={ temporalTimestamps?.[item.transaction_hash.toLowerCase()] }
             />
           )) }
         </TableBody>
