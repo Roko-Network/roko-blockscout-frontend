@@ -25,7 +25,7 @@ const ChainIndicatorsList = ({ indicators, isLoading, selectedId, onItemClick }:
       flexShrink={ 0 }
       flexDir="column"
       as="ul"
-      borderRadius="lg"
+      borderRadius="base"
       rowGap="6px"
       m={{ base: 'auto 0', lg: 0 }}
     >

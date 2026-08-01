@@ -40,7 +40,7 @@ const DeveloperSubNav = () => {
       mb={ 6 }
       gap={ 1 }
       borderBottomWidth="1px"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
+      borderColor="border.divider"
       overflowX="auto"
     >
       { ITEMS.map((item) => {

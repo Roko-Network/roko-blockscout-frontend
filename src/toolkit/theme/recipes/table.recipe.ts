@@ -14,15 +14,20 @@ export const recipe = defineSlotRecipe({
       textAlign: 'start',
       verticalAlign: 'top',
       overflow: 'unset',
+      fontFamily: 'body',
+      fontVariantNumeric: 'tabular-nums',
     },
     cell: {
       textAlign: 'start',
       alignItems: 'center',
       verticalAlign: 'top',
-      fontWeight: 'medium',
+      fontWeight: 'normal',
     },
     columnHeader: {
-      fontWeight: 'medium',
+      fontFamily: 'heading',
+      fontWeight: '600',
+      letterSpacing: '0.05em',
+      textTransform: 'uppercase',
       textAlign: 'start',
     },
   },
@@ -33,11 +38,14 @@ export const recipe = defineSlotRecipe({
         columnHeader: {
           color: 'table.header.fg',
           backgroundColor: 'table.header.bg',
+          borderTopWidth: '1px',
+          borderBottomWidth: '1px',
+          borderColor: 'border.divider',
           _first: {
-            borderTopLeftRadius: '8px',
+            borderTopLeftRadius: 'base',
           },
           _last: {
-            borderTopRightRadius: '8px',
+            borderTopRightRadius: 'base',
           },
         },
         cell: {

@@ -74,14 +74,15 @@ const SubstrateActivityHome = () => {
 
   return (
     <Box
-      borderWidth="1px"
-      borderColor={{ _light: 'gray.200', _dark: 'whiteAlpha.300' }}
-      borderRadius="xl"
+      borderWidth="2px"
+      borderColor="border.divider"
+      borderRadius="base"
+      bg="bg.elevated"
       p={ 5 }
     >
       <Flex alignItems="center" gap={ 2 } mb={ 4 }>
-        <Box w="3px" h="20px" bg="purple.400" borderRadius="full"/>
-        <chakra.h3 fontSize="md" fontWeight={ 700 }>Substrate activity (24h)</chakra.h3>
+        <Box w="2px" h="20px" bg="brand.accent" borderRadius="sm"/>
+        <chakra.h3 fontFamily="heading" fontSize="md" fontWeight={ 700 }>Substrate activity (24h)</chakra.h3>
       </Flex>
       <Grid templateColumns={{ base: '1fr 1fr', lg: 'repeat(4, 1fr)' }} gap={ 4 }>
         <Metric

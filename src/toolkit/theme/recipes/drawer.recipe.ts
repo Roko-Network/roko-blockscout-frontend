@@ -44,7 +44,7 @@ export const recipe = defineSlotRecipe({
       maxH: '100dvh',
       color: 'inherit',
       bg: 'drawer.bg',
-      boxShadow: 'drawer',
+      borderColor: 'border.divider',
       _open: {
         animationDuration: 'slowest',
         animationTimingFunction: 'ease-in-smooth',
@@ -78,7 +78,8 @@ export const recipe = defineSlotRecipe({
       textStyle: 'heading.md',
       pr: '8',
       my: '1',
-      fontWeight: '500',
+      fontFamily: 'heading',
+      fontWeight: '700',
     },
     description: {
       color: 'fg.muted',
@@ -89,6 +90,7 @@ export const recipe = defineSlotRecipe({
     size: {
       md: {
         content: {
+          borderRightWidth: '2px',
           maxW: '300px',
         },
       },
@@ -100,6 +102,7 @@ export const recipe = defineSlotRecipe({
           justifyContent: 'flex-start',
         },
         content: {
+          borderLeftWidth: '2px',
           _open: {
             animationName: {
               base: 'slide-from-left-full, fade-in',
@@ -141,6 +144,7 @@ export const recipe = defineSlotRecipe({
         },
         content: {
           maxW: '100%',
+          borderBottomWidth: '2px',
           _open: { animationName: 'slide-from-top-full, fade-in' },
           _closed: { animationName: 'slide-to-top-full, fade-out' },
         },
@@ -166,6 +170,7 @@ export const recipe = defineSlotRecipe({
         },
         content: {
           maxW: '100%',
+          borderTopWidth: '2px',
           _open: { animationName: 'slide-from-bottom-full, fade-in' },
           _closed: { animationName: 'slide-to-bottom-full, fade-out' },
           borderTopRadius: 'base',
@@ -179,7 +184,7 @@ export const recipe = defineSlotRecipe({
           padding: '4',
         },
         content: {
-          borderRadius: 'l3',
+          borderRadius: 'base',
         },
       },
     },

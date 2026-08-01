@@ -134,7 +134,7 @@ const DeveloperMetadata = () => {
             <Box
               key={ p.name }
               borderBottomWidth={ idx < filtered.length - 1 ? '1px' : 0 }
-              borderColor={{ _light: 'gray.100', _dark: 'whiteAlpha.100' }}
+              borderColor="border.divider"
             >
               <chakra.button
                 type="button"

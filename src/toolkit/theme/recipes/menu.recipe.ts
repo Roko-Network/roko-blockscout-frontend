@@ -8,12 +8,13 @@ export const recipe = defineSlotRecipe({
     content: {
       outline: 0,
       bg: 'popover.bg',
-      boxShadow: 'popover',
       color: 'initial',
       maxHeight: 'var(--available-height)',
       '--menu-z-index': 'zIndex.popover',
       zIndex: 'calc(var(--menu-z-index) + var(--layer-index, 0))',
-      borderRadius: 'md',
+      borderRadius: 'base',
+      borderWidth: '2px',
+      borderColor: 'border.divider',
       overflow: 'hidden',
       overflowY: 'auto',
       _open: {

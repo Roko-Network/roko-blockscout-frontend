@@ -36,7 +36,8 @@ export const recipe = defineSlotRecipe({
       borderRadius: 'base',
       userSelect: 'none',
       textAlign: 'start',
-      fontWeight: 'medium',
+      fontFamily: 'body',
+      fontWeight: 'normal',
       cursor: 'pointer',
       focusVisibleRing: 'none',
       _disabled: {
@@ -76,8 +77,9 @@ export const recipe = defineSlotRecipe({
       // For selects inside modals
       '--select-z-index': 'modal',
       zIndex: 'modal',
-      borderRadius: 'md',
-      borderWidth: '0',
+      borderRadius: 'base',
+      borderWidth: '2px',
+      borderColor: 'border.divider',
       outline: 0,
       boxShadow: 'popover',
       boxShadowColor: 'colors.popover.shadow',
@@ -124,10 +126,12 @@ export const recipe = defineSlotRecipe({
     },
     itemGroupLabel: {
       py: '1',
-      fontWeight: 'medium',
+      fontFamily: 'heading',
+      fontWeight: '600',
+      letterSpacing: '0.04em',
     },
     label: {
-      fontWeight: 'medium',
+      fontWeight: '600',
       userSelect: 'none',
       textStyle: 'sm',
       _disabled: {
@@ -223,9 +227,9 @@ export const recipe = defineSlotRecipe({
     size: {
       sm: {
         root: {
-          '--select-trigger-height': 'sizes.8',
-          '--select-trigger-padding-right': 'spacing.8',
-          '--select-trigger-padding-left': 'spacing.2',
+          '--select-trigger-height': 'sizes.10',
+          '--select-trigger-padding-right': 'spacing.10',
+          '--select-trigger-padding-left': 'spacing.3',
         },
         content: {
           px: '0',

@@ -64,7 +64,9 @@ const StatsWidget = ({
     <Container href={ !isLoading ? href : undefined } className={ className }>
       <Flex
         alignItems="center"
-        bgColor={ isLoading ? { _light: 'blackAlpha.50', _dark: 'whiteAlpha.50' } : { _light: 'theme.stats.bg._light', _dark: 'theme.stats.bg._dark' } }
+        bgColor={ isLoading ? 'bg.muted' : 'bg.elevated' }
+        borderWidth="2px"
+        borderColor="border.divider"
         p={ 3 }
         borderRadius="base"
         justifyContent="space-between"
@@ -115,7 +117,7 @@ const StatsWidget = ({
             { valuePostfix && <chakra.span whiteSpace="pre">{ valuePostfix }</chakra.span> }
             { diff && Number(diff) > 0 && (
               <>
-                <Text ml={ 2 } mr={ 1 } color="green.500">
+                <Text ml={ 2 } mr={ 1 } color="text.success">
                   +{ diffFormatted || Number(diff).toLocaleString() }
                 </Text>
                 <Text color="text.secondary" textStyle="sm">({ diffPeriod })</Text>

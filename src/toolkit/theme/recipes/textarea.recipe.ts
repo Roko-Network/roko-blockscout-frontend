@@ -13,7 +13,9 @@ export const recipe = defineRecipe({
     textAlign: 'start',
     borderRadius: 'base',
     color: 'input.fg',
-    '--focus-color': 'colors.border.error',
+    fontFamily: 'body',
+    fontWeight: 'normal',
+    '--focus-color': 'colors.focus.ring',
     '--error-color': 'colors.border.error',
     _invalid: {
       focusRingColor: 'var(--error-color)',
@@ -42,7 +44,6 @@ export const recipe = defineRecipe({
         },
         _focus: {
           borderColor: 'input.border.focus',
-          boxShadow: 'size.md',
           _hover: {
             borderColor: 'input.border.focus',
           },

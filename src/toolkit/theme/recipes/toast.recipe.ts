@@ -14,7 +14,9 @@ export const recipe = defineSlotRecipe({
       py: '3',
       ps: '6',
       pe: '3',
-      borderRadius: 'md',
+      borderRadius: 'base',
+      borderWidth: '2px',
+      borderColor: 'border.divider',
       translate: 'var(--x) var(--y)',
       scale: 'var(--scale)',
       zIndex: 'var(--z-index)',
@@ -30,7 +32,6 @@ export const recipe = defineSlotRecipe({
       },
       bg: 'toast.bg.info',
       color: 'toast.fg',
-      boxShadow: 'xl',
       '--toast-trigger-bg': 'colors.bg.muted',
       '&[data-type=warning]': {
         color: 'toast.fg',
@@ -64,6 +65,7 @@ export const recipe = defineSlotRecipe({
       },
     },
     title: {
+      fontFamily: 'heading',
       fontWeight: '700',
       textStyle: 'md',
       marginEnd: '0',
@@ -83,7 +85,7 @@ export const recipe = defineSlotRecipe({
       px: '3',
       borderRadius: 'base',
       alignSelf: 'center',
-      borderWidth: '1px',
+      borderWidth: '2px',
       borderColor: 'var(--toast-border-color, inherit)',
       transition: 'background 200ms',
       _hover: {
