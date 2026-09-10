@@ -36,6 +36,14 @@ on:
       # published with the backend repo's deploy/publish-token-assets.sh.
       - 'public/assets/token-icons/**'
   workflow_dispatch:
+    inputs:
+      build_runner:
+        description: Existing runner lane for this manual build
+        type: choice
+        options:
+          - s9-build
+          - titan
+        default: s9-build
 
 permissions:
   contents: read
@@ -52,7 +60,7 @@ env:
 jobs:
   build:
     name: Build & push frontend image
-    runs-on: s9-build
+    runs-on: ${{ inputs.build_runner || 's9-build' }}
     steps:
       - name: Checkout (manual clone — host-mode runner has no node for actions/checkout)
         run: |
