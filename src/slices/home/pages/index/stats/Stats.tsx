@@ -57,7 +57,7 @@ const Stats = () => {
   const apiQuery = useStatsQuery();
 
   const substrateStatsQuery = useQuery({
-    queryKey: [ 'home_substrate_stats' ],
+    queryKey: [ 'substrate_stats' ],
     queryFn: fetchSubstrateStats,
     refetchInterval: 12_000,
   });
@@ -78,7 +78,9 @@ const Stats = () => {
     return <StatsDegraded/>;
   }
 
-  const isLoading = isPlaceholderData || latestBatchQuery?.isPlaceholderData || substrateStatsQuery.isLoading;
+  // Native transaction totals can arrive later than the core statistics.
+  // Only the combined transaction card depends on that separate request.
+  const isLoading = isPlaceholderData || latestBatchQuery?.isPlaceholderData;
 
   const apiData = apiQuery.data;
   const statsData = statsQuery.data;
@@ -141,7 +143,7 @@ const Stats = () => {
         label: substrateStatsQuery.data ? 'Total user transactions' : (statsData?.total_transactions?.title || 'Total transactions'),
         value: totalUserTransactions.toLocaleString(),
         href: { pathname: '/txs' as const },
-        isLoading,
+        isLoading: isLoading || substrateStatsQuery.isLoading,
       },
       (isArbitrumRollup && statsData?.total_operational_transactions?.value) && {
         id: 'total_operational_txs' as const,
@@ -224,7 +226,6 @@ const Stats = () => {
             key={ item.id }
             { ...item }
             { ...homeStatsWidgetCommonStyles }
-            isLoading={ isLoading }
           />
         );
       }) }
