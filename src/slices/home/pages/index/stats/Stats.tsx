@@ -17,7 +17,7 @@ import { homeStatsWidgetCommonStyles, isHomeStatsItemEnabled, sortHomeStatsItems
 
 import { HOMEPAGE_STATS_MICROSERVICE } from 'src/features/chain-stats/stubs/home';
 import { layerLabels } from 'src/features/rollup/common/utils/layer';
-import { fetchSubstrateStats } from 'src/features/substrate/api/substrate-api';
+import { fetchNativeTransactionCount } from 'src/features/substrate/api/substrate-api';
 import getUserTransactionsTotal from 'src/features/substrate/utils/get-user-transactions-total';
 
 import config from 'src/config';
@@ -56,9 +56,9 @@ const Stats = () => {
 
   const apiQuery = useStatsQuery();
 
-  const substrateStatsQuery = useQuery({
-    queryKey: [ 'substrate_stats' ],
-    queryFn: fetchSubstrateStats,
+  const nativeTransactionCountQuery = useQuery({
+    queryKey: [ 'substrate_native_transaction_count' ],
+    queryFn: fetchNativeTransactionCount,
     refetchInterval: 12_000,
   });
 
@@ -87,7 +87,7 @@ const Stats = () => {
   const evmTotalTransactions = statsData?.total_transactions?.value || apiData?.total_transactions;
   const totalUserTransactions = getUserTransactionsTotal(
     evmTotalTransactions,
-    substrateStatsQuery.data?.total_native_signed_extrinsics,
+    nativeTransactionCountQuery.data?.total_native_signed_extrinsics,
   );
 
   const items: Array<HomeStatsItem> = (() => {
@@ -140,10 +140,10 @@ const Stats = () => {
       totalUserTransactions !== undefined && {
         id: 'total_txs' as const,
         icon: 'transactions' as const,
-        label: substrateStatsQuery.data ? 'Total user transactions' : (statsData?.total_transactions?.title || 'Total transactions'),
+        label: nativeTransactionCountQuery.data ? 'Total user transactions' : (statsData?.total_transactions?.title || 'Total transactions'),
         value: totalUserTransactions.toLocaleString(),
         href: { pathname: '/txs' as const },
-        isLoading: isLoading || substrateStatsQuery.isLoading,
+        isLoading: isLoading || nativeTransactionCountQuery.isLoading,
       },
       (isArbitrumRollup && statsData?.total_operational_transactions?.value) && {
         id: 'total_operational_txs' as const,

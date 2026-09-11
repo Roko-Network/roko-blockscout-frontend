@@ -297,6 +297,10 @@ export function fetchRecentExtrinsics(opts: {
   return fetchJson(`/extrinsics/recent${ q ? `?${ q }` : '' }`);
 }
 
+export function fetchNativeTransactionCount(): Promise<Pick<SubstrateStats, 'total_native_signed_extrinsics'>> {
+  return fetchJson('/transaction-count');
+}
+
 export function fetchSubstrateStats(): Promise<SubstrateStats> {
   return fetchJson('/stats');
 }
