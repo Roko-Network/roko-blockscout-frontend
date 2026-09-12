@@ -29,7 +29,7 @@ describe('pwROKO without MetaMask', () => {
       }),
     })));
     render(<ChakraProvider value={ defaultSystem }><PwRoko/></ChakraProvider>);
-    await screen.findByText(/Total supply: 1 pwROKO/);
+    await waitFor(() => expect(screen.getByLabelText('Total supply').textContent).toBe('1pwROKO'));
     expect(screen.queryByText(/Failed to load token info/)).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Connect MetaMask' }));
     await screen.findByText('MetaMask not detected. Please install MetaMask.');
@@ -39,6 +39,6 @@ describe('pwROKO without MetaMask', () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 503 }));
     render(<ChakraProvider value={ defaultSystem }><PwRoko/></ChakraProvider>);
     await waitFor(() => expect(screen.getByText(/Failed to load token info: Explorer RPC returned HTTP 503/)).toBeTruthy());
-    expect(screen.queryByText(/Total supply:/)).toBeNull();
+    expect(screen.getByLabelText('Total supply').textContent).toBe('Unavailable');
   });
 });

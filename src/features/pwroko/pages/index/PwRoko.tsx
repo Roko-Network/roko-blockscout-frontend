@@ -12,6 +12,7 @@ import { Button } from 'src/toolkit/chakra/button';
 import { Heading } from 'src/toolkit/chakra/heading';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
+import PwRokoOverview, { PwRokoWelcome } from './PwRokoOverview';
 import { ethCall, ethSendTx, EXPECTED_CHAIN_ID_HEX, getProvider, publicRpc, waitForReceipt } from './rpc';
 
 // Function selectors
@@ -272,14 +273,8 @@ const PwRoko = () => {
   const hasPendingUnlocks = accountInfo && parseFloat(accountInfo.pendingUnlock) > 0;
 
   return (
-    <Box>
-      <Flex alignItems="center" gap={ 3 } mb={ 2 }>
-        <PwRokoIcon boxSize={ 10 } flexShrink={ 0 }/>
-        <Heading as="h1" fontSize="2xl">pwROKO Token</Heading>
-      </Flex>
-      <Text color="text.secondary" mb={ 6 }>
-        Wrap native { config.chain.currency.symbol } into pwROKO for validator bonding. Unwrap with a two-phase cooldown process.
-      </Text>
+    <Box maxW="1120px">
+      <PwRokoOverview supply={ tokenInfo?.totalSupply } hasError={ Boolean(tokenError) }/>
 
       { account && wrongChain && (
         <Box mb={ 4 } p={ 4 } bg="orange.500/10" borderWidth="1px" borderColor="orange.500/30" borderRadius="lg">
@@ -302,20 +297,13 @@ const PwRoko = () => {
       ) }
 
       { txError && (
-        <Box p={ 3 } bg="red.500/10" borderWidth="1px" borderColor="red.500/20" borderRadius="lg">
+        <Box mb={ 4 } p={ 3 } bg="red.500/10" borderWidth="1px" borderColor="red.500/20" borderRadius="lg">
           <Text color="red.500" fontSize="sm">{ txError }</Text>
         </Box>
       ) }
 
-      { tokenInfo && (
-        <Text mb={ 4 } color="text.secondary">Total supply: { tokenInfo.totalSupply } pwROKO · Precompile: 0x…0500</Text>
-      ) }
-
       { !account ? (
-        <Box bg="dialog.bg" borderWidth="1px" borderColor="divider" borderRadius="xl" p={ 8 } maxW="480px" textAlign="center">
-          <Text mb={ 4 } color="text.secondary">Connect your wallet to manage pwROKO tokens</Text>
-          <Button onClick={ connectWallet } size="lg">Connect MetaMask</Button>
-        </Box>
+        <PwRokoWelcome onConnect={ connectWallet }/>
       ) : (
         <Flex direction={{ base: 'column', lg: 'row' }} gap={ 6 }>
           <Box flex={ 1 } maxW={{ lg: '560px' }}>
