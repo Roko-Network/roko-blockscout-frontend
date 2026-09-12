@@ -6,8 +6,8 @@ import React from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-const fixture = vi.hoisted(() => ({ fetch: vi.fn() }));
-vi.mock('src/features/substrate/api/substrate-api', () => ({ fetchSubstrateStats: fixture.fetch }));
+const fixture = vi.hoisted(() => ({ fetch: vi.fn(), fullStats: vi.fn() }));
+vi.mock('src/features/substrate/api/substrate-api', () => ({ fetchNativeTransactionCount: fixture.fetch, fetchSubstrateStats: fixture.fullStats }));
 vi.mock('src/api/hooks/useApiQuery', () => ({ 'default': () => ({}) }));
 vi.mock('src/slices/chain/stats/useStatsQuery', () => ({ 'default': () => ({
   data: {
@@ -52,6 +52,7 @@ describe('homepage summary loading', () => {
     expect(screen.getByTestId('Total transactions').textContent).toBe('Loading');
     resolve({ total_native_signed_extrinsics: 31 });
     await waitFor(() => expect(screen.getByTestId('Total user transactions').textContent).toBe('131'));
+    expect(fixture.fullStats).not.toHaveBeenCalled();
     client.clear();
   });
 });
