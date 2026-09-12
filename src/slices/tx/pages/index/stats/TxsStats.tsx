@@ -18,6 +18,8 @@ import calculateUsdValue from 'src/shared/values/entity/calculateUsdValue';
 
 import { thinsp } from 'src/toolkit/utils/htmlEntities';
 
+import UserTransactions24h from './UserTransactions24h';
+
 interface Props extends BoxProps {}
 
 const TxsStats = (props: Props) => {
@@ -45,13 +47,8 @@ const TxsStats = (props: Props) => {
 
   const statsQuery = useStatsQuery();
 
-  if ((isStatsFeatureEnabled && !txsStatsQuery.data) || (!isStatsFeatureEnabled && !txsStatsApiQuery.data)) {
-    return null;
-  }
-
   const isLoading = isStatsFeatureEnabled ? txsStatsQuery.isPlaceholderData : txsStatsApiQuery.isPlaceholderData;
 
-  const txCount24h = isStatsFeatureEnabled ? txsStatsQuery.data?.transactions_24h?.value : txsStatsApiQuery.data?.transactions_count_24h;
   const operationalTxns24hArbitrum = isArbitrumRollup && isStatsFeatureEnabled ? txsStatsQuery.data?.operational_transactions_24h?.value : null;
   const operationalTxns24hOptimistic = isOptimisticRollup && isStatsFeatureEnabled ? txsStatsQuery.data?.op_stack_operational_transactions_24h?.value : null;
 
@@ -72,7 +69,7 @@ const TxsStats = (props: Props) => {
   }) : null;
 
   const itemsCount = [
-    txCount24h,
+    1,
     operationalTxns24hArbitrum,
     operationalTxns24hOptimistic,
     pendingTxns,
@@ -89,21 +86,7 @@ const TxsStats = (props: Props) => {
       mb={ 6 }
       { ...props }
     >
-      { txCount24h && (
-        <StatsWidget
-          label={ txsStatsQuery.data?.transactions_24h?.title ?
-            getStatsLabelFromTitle(txsStatsQuery.data?.transactions_24h?.title) :
-            'Transactions' }
-          value={ Number(txCount24h).toLocaleString() }
-          period="24h"
-          isLoading={ isLoading }
-          href={
-            chainConfig.features.stats.isEnabled ?
-              { pathname: '/stats/[id]', query: { id: 'newTxns', ...(multichainContext?.chain.id ? { chain_id: multichainContext.chain.id } : {}) } } :
-              undefined
-          }
-        />
-      ) }
+      <UserTransactions24h/>
       { operationalTxns24hArbitrum && (
         <StatsWidget
           label={ txsStatsQuery.data?.operational_transactions_24h?.title ?

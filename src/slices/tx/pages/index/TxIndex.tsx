@@ -24,7 +24,9 @@ const Transactions = () => {
   return (
     <>
       <PageTitle title="Transactions" withTextAd/>
-      <Text fontSize="xs" color="text.secondary" mb={ 2 }>EVM activity statistics</Text>
+      <Text fontSize="xs" color="text.secondary" mb={ 2 }>
+        User transaction count includes EVM and native transactions. Fees and pending counts cover EVM activity.
+      </Text>
       <TxsStats/>
       <TxsTabs
         includeSubstrateUserTxs
