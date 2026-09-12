@@ -16,10 +16,12 @@ export interface TransactionSummary {
   counts: { evm: number; nativeSigned: number; total: number };
 }
 
-export function validSummary(data: TransactionSummary): boolean {
+export function validSummary(value: unknown): value is TransactionSummary {
+  if (!value || typeof value !== 'object') return false;
+  const data = value as Partial<TransactionSummary>;
   const counts = data?.counts;
   return data?.schemaVersion === 1 && data.chainId === 52370 && data.complete === true &&
-    data.windowSeconds === 86400 && Date.parse(data.expiresAt) > Date.now() &&
+    data.windowSeconds === 86400 && typeof data.expiresAt === 'string' && Date.parse(data.expiresAt) > Date.now() &&
     Boolean(counts && [ counts.evm, counts.nativeSigned, counts.total ].every(value => Number.isSafeInteger(value) && value >= 0) &&
       counts.total === counts.evm + counts.nativeSigned);
 }
@@ -45,7 +47,7 @@ const UserTransactions24h = () => {
   return (
     <StatsWidget
       label="User transactions"
-      value={ current ? query.data.counts.total.toLocaleString() : 'Unavailable' }
+      value={ current && query.data ? query.data.counts.total.toLocaleString() : 'Unavailable' }
       period="24h"
       isLoading={ query.isPending }
     />
