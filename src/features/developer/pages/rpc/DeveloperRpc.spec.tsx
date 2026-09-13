@@ -108,4 +108,37 @@ describe('RPC guided form', () => {
     await waitFor(() => expect(screen.queryByText(/old response/)).toBeNull());
     expect((screen.getByRole('button', { name: 'Call method' }) as HTMLButtonElement).disabled).toBe(false);
   });
+  it('keeps method selection available during a pending request without sending another call', async() => {
+    mount();
+    await screen.findByRole('button', { name: 'temporal_getCheckpoint' });
+    fixture.send.mockImplementation(() => new Promise(() => {}));
+    fireEvent.click(screen.getByRole('button', { name: 'Call method' }));
+    const next = screen.getByRole('button', { name: 'temporal_getBlockMetadata' }) as HTMLButtonElement;
+    expect(next.disabled).toBe(false);
+    fireEvent.click(next);
+    expect((screen.getByLabelText('Method') as HTMLInputElement).value).toBe('temporal_getBlockMetadata');
+    expect(next.getAttribute('aria-pressed')).toBe('true');
+    expect(fixture.send.mock.calls.filter(([ method ]) => method !== 'rpc_methods')).toEqual([ [ 'system_health', [] ] ]);
+  });
+  it('preserves entered values when clicking the selected method again', async() => {
+    mount();
+    const method = await screen.findByRole('button', { name: 'temporal_getBlockMetadata' });
+    fireEvent.click(method);
+    fireEvent.change(screen.getByLabelText(/block_number ·/), { target: { value: '123' } });
+    fireEvent.click(method);
+    expect((screen.getByLabelText(/block_number ·/) as HTMLInputElement).value).toBe('123');
+  });
+  it('allows switching away from invalid JSON and searches without clearing inputs', async() => {
+    mount();
+    fireEvent.click(await screen.findByRole('button', { name: 'temporal_getBlockMetadata' }));
+    fireEvent.change(screen.getByLabelText(/block_number ·/), { target: { value: '123' } });
+    fireEvent.change(screen.getByLabelText('Find a method'), { target: { value: 'checkpoint' } });
+    expect((screen.getByLabelText(/block_number ·/) as HTMLInputElement).value).toBe('123');
+    fireEvent.click(screen.getByRole('button', { name: 'Edit JSON parameters' }));
+    fireEvent.change(screen.getByLabelText('Parameters (JSON array)'), { target: { value: '[invalid' } });
+    fireEvent.click(screen.getByRole('button', { name: 'temporal_getCheckpoint' }));
+    expect((screen.getByLabelText('Method') as HTMLInputElement).value).toBe('temporal_getCheckpoint');
+    expect((screen.getByRole('button', { name: 'Call method' }) as HTMLButtonElement).disabled).toBe(false);
+  });
+
 });

@@ -14,11 +14,11 @@ import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 import { parameterHelp, parseRpcParams, TEMPORAL_GUIDES } from './rpc-guidance';
 import type { RpcGuide } from './rpc-guidance';
+import RpcMethodPicker from './RpcMethodPicker';
 
 const DeveloperRpc = () => {
   const apiQuery = usePolkadotApi();
   const [ method, setMethod ] = React.useState('system_health');
-  const [ search, setSearch ] = React.useState('');
   const [ methods, setMethods ] = React.useState<Array<string>>([]);
   const [ discoveryError, setDiscoveryError ] = React.useState('');
   const [ values, setValues ] = React.useState<Array<string>>([]);
@@ -29,6 +29,7 @@ const DeveloperRpc = () => {
   const [ busy, setBusy ] = React.useState(false);
   const [ validators, setValidators ] = React.useState<Array<string>>([]);
   const generation = React.useRef(0);
+  const selectedMethod = React.useRef(method);
   const bundle = apiQuery.data;
 
   React.useEffect(() => {
@@ -71,28 +72,34 @@ const DeveloperRpc = () => {
   const useRaw = advanced || !guide;
   const unsupported = methods.length > 0 && !methods.includes(method);
   const subscription = /subscribe|unsubscribe/i.test(method);
-  let validation = '';
-  let params: Array<unknown> = [];
-  try {
-    if (bundle) params = parseRpcParams(bundle.api.registry, guide, values, useRaw ? raw : undefined);
-  } catch (err) {
-    validation = err instanceof Error ? err.message : 'Check the parameters.';
-  }
+  const { params, validation } = React.useMemo(() => {
+    try {
+      return {
+        params: bundle ? parseRpcParams(bundle.api.registry, guide, values, useRaw ? raw : undefined) : [],
+        validation: '',
+      };
+    } catch (err) {
+      return { params: [], validation: err instanceof Error ? err.message : 'Check the parameters.' };
+    }
+  }, [ bundle, guide, values, useRaw, raw ]);
 
-  function clearRequest() {
+  const clearRequest = React.useCallback(() => {
     generation.current += 1;
     setResult(null);
     setError('');
     setBusy(false);
-  }
-  function selectMethod(next: string) {
+  }, []);
+  const selectMethod = React.useCallback((next: string) => {
+    const normalized = next.replace('.', '_');
+    if (normalized === selectedMethod.current) return;
+    selectedMethod.current = normalized;
     clearRequest();
-    setMethod(next.replace('.', '_'));
+    setMethod(normalized);
     setValues([]);
     setRaw('[]');
     setAdvanced(false);
     setValidators([]);
-  }
+  }, [ clearRequest ]);
   async function findValidators() {
     if (!bundle) return;
     const request = ++generation.current;
@@ -147,9 +154,6 @@ const DeveloperRpc = () => {
     }
   }
 
-  const choices = (methods.length ? methods : Object.keys(guides)).filter((name) =>
-    `${ name } ${ guides[name]?.description ?? '' }`.toLowerCase().includes(search.toLowerCase()),
-  );
   return (
     <>
       <DeveloperSubNav/>
@@ -171,37 +175,7 @@ const DeveloperRpc = () => {
         </Text>
       ) }
       <Grid templateColumns={{ base: '1fr', md: '1fr 2fr' }} gap={ 6 }>
-        <Box>
-          <chakra.label htmlFor="rpc-search">Find a method</chakra.label>
-          <Input
-            id="rpc-search"
-            value={ search }
-            placeholder="Search by name or description"
-            onChange={ (e) => setSearch(e.target.value) }
-            mb={ 3 }
-          />
-          <Box maxH="440px" overflowY="auto" borderWidth="1px" borderRadius="md" p={ 2 }>
-            { choices.map((name) => (
-              <chakra.button
-                key={ name }
-                type="button"
-                display="block"
-                textAlign="left"
-                w="100%"
-                p={ 2 }
-                fontSize="xs"
-                fontFamily="mono"
-                overflowWrap="anywhere"
-                aria-pressed={ method === name }
-                bg={ method === name ? 'bg.subtle' : 'transparent' }
-                onClick={ () => selectMethod(name) }
-              >
-                { name }
-              </chakra.button>
-            )) }
-            { !choices.length && <Text p={ 2 }>No matching methods.</Text> }
-          </Box>
-        </Box>
+        <RpcMethodPicker methods={ methods } guides={ guides } selected={ method } onSelect={ selectMethod }/>
         <Box minW={ 0 }>
           <chakra.label htmlFor="rpc-method">Method</chakra.label>
           <Input id="rpc-method" value={ method } onChange={ (e) => selectMethod(e.target.value) } fontFamily="mono" mb={ 3 }/>
