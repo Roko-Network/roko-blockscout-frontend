@@ -12,7 +12,8 @@ import { Button } from 'src/toolkit/chakra/button';
 import { Heading } from 'src/toolkit/chakra/heading';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
-const PWROKO = '0x0000000000000000000000000000000000000500';
+import PwRokoOverview, { PwRokoWelcome } from './PwRokoOverview';
+import { ethCall, ethSendTx, EXPECTED_CHAIN_ID_HEX, getProvider, publicRpc, waitForReceipt } from './rpc';
 
 // Function selectors
 const SEL = {
@@ -25,17 +26,6 @@ const SEL = {
   readyUnlockAmount: '0x719f25e8',
   stakedBalanceOf: '0x821f56a5',
 } as const;
-
-// EIP-3326 expects chainId as a 0x-prefixed lowercase hex without leading zeros.
-const EXPECTED_CHAIN_ID_HEX = (() => {
-  const n = parseInt(config.chain.id ?? '0', 10);
-  return '0x' + (Number.isFinite(n) ? n.toString(16) : '0');
-})();
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getProvider(): any {
-  return (window as never as Record<string, unknown>).ethereum;
-}
 
 function padAddress(addr: string): string {
   return addr.slice(2).toLowerCase().padStart(64, '0');
@@ -77,45 +67,13 @@ function formatWei(wei: bigint): string {
 }
 
 function parseWei(amount: string): bigint {
+  if (!/^(?:0|[1-9]\d*)(?:\.\d{1,18})?$/.test(amount) || Number(amount) <= 0) {
+    throw new Error('Enter a positive amount with no more than 18 decimal places.');
+  }
   const parts = amount.split('.');
   const whole = parts[0] || '0';
   const frac = (parts[1] || '').padEnd(18, '0').slice(0, 18);
   return BigInt(whole) * BigInt(10) ** BigInt(18) + BigInt(frac);
-}
-
-async function ethCall(data: string): Promise<string> {
-  const provider = getProvider();
-  return provider.request({
-    method: 'eth_call',
-    params: [ { to: PWROKO, data }, 'latest' ],
-  }) as Promise<string>;
-}
-
-async function ethSendTx(from: string, data: string, value?: string): Promise<string> {
-  const provider = getProvider();
-  return provider.request({
-    method: 'eth_sendTransaction',
-    params: [ {
-      from,
-      to: PWROKO,
-      data,
-      gas: '0x' + (500000).toString(16),
-      ...(value ? { value } : {}),
-    } ],
-  }) as Promise<string>;
-}
-
-async function waitForReceipt(txHash: string, maxAttempts: number = 15): Promise<boolean> {
-  const provider = getProvider();
-  for (let i = 0; i < maxAttempts; i++) {
-    await new Promise(r => setTimeout(r, 2000));
-    const receipt = await provider.request({
-      method: 'eth_getTransactionReceipt',
-      params: [ txHash ],
-    });
-    if (receipt) return true;
-  }
-  return false;
 }
 
 type TokenInfo = {
@@ -136,6 +94,7 @@ const PwRoko = () => {
   const [ tokenInfo, setTokenInfo ] = React.useState<TokenInfo | null>(null);
   const [ accountInfo, setAccountInfo ] = React.useState<AccountInfo | null>(null);
   const [ loading, setLoading ] = React.useState(false);
+  const [ tokenError, setTokenError ] = React.useState<string | null>(null);
   const [ loadError, setLoadError ] = React.useState<string | null>(null);
   const [ txPending, setTxPending ] = React.useState(false);
   const [ txHash, setTxHash ] = React.useState<string | null>(null);
@@ -143,14 +102,14 @@ const PwRoko = () => {
   const [ lockAmount, setLockAmount ] = React.useState('');
   const [ unlockAmount, setUnlockAmount ] = React.useState('');
 
-  const wrongChain = chainId !== null && chainId !== EXPECTED_CHAIN_ID_HEX;
+  const wrongChain = chainId !== EXPECTED_CHAIN_ID_HEX;
 
   const refreshChainId = React.useCallback(async() => {
     const provider = getProvider();
     if (!provider) return;
     try {
       const id = await provider.request({ method: 'eth_chainId' }) as string;
-      setChainId(id);
+      setChainId(id.toLowerCase());
     } catch {
       setChainId(null);
     }
@@ -169,13 +128,25 @@ const PwRoko = () => {
       }
       await refreshChainId();
 
-      // Watch for chain switches the user makes outside this page.
-      provider.on?.('chainChanged', (id: string) => setChainId(id));
-      provider.on?.('accountsChanged', (addresses: Array<string>) => setAccount(addresses[0] ?? null));
     } catch {
       setTxError('Failed to connect wallet.');
     }
   }, [ refreshChainId ]);
+
+  React.useEffect(() => {
+    const provider = getProvider();
+    const onChain = (id: string) => setChainId(id.toLowerCase());
+    const onAccounts = (addresses: Array<string>) => {
+      setAccountInfo(null);
+      setAccount(addresses[0] ?? null);
+    };
+    provider?.on?.('chainChanged', onChain);
+    provider?.on?.('accountsChanged', onAccounts);
+    return () => {
+      provider?.removeListener?.('chainChanged', onChain);
+      provider?.removeListener?.('accountsChanged', onAccounts);
+    };
+  }, []);
 
   const switchToExpectedChain = React.useCallback(async() => {
     const provider = getProvider();
@@ -193,14 +164,14 @@ const PwRoko = () => {
 
   const loadTokenInfo = React.useCallback(async() => {
     try {
+      const chain = await publicRpc<string>('eth_chainId');
+      if (chain.toLowerCase() !== EXPECTED_CHAIN_ID_HEX) throw new Error('Explorer RPC network does not match this explorer.');
       const supply = hexToBigInt(await ethCall(SEL.totalSupply));
       setTokenInfo({ totalSupply: formatWei(supply) });
+      setTokenError(null);
     } catch (err: unknown) {
-      // Surface the failure instead of swallowing it. The previous WIP version
-      // silenced this catch which hid wallet/chain configuration problems from
-      // the operator, making it impossible to tell "RPC failed" apart from
-      // "supply is zero". See TICKET-07.
-      setLoadError(err instanceof Error ? `Failed to load token info: ${ err.message }` : 'Failed to load token info');
+      setTokenInfo(null);
+      setTokenError(err instanceof Error ? `Failed to load token info: ${ err.message }` : 'Failed to load token info');
     }
   }, []);
 
@@ -208,10 +179,9 @@ const PwRoko = () => {
     if (!account) return;
     setLoading(true);
     try {
-      const provider = getProvider();
       const addr = padAddress(account);
       const [ nativeBal, balance, staked, pending, ready ] = await Promise.all([
-        provider.request({ method: 'eth_getBalance', params: [ account, 'latest' ] }) as Promise<string>,
+        publicRpc<string>('eth_getBalance', [ account, 'latest' ]),
         ethCall(SEL.balanceOf + addr),
         ethCall(SEL.stakedBalanceOf + addr),
         ethCall(SEL.pendingUnlockAmount + addr),
@@ -239,7 +209,7 @@ const PwRoko = () => {
     loadAccountInfo();
   }, [ loadAccountInfo ]);
 
-  const sendTx = React.useCallback(async(data: string, value?: string) => {
+  const sendTx = React.useCallback(async(data: string) => {
     if (!account) return;
 
     // Pre-flight: never broadcast onto the wrong chain. Without this guard
@@ -254,7 +224,7 @@ const PwRoko = () => {
     setTxHash(null);
     setTxError(null);
     try {
-      const hash = await ethSendTx(account, data, value);
+      const hash = await ethSendTx(account, data);
       setTxHash(hash);
       await waitForReceipt(hash);
       loadAccountInfo();
@@ -277,25 +247,24 @@ const PwRoko = () => {
   const handleLock = React.useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (!lockAmount) return;
-    const wei = parseWei(lockAmount);
-    sendTx(SEL.lock + padUint256(wei), '0x' + wei.toString(16));
+    try {
+      sendTx(SEL.lock + padUint256(parseWei(lockAmount)));
+    } catch (err) {
+      setTxError((err as Error).message);
+    }
   }, [ lockAmount, sendTx ]);
 
   const handleUnlockRequest = React.useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (!unlockAmount) return;
-    sendTx(SEL.unlockRequest + padUint256(parseWei(unlockAmount)));
+    try {
+      sendTx(SEL.unlockRequest + padUint256(parseWei(unlockAmount)));
+    } catch (err) {
+      setTxError((err as Error).message);
+    }
   }, [ unlockAmount, sendTx ]);
 
-  // pwROKO's completeUnlock(uint32 maxBatches) consumes up to maxBatches
-  // ready entries from the unlock queue. The WIP hardcoded 10, so users who
-  // accumulated more than 10 ready entries had to click "Complete unlock"
-  // repeatedly. Raising the cap to 100 covers the realistic high-water-mark
-  // for a single validator without risking out-of-gas at the precompile
-  // level — empirically a single batch is constant-time in the precompile.
-  // A fully precise fix would read pendingUnlockEntries(account) from the
-  // pallet and pass that exact count, but no such getter exists yet.
-  const COMPLETE_UNLOCK_BATCHES = 100;
+  const COMPLETE_UNLOCK_BATCHES = 32;
   const handleCompleteUnlock = React.useCallback(() => {
     sendTx(SEL.completeUnlock + padUint32(COMPLETE_UNLOCK_BATCHES));
   }, [ sendTx ]);
@@ -304,14 +273,8 @@ const PwRoko = () => {
   const hasPendingUnlocks = accountInfo && parseFloat(accountInfo.pendingUnlock) > 0;
 
   return (
-    <Box>
-      <Flex alignItems="center" gap={ 3 } mb={ 2 }>
-        <PwRokoIcon boxSize={ 10 } flexShrink={ 0 }/>
-        <Heading as="h1" fontSize="2xl">pwROKO Token</Heading>
-      </Flex>
-      <Text color="text.secondary" mb={ 6 }>
-        Wrap native { config.chain.currency.symbol } into pwROKO for validator bonding. Unwrap with a two-phase cooldown process.
-      </Text>
+    <Box maxW="1120px">
+      <PwRokoOverview supply={ tokenInfo?.totalSupply } hasError={ Boolean(tokenError) }/>
 
       { account && wrongChain && (
         <Box mb={ 4 } p={ 4 } bg="orange.500/10" borderWidth="1px" borderColor="orange.500/30" borderRadius="lg">
@@ -327,17 +290,20 @@ const PwRoko = () => {
         </Box>
       ) }
 
-      { loadError && (
+      { (tokenError || loadError) && (
         <Box mb={ 4 } p={ 3 } bg="red.500/10" borderWidth="1px" borderColor="red.500/20" borderRadius="lg">
-          <Text color="red.500" fontSize="sm">{ loadError }</Text>
+          <Text color="red.500" fontSize="sm">{ tokenError || loadError }</Text>
+        </Box>
+      ) }
+
+      { txError && (
+        <Box mb={ 4 } p={ 3 } bg="red.500/10" borderWidth="1px" borderColor="red.500/20" borderRadius="lg">
+          <Text color="red.500" fontSize="sm">{ txError }</Text>
         </Box>
       ) }
 
       { !account ? (
-        <Box bg="dialog.bg" borderWidth="1px" borderColor="divider" borderRadius="xl" p={ 8 } maxW="480px" textAlign="center">
-          <Text mb={ 4 } color="text.secondary">Connect your wallet to manage pwROKO tokens</Text>
-          <Button onClick={ connectWallet } size="lg">Connect MetaMask</Button>
-        </Box>
+        <PwRokoWelcome onConnect={ connectWallet }/>
       ) : (
         <Flex direction={{ base: 'column', lg: 'row' }} gap={ 6 }>
           <Box flex={ 1 } maxW={{ lg: '560px' }}>
@@ -412,11 +378,6 @@ const PwRoko = () => {
                 ) }
               </Box>
 
-              { txError && (
-                <Box p={ 3 } bg="red.500/10" borderWidth="1px" borderColor="red.500/20" borderRadius="lg">
-                  <Text color="red.500" fontSize="sm">{ txError }</Text>
-                </Box>
-              ) }
               { txHash && (
                 <Box p={ 3 } bg="green.500/10" borderWidth="1px" borderColor="green.500/20" borderRadius="lg">
                   <Text color="green.500" fontSize="sm" fontWeight={ 600 } mb={ 1 }>Transaction submitted</Text>
