@@ -77,6 +77,7 @@ export interface PolkadotApiBundle {
   chain: string;
   nodeName: string;
   nodeVersion: string;
+  sendRpc: (method: string, params: Array<unknown>) => Promise<unknown>;
 }
 
 export function usePolkadotApi() {
@@ -119,6 +120,7 @@ export function usePolkadotApi() {
           chain: chain.toString(),
           nodeName: nodeName.toString(),
           nodeVersion: nodeVersion.toString(),
+          sendRpc: (method: string, params: Array<unknown>) => provider.send(method, params),
         };
       })();
 
