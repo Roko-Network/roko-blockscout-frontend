@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: LicenseRef-Blockscout
 
 import { Box, Flex, HStack } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -55,11 +54,10 @@ import AddressClusters from 'src/features/name-services/clusters/pages/address/A
 import EnsEntity from 'src/features/name-services/domains/components/EnsEntity';
 import useCheckDomainNameParam from 'src/features/name-services/domains/hooks/useCheckDomainNameParam';
 import AddressEnsDomains from 'src/features/name-services/domains/pages/address/AddressEnsDomains';
+import AddressPwroko from 'src/features/pwroko/components/AddressPwroko';
 import useIsSafeAddress from 'src/features/safe/hooks/useIsSafeAddress';
 import SolidityscanReport from 'src/features/solidity-scan/components/SolidityscanReport';
-import AddressPwroko from 'src/features/pwroko/components/AddressPwroko';
 import AddressSubstrateExtrinsics from 'src/features/substrate/components/AddressSubstrateExtrinsics';
-import { fetchAccountExtrinsics, fetchAccountPwrokoHistory } from 'src/features/substrate/api/substrate-api';
 import AddressAccountHistory from 'src/features/tx-interpretation/noves/pages/address/AddressAccountHistory';
 import AddressUserOps from 'src/features/user-ops/pages/address/AddressUserOps';
 import { USER_OPS_ACCOUNT } from 'src/features/user-ops/stubs';
@@ -72,6 +70,9 @@ import useEtherscanRedirects from 'src/shared/router/useEtherscanRedirects';
 import SpriteIcon from 'src/sprite/SpriteIcon';
 
 import RoutedTabs from 'src/toolkit/components/RoutedTabs/RoutedTabs';
+
+import AddressOverview from './AddressOverview';
+import AddressTabGuide from './AddressTabGuide';
 
 const TOKEN_TABS = [ 'tokens_erc20', 'tokens_nfts', 'tokens_nfts_collection', 'tokens_nfts_list' ];
 const PREDEFINED_TAG_PRIORITY = 100;
@@ -109,29 +110,6 @@ const AddressPageContent = () => {
     hash,
     isDegradedData: addressQuery.isDegradedData,
   });
-
-  // Sprint 4 / S4-T3: peek at the substrate-indexed pwROKO history to decide
-  // whether to show the pwROKO tab on this address. The full event list is
-  // re-fetched inside <AddressPwroko/> with the same cache key.
-  const pwrokoHistoryQuery = useQuery({
-    queryKey: [ 'substrate_account_pwroko_history', hash.toLowerCase() ],
-    queryFn: () => fetchAccountPwrokoHistory(hash, 100),
-    enabled: areQueriesEnabled && Boolean(hash),
-    retry: 0,
-  });
-  const pwrokoEventCount = pwrokoHistoryQuery.data?.items?.length ?? 0;
-
-  // Sprint 5 / S5-T13: same idea for substrate signed-extrinsic activity —
-  // only mount the "Substrate Calls" tab when the address has actually
-  // signed at least one extrinsic. The detail component re-uses this cache
-  // key so there's no second roundtrip.
-  const substrateExtrinsicsQuery = useQuery({
-    queryKey: [ 'substrate_account_extrinsics', hash.toLowerCase() ],
-    queryFn: () => fetchAccountExtrinsics(hash, 100),
-    enabled: areQueriesEnabled && Boolean(hash),
-    retry: 0,
-  });
-  const substrateExtrinsicCount = substrateExtrinsicsQuery.data?.items?.length ?? 0;
 
   const userOpsAccountQuery = useApiQuery('core:user_ops_account', {
     pathParams: { hash },
@@ -201,7 +179,7 @@ const AddressPageContent = () => {
     return [
       {
         id: 'index',
-        title: 'Details',
+        title: 'Overview',
         component: <AddressDetails addressQuery={ addressQuery } countersQuery={ countersQuery } isLoading={ isTabsLoading }/>,
       },
       addressQuery.data?.is_contract ? {
@@ -273,24 +251,16 @@ const AddressPageContent = () => {
         component: <AddressTokenTransfers shouldRender={ !isTabsLoading } isQueryEnabled={ areQueriesEnabled }/>,
         subTabs: ADDRESS_TOKEN_TRANSFERS_TAB_IDS,
       },
-      // Sprint 4 / S4-T3: mounted only when the substrate indexer reports
-      // ≥1 pwROKO event involving this address. Mirrors Blockscout's
-      // "hide empty tabs" convention used by Internal Transactions.
-      pwrokoEventCount > 0 ? {
+      {
         id: 'pwroko',
         title: 'pwROKO',
-        count: pwrokoEventCount,
         component: <AddressPwroko addressHash={ hash }/>,
-      } : undefined,
-      // Sprint 5 / S5-T13: substrate signed-call history. Hidden when the
-      // address has only ever interacted via EVM (no signed substrate
-      // extrinsics indexed).
-      substrateExtrinsicCount > 0 ? {
+      },
+      {
         id: 'substrate_calls',
-        title: 'Substrate Calls',
-        count: substrateExtrinsicCount,
+        title: 'Native calls',
         component: <AddressSubstrateExtrinsics addressHash={ hash }/>,
-      } : undefined,
+      },
       {
         id: 'tokens',
         title: 'Tokens',
@@ -300,7 +270,7 @@ const AddressPageContent = () => {
       },
       config.slices.internalTx.isEnabled ? {
         id: 'internal_txns',
-        title: 'Internal txns',
+        title: 'Internal activity',
         count: addressTabsCountersQuery.data?.internal_transactions_count,
         component: <AddressInternalTxs shouldRender={ !isTabsLoading } isQueryEnabled={ areQueriesEnabled }/>,
       } : undefined,
@@ -312,7 +282,7 @@ const AddressPageContent = () => {
       } : undefined,
       {
         id: 'coin_balance_history',
-        title: 'Coin balance history',
+        title: 'Balance history',
         component: <AddressCoinBalance shouldRender={ !isTabsLoading } isQueryEnabled={ areQueriesEnabled }/>,
       },
       addressTabsCountersQuery.data?.validations_count ?
@@ -345,7 +315,10 @@ const AddressPageContent = () => {
           />
         ),
       } : undefined,
-    ].filter(Boolean);
+    ].filter(Boolean).map((tab) => ({
+      ...tab,
+      component: <><AddressTabGuide tabId={ tab.id }/>{ tab.component }</>,
+    }));
   }, [
     addressQuery,
     countersQuery,
@@ -355,8 +328,6 @@ const AddressPageContent = () => {
     areQueriesEnabled,
     address3rdPartyWidgets,
     addressType,
-    pwrokoEventCount,
-    substrateExtrinsicCount,
     hash,
   ]);
 
@@ -386,7 +357,10 @@ const AddressPageContent = () => {
           textColor: 'black',
         },
       } : undefined,
-      !addressQuery.data?.is_contract ? { slug: 'eoa', name: 'EOA', tagType: 'custom' as const, ordinal: PREDEFINED_TAG_PRIORITY } : undefined,
+      !addressQuery.data?.is_contract ? {
+        slug: 'eoa', name: 'Account', tagType: 'custom' as const, ordinal: PREDEFINED_TAG_PRIORITY,
+        meta: { tooltipDescription: 'No contract code is indexed at this address. This label does not identify its owner.' },
+      } : undefined,
       config.features.validators.isEnabled && addressQuery.data?.has_validated_blocks ?
         { slug: 'validator', name: 'Validator', tagType: 'custom' as const, ordinal: PREDEFINED_TAG_PRIORITY } :
         undefined,
@@ -528,6 +502,12 @@ const AddressPageContent = () => {
       { !addressMetadataQuery.isPending &&
         <AddressAlerts tags={ addressMetadataQuery.data?.addresses?.[hash.toLowerCase()]?.tags }/> }
       { config.features.metasuites.isEnabled && <Box display="none" id="meta-suites__address" data-ready={ !isLoading }/> }
+      <AddressOverview
+        query={ addressQuery }
+        transactionCount={ countersQuery.data?.transactions_count }
+        countersLoading={ countersQuery.isPlaceholderData }
+        countersError={ countersQuery.isError || countersQuery.isDegradedData }
+      />
       <RoutedTabs tabs={ tabs } isLoading={ isTabsLoading }/>
     </>
   );

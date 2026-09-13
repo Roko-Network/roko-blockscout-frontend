@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: LicenseRef-Blockscout
 
-import { Box, chakra } from '@chakra-ui/react';
+import { Box, Text, chakra } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { route } from 'nextjs-routes';
 import React from 'react';
@@ -9,6 +9,7 @@ import PwRokoIcon from 'src/features/pwroko/components/PwRokoIcon';
 import type { SubstratePwrokoEvent } from 'src/features/substrate/api/substrate-api';
 import { fetchAccountPwrokoHistory, formatRoko, truncateHex } from 'src/features/substrate/api/substrate-api';
 
+import { Button } from 'src/toolkit/chakra/button';
 import { Link } from 'src/toolkit/chakra/link';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 import { TableRoot, TableHeader, TableBody, TableRow, TableColumnHeader, TableCell } from 'src/toolkit/chakra/table';
@@ -24,41 +25,58 @@ interface Props {
  * helper used by `Address.tsx` to gate inclusion of this tab).
  */
 const AddressPwroko = ({ addressHash }: Props) => {
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: [ 'substrate_account_pwroko_history', addressHash.toLowerCase() ],
-    queryFn: () => fetchAccountPwrokoHistory(addressHash),
+    queryFn: () => fetchAccountPwrokoHistory(addressHash, 100),
     enabled: Boolean(addressHash),
   });
+
+  const handleRetry = React.useCallback(() => {
+    refetch();
+  }, [ refetch ]);
 
   if (isLoading) {
     return <Skeleton loading={ true } w="100%" h="120px"/>;
   }
 
   if (isError) {
-    return <Box p={ 4 } color="red.500">Failed to load pwROKO history.</Box>;
+    return (
+      <Box p={ 5 } borderWidth="1px" borderRadius="lg" role="status">
+        <Text fontWeight="semibold">pwROKO history is temporarily unavailable</Text>
+        <Text color="text.secondary" mt={ 2 }>This does not mean the balance is zero or activity is missing from the chain.</Text>
+        <Button mt={ 3 } onClick={ handleRetry } loading={ isFetching }>Try again</Button>
+      </Box>
+    );
   }
 
   const items = data?.items ?? [];
 
   if (items.length === 0) {
-    return <Box p={ 4 } color="text.secondary" fontSize="sm">No pwROKO events for this address.</Box>;
+    return (
+      <Box p={ 5 } borderWidth="1px" borderRadius="lg">
+        <Text fontWeight="semibold">No pwROKO activity found in this view</Text>
+        <Text mt={ 2 } color="text.secondary" fontSize="sm">
+          Lock and unlock events will appear here when indexed. For current staking state, check the validator or staking view.
+        </Text>
+      </Box>
+    );
   }
 
   const me = addressHash.toLowerCase();
 
   return (
-    <TableRoot variant="line">
+    <Box overflowX="auto"><TableRoot variant="line">
       <TableHeader>
         <TableRow>
           <TableColumnHeader>Block</TableColumnHeader>
-          <TableColumnHeader>Event</TableColumnHeader>
+          <TableColumnHeader>Action</TableColumnHeader>
           <TableColumnHeader>
             <chakra.span display="inline-flex" alignItems="center" gap={ 1.5 }>
               <PwRokoIcon boxSize={ 5 }/>
-              Amount
+              Amount (pwROKO)
             </chakra.span>
           </TableColumnHeader>
-          <TableColumnHeader>Backing</TableColumnHeader>
+          <TableColumnHeader>Native backing (ROKO)</TableColumnHeader>
           <TableColumnHeader>Counterparty</TableColumnHeader>
         </TableRow>
       </TableHeader>
@@ -89,7 +107,7 @@ const AddressPwroko = ({ addressHash }: Props) => {
           );
         }) }
       </TableBody>
-    </TableRoot>
+    </TableRoot></Box>
   );
 };
 

@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: LicenseRef-Blockscout
 
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 import { fetchAccountExtrinsics } from 'src/features/substrate/api/substrate-api';
 import SubstrateExtrinsicsTable from 'src/features/substrate/components/SubstrateExtrinsicsTable';
 
+import { Button } from 'src/toolkit/chakra/button';
 import { Skeleton } from 'src/toolkit/chakra/skeleton';
 
 interface Props {
@@ -21,18 +22,37 @@ interface Props {
  * key for cache sharing).
  */
 const AddressSubstrateExtrinsics = ({ addressHash }: Props) => {
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: [ 'substrate_account_extrinsics', addressHash.toLowerCase() ],
     queryFn: () => fetchAccountExtrinsics(addressHash, 100),
     enabled: Boolean(addressHash),
   });
+
+  const handleRetry = React.useCallback(() => {
+    refetch();
+  }, [ refetch ]);
 
   if (isLoading) {
     return <Skeleton loading={ true } w="100%" h="120px"/>;
   }
 
   if (isError) {
-    return <Box p={ 4 } color="red.500">Failed to load substrate extrinsics.</Box>;
+    return (
+      <Box p={ 5 } borderWidth="1px" borderRadius="lg" role="status">
+        <Text fontWeight="semibold">Native call history is temporarily unavailable</Text>
+        <Text mt={ 2 } color="text.secondary">The index could not be read. This is not a transaction failure.</Text>
+        <Button mt={ 3 } onClick={ handleRetry } loading={ isFetching }>Try again</Button>
+      </Box>
+    );
+  }
+
+  if (!data?.items?.length) {
+    return (
+      <Box p={ 5 } borderWidth="1px" borderRadius="lg">
+        <Text fontWeight="semibold">No native calls found in this view</Text>
+        <Text mt={ 2 } color="text.secondary">Signed staking and session calls appear here when indexed. Check Transactions for EVM activity.</Text>
+      </Box>
+    );
   }
 
   return <SubstrateExtrinsicsTable items={ data?.items ?? [] }/>;

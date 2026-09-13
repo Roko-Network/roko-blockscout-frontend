@@ -39,7 +39,7 @@ const AddressCounterItem = ({ prop, query, address, isAddressQueryLoading, isDeg
   const data = query.data?.[prop];
 
   if (query.isError || data === null || data === undefined) {
-    return <span>0</span>;
+    return <span>Unavailable</span>;
   }
 
   switch (prop) {
