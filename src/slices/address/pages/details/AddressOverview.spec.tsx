@@ -55,11 +55,10 @@ describe('address overview confidence states', () => {
     mount({ data: { coin_balance: amount } });
     expect(screen.getByTestId('balance').textContent).toBe(amount);
   });
-  it('provides native expandable guidance with the recent-history limit', () => {
+  it('keeps the recent-history limit and validator guide visible', () => {
     render(<ChakraProvider value={ defaultSystem }><AddressTabGuide tabId="pwroko"/></ChakraProvider>);
-    const summary = screen.getByText('How to read this view');
-    expect(summary.tagName).toBe('SUMMARY');
-    expect(summary.closest('details')?.hasAttribute('open')).toBe(false);
-    expect(screen.getByText(/up to 100 recent events/)).toBeTruthy();
+    expect(screen.getByText(/Up to 100 recent indexed events/)).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Validator setup and address guide' }).getAttribute('href'))
+      .toBe('https://docs.roko.network/pages/prepare-validator.html');
   });
 });

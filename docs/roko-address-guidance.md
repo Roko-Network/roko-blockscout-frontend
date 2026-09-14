@@ -5,8 +5,9 @@ and the recorded balance block visible across tabs. These are observations,
 not assertions about spendability, current finality, validator election, or
 contract safety. Missing/error/degraded values are not rendered as zero.
 
-Every configured tab has a concise introduction, a suggested first check, and
-keyboard-accessible expandable guidance. Existing tab IDs, filters, pagination,
+Every configured tab has a concise introduction and a suggested first check.
+The optional “How to read this view” disclosure has been removed following
+user feedback. Recent-history limits remain directly visible. Existing tab IDs, filters, pagination,
 and contract controls remain in place. Visible labels use Overview, Native
 calls, Internal activity, and Balance history to reduce unexplained jargon.
 
@@ -17,7 +18,7 @@ a lifetime total. Errors and empty results have different explanations and
 failed requests offer retry. The pwROKO table names its asset units explicitly.
 
 Validation: TypeScript check, targeted ESLint, five component tests covering
-zero/missing/error/degraded balances, base-unit precision, and expandable help.
+zero/missing/error/degraded balances, base-unit precision, and the visible history limit and validator documentation link.
 Desktop browser exercised all eight account tabs; mobile document overflow
 check passed. Dark-mode rendering and a browser retry from a simulated 503
 to an empty result passed; Overview made no history request. The preview uses public read-only explorer APIs. No wallet was
@@ -31,3 +32,6 @@ guidance, 390px layout, dark mode through User settings, and no failed static
 assets or JavaScript exceptions. Backend static-asset error responses now use
 `Cache-Control: no-store` to prevent the cached JavaScript failure that originally
 blocked address rendering.
+
+The disclosure removal is a follow-up to the verified release above; its production
+delivery is recorded separately.
